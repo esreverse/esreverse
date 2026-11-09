@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import ClientTicker from '../components/ClientTicker.astro';
+import KeySkills from '../components/KeySkills.astro';
+import Clients from '../components/Clients.astro';
+import Services from '../components/Services.astro';
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import Cursor from '../components/Cursor.astro';
+
+const description =
+  'I’m an experience designer, a digital consultant, a coach, a facilitator, an enabler. I design engaging interactive experiences, digital and physical, human to human and human to machine. I work for agencies, startups and larger companies.';
+---
+
+<Base title="Eric Singhartinger – Experience Designer" description={description}>
+  <Hero />
+  <main>
+    <About />
+    <ClientTicker />
+    <KeySkills />
+    <Clients />
+    <Services />
+  </main>
+  <Footer />
+  <Nav extra={{ href: '/tinypointer', label: 'TinyPointer' }} />
+  <Cursor />
+</Base>

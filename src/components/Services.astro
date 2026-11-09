@@ -1,0 +1,123 @@
+---
+import { tools } from '../data/site';
+
+const services = [
+  {
+    label: 'Craftsmanship',
+    text: 'UX/UI Design, Animation, Design Systems, Design Token Systems, Prototyping & Animation, Funnels & Journeys, Optimization, Evaluation & Reports',
+  },
+  { label: 'Consulting', text: 'Brand/Customer/User Experience, Product/Service/Process Design' },
+  { label: 'Roles', text: 'Consultant/Advisor, Facilitator, Mentor, Enabler, Team Lead, Designer' },
+  {
+    label: 'Output',
+    text: 'Websites, Apps, Services, Processes, Concepts, Design Systems, Design Token Systems, Optimization Studies, UX Reports',
+  },
+];
+---
+
+<section class="services" id="services" aria-labelledby="services-title" data-nav-section="services">
+  <div class="container services__main">
+    <h2 class="t-display reveal" id="services-title">Services</h2>
+    <dl class="services__grid">
+      {
+        services.map(({ label, text }) => (
+          <div class="services__item reveal">
+            <dt class="t-label">{label}</dt>
+            <dd class="t-lead">{text}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  <div class="container services__aside">
+    <h3 class="t-lead services__lead reveal">
+      I’m heavily invested in the Figma community. I believe Figma is the best tool to develop,
+      design, document and present things.
+    </h3>
+    <ul class="services__links reveal" role="list">
+      <li>
+        Figma: My <a class="link" href="https://www.figma.com/@schmeric" target="_blank" rel="noopener"
+          >templates for design tokens</a
+        > (with Tokens Studio)
+      </li>
+      <li>
+        YouTube: My official <a
+          class="link"
+          href="https://www.youtube.com/watch?v=7utmznIOWLU"
+          target="_blank"
+          rel="noopener">talk for Figma Tokens Studio</a
+        >
+      </li>
+      <li>
+        Medium: My <a class="link" href="https://medium.com/@eric.singhartinger" target="_blank" rel="noopener"
+          >articles about Figma, design tokens and UX/UI</a
+        >
+      </li>
+    </ul>
+  </div>
+
+  <div class="container services__aside">
+    <h3 class="t-lead services__lead reveal">
+      Besides Figma, here are some tools I can't live and work without
+    </h3>
+    <p class="reveal">
+      {
+        tools.map(({ label, href }, i) => (
+          <>
+            <a class="link" href={href} target="_blank" rel="noopener">
+              {label}
+            </a>
+            {i < tools.length - 1 && ', '}
+          </>
+        ))
+      }
+    </p>
+  </div>
+</section>
+
+<style>
+  .services {
+    padding-top: var(--section-space);
+  }
+
+  .services__main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-l);
+    padding-bottom: var(--section-space);
+  }
+
+  .services__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--stack-l) var(--column-gap);
+  }
+
+  .services__item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .services__item dd {
+    margin: 0;
+  }
+
+  .services__aside {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-bottom: var(--section-space);
+  }
+
+  .services__lead {
+    max-width: 810px;
+  }
+
+  @media (max-width: 767px) {
+    .services__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

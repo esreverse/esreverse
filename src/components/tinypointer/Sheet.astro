@@ -1,0 +1,69 @@
+---
+/**
+ * A sheet of paper lying on the "desktop". Each sheet presents one feature.
+ *
+ * `feature` is the hook for the interactive part that comes later: the visitor
+ * will be able to try that feature (draw, rainbow ink, stamps, arrows) with the
+ * TinyPointer hand directly on the sheet.
+ */
+interface Props {
+  feature: 'draw' | 'rainbow' | 'stamp' | 'arrow';
+  /** Resting angle of the sheet in degrees */
+  tilt?: number;
+}
+const { feature, tilt = -2 } = Astro.props;
+---
+
+<article class="sheet" data-feature={feature} style={`--tilt: ${tilt}deg`}>
+  <div class="sheet__content">
+    <slot />
+  </div>
+  <!-- Interactive layer for trying the feature goes here (not built yet). -->
+</article>
+
+<style>
+  .sheet {
+    position: relative;
+    width: min(560px, 100%, 62svh);
+    aspect-ratio: 210 / 297;
+    padding: clamp(28px, 6%, 48px);
+    rotate: var(--tilt);
+    border-radius: 4px;
+    background: #fffefa;
+    color: #111;
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.08),
+      0 12px 32px rgb(20 20 60 / 0.18),
+      0 40px 80px rgb(20 20 60 / 0.12);
+  }
+
+  .sheet__content {
+    font-family: 'Playpen Sans Variable', var(--font-sans);
+    font-variation-settings: normal;
+    font-size: clamp(1.75rem, 4.2vw, 2.75rem);
+    line-height: 1.2;
+  }
+
+  /* Parallax: the sheet travels a little slower than the page and settles
+     from a steeper angle. CSS scroll-driven animation, no JS. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .sheet {
+        animation: sheet-settle linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 50%;
+      }
+    }
+  }
+
+  @keyframes sheet-settle {
+    from {
+      translate: 0 18vh;
+      rotate: calc(var(--tilt) * 4);
+    }
+    to {
+      translate: 0 0;
+      rotate: var(--tilt);
+    }
+  }
+</style>

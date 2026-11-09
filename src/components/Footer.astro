@@ -1,0 +1,155 @@
+---
+import UnicornScene from './UnicornScene.astro';
+import XdLogo from './XdLogo.astro';
+import { socialLinks } from '../data/site';
+
+const reasons = ['to connect', 'to meet', 'to help'];
+---
+
+<footer class="footer" id="contact" aria-labelledby="contact-title" data-nav-section="contact">
+  <UnicornScene />
+
+  <h2 class="footer__claim t-lead" id="contact-title">
+    <span class="visually-hidden">Always happy {reasons.join(', ')}</span>
+    <span aria-hidden="true">Always happy</span>
+    <span class="footer__rotator" aria-hidden="true">
+      <span class="footer__words">
+        {reasons.map((reason) => <span>{reason}</span>)}
+        <span>&nbsp;</span>
+        <span>{reasons[0]}</span>
+      </span>
+    </span>
+  </h2>
+
+  <XdLogo class="footer__logo" />
+
+  <nav class="footer__links" aria-label="Social media">
+    <ul role="list">
+      {
+        socialLinks.map(({ label, href }) => (
+          <li>
+            <a class="t-lead" href={href} target="_blank" rel="noopener me">
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</footer>
+
+<style>
+  /* Like the hero, the footer artwork stays the same in dark mode. */
+  .footer {
+    --inset-x: 80px;
+    --line: calc(var(--text-lead) * var(--leading-lead));
+
+    position: relative;
+    isolation: isolate;
+    height: 75vh;
+    min-height: 560px;
+    overflow: hidden;
+    background: var(--color-white);
+    color: var(--color-black);
+  }
+
+  .footer :global(.unicorn-scene) {
+    z-index: -1;
+  }
+
+  .footer__claim {
+    position: absolute;
+    top: 70px;
+    left: var(--inset-x);
+    display: flex;
+    gap: 10px;
+  }
+
+  .footer__rotator {
+    display: block;
+    height: var(--line);
+    overflow: hidden;
+  }
+
+  .footer__words {
+    display: flex;
+    flex-direction: column;
+    animation: rotate-words 8s var(--ease-out) infinite;
+  }
+
+  .footer__words > span {
+    display: block;
+    height: var(--line);
+    white-space: nowrap;
+  }
+
+  /* 4 visible states (3 words + a short blank), then the duplicate of the
+     first word lets the loop restart without a visible jump. */
+  @keyframes rotate-words {
+    0%, 20% { transform: translateY(0); }
+    25%, 45% { transform: translateY(calc(-1 * var(--line))); }
+    50%, 70% { transform: translateY(calc(-2 * var(--line))); }
+    75%, 80% { transform: translateY(calc(-3 * var(--line))); }
+    85%, 100% { transform: translateY(calc(-4 * var(--line))); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer__words {
+      animation: none;
+    }
+  }
+
+  .footer :global(.footer__logo) {
+    position: absolute;
+    top: 80px;
+    right: var(--inset-x);
+    width: 64px;
+    color: var(--color-black);
+  }
+
+  .footer__links {
+    position: absolute;
+    left: var(--inset-x);
+    bottom: 81px;
+  }
+
+  .footer__links ul {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .footer__links a {
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .footer__links a:hover {
+    opacity: 0.6;
+  }
+
+  @media (max-width: 767px) {
+    .footer {
+      --inset-x: var(--gutter);
+    }
+
+    .footer__claim {
+      top: 48px;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .footer :global(.footer__logo) {
+      top: 48px;
+      width: 51px;
+    }
+
+    .footer__links {
+      bottom: 48px;
+    }
+
+    .footer__links ul {
+      gap: 8px;
+    }
+  }
+</style>

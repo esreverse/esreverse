@@ -1,0 +1,109 @@
+---
+import { Picture } from 'astro:assets';
+import portrait from '../assets/eric.png';
+
+const statements = [
+  'I’m an experience designer, a digital consultant, a coach, a facilitator, an enabler.',
+  'I design engaging interactive experiences, digital and physical, human to human and human to machine.',
+  'I want to help people achieve their goals easier, faster, more efficiently, and with more confidence and joy.',
+  'I work for agencies, startups and larger companies on their products, services and processes.',
+];
+---
+
+<section class="about" aria-labelledby="about-title" data-nav-section="home">
+  <div class="about__inner container">
+    <div class="about__text">
+      <h2 class="t-lead reveal" id="about-title">My name is Eric Singhartinger</h2>
+      <div class="about__statements">
+        {statements.map((text) => <p class="t-lead reveal">{text}</p>)}
+      </div>
+    </div>
+    <Picture
+      pictureAttributes={{ class: 'about__portrait reveal' }}
+      class="about__img"
+      src={portrait}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={[375, 750, 1125]}
+      sizes="(min-width: 1280px) 375px, (min-width: 768px) 45vw, calc(100vw - 64px)"
+      alt="Portrait of Eric Singhartinger, laughing, wearing glasses and a black T-shirt"
+      loading="lazy"
+    />
+  </div>
+</section>
+
+<style>
+  .about {
+    background: var(--surface-about);
+    padding-block: var(--section-space);
+  }
+
+  .about__inner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--column-gap);
+  }
+
+  .about__text {
+    flex: 1 1 625px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-m);
+  }
+
+  .about__statements {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .about :global(.about__portrait) {
+    flex: 0 0 375px;
+    width: 375px;
+  }
+
+  .about :global(.about__img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 375 / 586;
+    object-fit: cover;
+    border-radius: 1000px;
+    background: var(--color-white);
+  }
+
+  /* Tablet & phone: text above, portrait below */
+  @media (max-width: 1279px) {
+    .about__inner {
+      flex-direction: column;
+    }
+
+    .about__text {
+      flex: none;
+    }
+
+    .about :global(.about__portrait) {
+      flex: none;
+      width: 45vw;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .about {
+      padding-block: 80px;
+    }
+
+    .about__inner {
+      flex-direction: column;
+      gap: var(--stack-l);
+    }
+
+    .about__text {
+      flex: none;
+    }
+
+    .about :global(.about__portrait) {
+      flex: none;
+      width: 100%;
+    }
+  }
+</style>

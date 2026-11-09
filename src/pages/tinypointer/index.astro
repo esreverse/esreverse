@@ -1,0 +1,385 @@
+---
+/**
+ * TinyPointer product page – a vertical scroll story.
+ *
+ * Layers (all inside .story):
+ *   1. .stage      sticky "desktop" (wallpaper), stays put while the story scrolls
+ *   2. .hand-layer sticky layer with the TinyPointer hand, above the sheets
+ *   3. .steps      the scrolling text and sheets of paper
+ *
+ * Motion uses CSS scroll-driven animations only. Browsers without support,
+ * or visitors with reduced motion, see the same content without the motion.
+ *
+ * Status: scaffold for the scrolling. The interactive parts (drawing, rainbow
+ * ink, stamps, arrows on the sheets) come later, see Sheet.astro.
+ */
+import '@fontsource-variable/playpen-sans/wght.css';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Sheet from '../../components/tinypointer/Sheet.astro';
+import XdLogo from '../../components/XdLogo.astro';
+import ArrowIcon from '../../components/ArrowIcon.astro';
+import MenubarIcon from '../../assets/tinypointer/menubar-on.svg';
+import hand from '../../assets/tinypointer/hand-glove.png';
+
+const downloadUrl = 'https://github.com/esreverse/tinypointer/releases/latest/download/TinyPointer.dmg';
+const repoUrl = 'https://github.com/esreverse/tinypointer';
+---
+
+<Base
+  title="TinyPointer – A tiny hand on a stick for your Mac"
+  description="TinyPointer turns your cursor into a hand that points, taps and draws on top of everything on screen. Free for macOS."
+>
+  <header class="menubar">
+    <a class="menubar__home" href="/">
+      <XdLogo class="menubar__logo" />
+      <span class="visually-hidden">esreverse – Home</span>
+    </a>
+    <span class="menubar__app">TinyPointer</span>
+    <span class="menubar__item" aria-hidden="true">File</span>
+    <span class="menubar__item" aria-hidden="true">Edit</span>
+    <span class="menubar__item" aria-hidden="true">View</span>
+    <span class="menubar__spacer"></span>
+    <MenubarIcon class="menubar__icon" aria-hidden="true" />
+    <a class="menubar__download" href={downloadUrl}>Download</a>
+  </header>
+
+  <main class="story">
+    <div class="stage" aria-hidden="true">
+      <div class="stage__wallpaper"></div>
+    </div>
+
+    <div class="hand-layer" aria-hidden="true">
+      <Image class="hand" src={hand} widths={[320, 640, 960]} sizes="clamp(180px, 22vw, 320px)" alt="" />
+    </div>
+
+    <div class="steps">
+      <section class="step step--intro">
+        <h1 class="step__title">Imagine this is your desktop.</h1>
+      </section>
+
+      <section class="step step--hand">
+        <h2 class="step__title">And you need a hand to point out some things.</h2>
+      </section>
+
+      <section class="step step--sheet">
+        <Sheet feature="draw" tilt={-2}>
+          <h2>Imagine you could <span class="ink-blue">draw</span>.</h2>
+        </Sheet>
+      </section>
+
+      <section class="step step--sheet">
+        <Sheet feature="rainbow" tilt={1.5}>
+          <h2>In <span class="ink-rainbow">all colors of the rainbow</span>.</h2>
+        </Sheet>
+      </section>
+
+      <section class="step step--sheet">
+        <Sheet feature="stamp" tilt={-1}>
+          <h2>Imagine you could stamp numbers to describe an order or select options.</h2>
+          <div class="stamps" aria-hidden="true"><span>1</span><span>2</span><span>3</span></div>
+        </Sheet>
+      </section>
+
+      <section class="step step--sheet">
+        <Sheet feature="arrow" tilt={2}>
+          <h2>Then imagine you could also draw arrows.</h2>
+        </Sheet>
+      </section>
+
+      <section class="step step--outro" aria-labelledby="outro-title">
+        <p class="step__title">Imagine TinyHand and ScreenBrush had a baby.</p>
+        <h2 class="outro__name" id="outro-title">This is TinyPointer.</h2>
+        <a class="download" href={downloadUrl}>
+          Download for macOS <ArrowIcon tight />
+        </a>
+        <p class="outro__meta">
+          Free &amp; open source · macOS 13 or later · Apple Silicon &amp; Intel · Signed &amp; notarized
+          by Apple<br />
+          <a class="link" href={repoUrl}>TinyPointer on GitHub</a>
+        </p>
+      </section>
+    </div>
+  </main>
+</Base>
+
+<style>
+  /* --- Page-level tokens ---------------------------------------------------- */
+  :global(body) {
+    --desktop-top: #b2b2fc;
+    --desktop-mid: #d9d4f4;
+    --desktop-bottom: #fdfeb3;
+    --menubar-bg: rgb(255 255 255 / 0.45);
+    --story-text: var(--color-black);
+
+    background: var(--desktop-bottom);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(body) {
+      --desktop-top: #1d1d3a;
+      --desktop-mid: #2b2850;
+      --desktop-bottom: #3a3a1c;
+      --menubar-bg: rgb(20 20 30 / 0.55);
+      --story-text: var(--color-lilac-50);
+    }
+  }
+
+  /* --- Menu bar ------------------------------------------------------------- */
+  .menubar {
+    position: fixed;
+    z-index: 10;
+    inset: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    height: 32px;
+    padding-inline: 16px;
+    background: var(--menubar-bg);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    backdrop-filter: blur(24px) saturate(1.6);
+    color: var(--story-text);
+    font-size: 14px;
+    line-height: 1;
+    font-variation-settings: normal;
+  }
+
+  .menubar__home {
+    display: flex;
+    color: inherit;
+  }
+
+  .menubar :global(.menubar__logo) {
+    width: 22px;
+  }
+
+  .menubar__app {
+    font-weight: 700;
+  }
+
+  .menubar__spacer {
+    flex: 1;
+  }
+
+  .menubar :global(.menubar__icon) {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  .menubar__download {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  @media (max-width: 600px) {
+    .menubar__item {
+      display: none;
+    }
+  }
+
+  /* --- Story layers ---------------------------------------------------------- */
+  .story {
+    position: relative;
+    /* makes the hand trigger's timeline visible to the hand layer */
+    timeline-scope: --hand-in;
+    color: var(--story-text);
+  }
+
+  .stage,
+  .hand-layer {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .stage {
+    z-index: 0;
+  }
+
+  .stage__wallpaper {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 50% at 80% 10%, rgb(255 255 255 / 0.35), transparent 70%),
+      linear-gradient(170deg, var(--desktop-top), var(--desktop-mid) 45%, var(--desktop-bottom));
+  }
+
+  .hand-layer {
+    z-index: 2;
+    margin-top: -100svh;
+    pointer-events: none;
+  }
+
+  .steps {
+    position: relative;
+    z-index: 1;
+    margin-top: -100svh;
+  }
+
+  /* --- Hand ----------------------------------------------------------------- */
+  .hand-layer :global(.hand) {
+    position: absolute;
+    right: 12%;
+    /* the stick runs out of the bottom edge of the screen */
+    bottom: -10svh;
+    width: clamp(180px, 22vw, 320px);
+    height: auto;
+    rotate: -12deg;
+    filter: drop-shadow(0 18px 24px rgb(20 20 60 / 0.25));
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .step--hand {
+        view-timeline: --hand-in block;
+      }
+
+      .hand-layer :global(.hand) {
+        animation: hand-in linear both;
+        animation-timeline: --hand-in;
+        animation-range: entry 30% contain 30%;
+      }
+    }
+  }
+
+  @keyframes hand-in {
+    from {
+      translate: 0 110%;
+      rotate: 8deg;
+    }
+    to {
+      translate: 0 0;
+      rotate: -12deg;
+    }
+  }
+
+  /* --- Steps ----------------------------------------------------------------- */
+  .step {
+    display: grid;
+    place-items: center;
+    min-height: 100svh;
+    padding: 96px var(--gutter);
+  }
+
+  .step__title {
+    max-width: 14ch;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  /* The intro is shorter than a screen, so the next line already peeks in. */
+  .step--intro {
+    min-height: 82svh;
+    padding-top: 30svh;
+    place-items: start center;
+  }
+
+  .step--hand {
+    min-height: 120svh;
+    place-items: start center;
+  }
+
+  .step--sheet {
+    min-height: 130svh;
+  }
+
+  /* --- Sheet content ----------------------------------------------------------- */
+  .step--sheet h2 {
+    font: inherit;
+  }
+
+  .ink-blue {
+    color: #2f6bff;
+  }
+
+  .ink-rainbow {
+    background: linear-gradient(90deg, #ff3b30, #ff9500, #ffcc00, #34c759, #007aff, #5856d6, #af52de);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .stamps {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .stamps span {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #ff3b30;
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 600;
+  }
+
+  /* --- Outro ----------------------------------------------------------------- */
+  .step--outro {
+    min-height: 100svh;
+    align-content: center;
+    gap: 32px;
+    text-align: center;
+  }
+
+  .step--outro .step__title {
+    max-width: 18ch;
+    font-size: clamp(2rem, 5vw, 3.75rem);
+  }
+
+  .outro__name {
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .download {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: clamp(18px, 3vw, 24px) clamp(28px, 5vw, 48px);
+    white-space: nowrap;
+    border-radius: var(--radius-pill);
+    background: var(--color-black);
+    color: var(--color-white);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    text-decoration: none;
+    box-shadow: 0 20px 40px rgb(20 20 60 / 0.25);
+    transition:
+      transform 0.25s var(--ease-out),
+      box-shadow 0.25s var(--ease-out);
+  }
+
+  .download:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 28px 56px rgb(20 20 60 / 0.3);
+  }
+
+  .download :global(svg) {
+    width: 28px;
+    height: 28px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .download {
+      background: var(--color-yellow-100);
+      color: var(--color-black);
+    }
+  }
+
+  .outro__meta {
+    max-width: 40rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.75;
+  }
+</style>

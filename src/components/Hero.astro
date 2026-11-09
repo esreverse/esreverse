@@ -1,0 +1,204 @@
+---
+/**
+ * Hero: geometric composition (pills and circles) over the Unicorn Studio
+ * flow gradient. All shapes are decorative CSS boxes; the only content is
+ * the page heading.
+ */
+import UnicornScene from './UnicornScene.astro';
+import XdLogo from './XdLogo.astro';
+---
+
+<header class="hero" id="home" data-nav-section="home">
+  <div class="hero__art" aria-hidden="true">
+    <div class="shape shape--circle-large"></div>
+    <div class="hero__flow">
+      <UnicornScene />
+    </div>
+    <div class="shape shape--black"></div>
+    <div class="shape shape--yellow"></div>
+    <div class="shape shape--lilac"></div>
+    <div class="shape shape--circle-small"></div>
+  </div>
+
+  <XdLogo class="hero__logo" />
+
+  <div class="hero__content container">
+    <h1 class="hero__title">
+      <span class="hero__name t-heading">Eric Singhartinger</span>
+      <span class="hero__role t-display">Experience<br />Designer</span>
+    </h1>
+  </div>
+</header>
+
+<style>
+  /* The hero artwork is the same in light and dark mode on purpose:
+     it is a brand illustration, not UI chrome. */
+  .hero {
+    /* Geometry (desktop ≥ 1280px, measured from the original at 1440px).
+       x-positions marked "-r" are measured from the right edge. */
+    --black-cx-r: 86.5px;
+    --black-cy: 44px;
+    --black-w: 694px;
+    --black-h: 242px;
+    --circle-l-cx-r: -10px;
+    --circle-l-cy: 456px;
+    --circle-l-size: 358px;
+    --yellow-cx: 314.5px;
+    --yellow-cy: 229px;
+    --lilac-cx: 475.5px;
+    --lilac-cy: -0.5px;
+    --circle-s-cx: 542px;
+    --circle-s-cy: 251px;
+    --flow-w: 1200px;
+    --flow-h: 1243px;
+    --flow-radius: 1000px;
+    --logo-inset: 40px;
+    --logo-w: 64px;
+
+    position: relative;
+    isolation: isolate;
+    height: 75vh;
+    min-height: 520px;
+    overflow: hidden;
+    background: var(--color-lilac-300);
+    color: var(--color-black);
+  }
+
+  .hero__art {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__flow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: var(--flow-w);
+    height: var(--flow-h);
+    overflow: hidden;
+    border-radius: var(--flow-radius);
+    background: var(--color-yellow-100);
+  }
+
+  .shape {
+    position: absolute;
+    z-index: 2;
+    translate: -50% -50%;
+    border-radius: 1000px;
+  }
+
+  .shape--circle-large {
+    left: calc(100% - var(--circle-l-cx-r));
+    top: var(--circle-l-cy);
+    width: var(--circle-l-size);
+    aspect-ratio: 1;
+    background: var(--color-white);
+  }
+
+  .shape--black {
+    left: calc(100% - var(--black-cx-r));
+    top: var(--black-cy);
+    width: var(--black-w);
+    height: var(--black-h);
+    rotate: -23deg;
+    background: linear-gradient(90deg, var(--color-black), var(--color-grey-600));
+  }
+
+  .shape--yellow {
+    left: var(--yellow-cx);
+    top: var(--yellow-cy);
+    width: 234px;
+    height: 880px;
+    rotate: 110deg;
+    background: linear-gradient(var(--color-yellow-400), #fdfeb4);
+  }
+
+  .shape--lilac {
+    left: var(--lilac-cx);
+    top: var(--lilac-cy);
+    width: 681px;
+    height: 200px;
+    rotate: -110deg;
+    background: linear-gradient(90deg, var(--color-lilac-400), var(--color-lilac-700));
+  }
+
+  .shape--circle-small {
+    left: var(--circle-s-cx);
+    top: var(--circle-s-cy);
+    width: 138px;
+    aspect-ratio: 1;
+    background: var(--color-white);
+  }
+
+  .hero :global(.hero__logo) {
+    position: absolute;
+    z-index: 3;
+    top: var(--logo-inset);
+    right: var(--logo-inset);
+    width: var(--logo-w);
+    color: var(--color-white);
+  }
+
+  .hero__content {
+    position: absolute;
+    z-index: 3;
+    inset-inline: 0;
+    bottom: 120px;
+  }
+
+  .hero__title {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero__name,
+  .hero__role {
+    display: block;
+  }
+
+  /* Tablet (measured from the original at 1024px) */
+  @media (max-width: 1279px) {
+    .hero {
+      --black-cx-r: 61.5px;
+      --black-cy: -5px;
+      --black-w: 410px;
+      --black-h: 143px;
+      --circle-l-cx-r: -59.5px;
+      --circle-l-cy: 406.5px;
+      --circle-l-size: 259px;
+      --yellow-cx: -101.5px;
+      --lilac-cx: 338.5px;
+      --circle-s-cx: 405px;
+    }
+  }
+
+  /* Phone */
+  @media (max-width: 767px) {
+    .hero {
+      --flow-w: 100%;
+      --flow-h: 100%;
+      --flow-radius: 0;
+      --black-cx-r: 23px;
+      --black-cy: 23px;
+      --black-w: 574px;
+      --black-h: 200px;
+      --circle-l-cx-r: -31px;
+      --circle-l-cy: 435px;
+      --circle-l-size: 316px;
+      --lilac-cx: 128.5px;
+      --circle-s-cx: 147px;
+      --logo-inset: 32px;
+      --logo-w: 51px;
+    }
+
+    .shape--yellow {
+      display: none;
+    }
+
+    .hero__role {
+      font-size: var(--text-heading);
+    }
+  }
+</style>

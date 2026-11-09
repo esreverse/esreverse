@@ -1,0 +1,225 @@
+---
+/**
+ * Horizontally scrolling cards (native scroll + scroll-snap).
+ * Works without JS (swipe / trackpad / shift-wheel); a small script adds
+ * the prev/next buttons and the page dots.
+ */
+import ArrowIcon from './ArrowIcon.astro';
+import { behavioralPatterns, mailto } from '../data/site';
+---
+
+<section class="carousel" aria-label="Behavioral patterns" data-carousel>
+  <ul class="carousel__track" role="list" data-carousel-track>
+    {
+      behavioralPatterns.map(({ title, text }) => (
+        <li class="card">
+          <svg class="card__icon" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="4" cy="12" r="4" />
+            <circle cx="4" cy="28" r="4" />
+            <circle cx="12" cy="4" r="4" />
+            <circle cx="12" cy="20" r="4" />
+            <circle cx="20" cy="12" r="4" />
+            <circle cx="20" cy="28" r="4" />
+            <circle cx="28" cy="4" r="4" />
+            <circle cx="28" cy="20" r="4" />
+          </svg>
+          <div class="card__body">
+            <h4 class="t-heading">{title}</h4>
+            <p class="t-body">{text}</p>
+          </div>
+        </li>
+      ))
+    }
+    <li class="card card--cta">
+      <div class="card__body card__body--cta">
+        <p class="t-body">Intrested in an introduction to this powerful tool?</p>
+        <a class="button" href={mailto}>Get in touch</a>
+      </div>
+    </li>
+  </ul>
+
+  <div class="carousel__controls" hidden data-carousel-controls>
+    <button class="carousel__button carousel__button--prev" type="button" data-carousel-prev>
+      <ArrowIcon direction="left" />
+      <span class="visually-hidden">Previous patterns</span>
+    </button>
+    <button class="carousel__button carousel__button--next" type="button" data-carousel-next>
+      <ArrowIcon />
+      <span class="visually-hidden">Next patterns</span>
+    </button>
+    <div class="carousel__dots" aria-hidden="true" data-carousel-dots></div>
+  </div>
+</section>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+    const track = root.querySelector<HTMLElement>('[data-carousel-track]')!;
+    const controls = root.querySelector<HTMLElement>('[data-carousel-controls]')!;
+    const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
+    const dots = root.querySelector<HTMLElement>('[data-carousel-dots]')!;
+
+    const maxScroll = () => track.scrollWidth - track.clientWidth;
+    const pageCount = () => Math.max(1, Math.ceil(track.scrollWidth / track.clientWidth));
+    const step = () => {
+      const card = track.querySelector<HTMLElement>('li');
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      const perView = card ? Math.max(1, Math.floor(track.clientWidth / (card.offsetWidth + gap))) : 1;
+      return card ? perView * (card.offsetWidth + gap) : track.clientWidth;
+    };
+
+    const update = () => {
+      const max = maxScroll();
+      controls.hidden = max <= 1;
+      prev.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft >= max - 1;
+
+      const pages = pageCount();
+      if (dots.childElementCount !== pages) {
+        dots.replaceChildren(...Array.from({ length: pages }, () => document.createElement('span')));
+      }
+      const active = max > 0 ? Math.round((track.scrollLeft / max) * (pages - 1)) : 0;
+      [...dots.children].forEach((dot, i) => dot.classList.toggle('is-active', i === active));
+    };
+
+    prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+    track.addEventListener('scroll', update, { passive: true });
+    new ResizeObserver(update).observe(track);
+    update();
+  }
+</script>
+
+<style>
+  .carousel {
+    --inset: 40px;
+    --card-w: 280px;
+    --card-h: 400px;
+
+    position: relative;
+    padding-block: 40px;
+  }
+
+  .carousel__track {
+    display: flex;
+    gap: 16px;
+    padding-inline: var(--inset);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--inset);
+    scrollbar-width: none;
+  }
+
+  .carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    flex: 0 0 var(--card-w);
+    height: var(--card-h);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    border-radius: var(--radius-card);
+    background: var(--surface-card);
+    scroll-snap-align: start;
+  }
+
+  .card--cta {
+    justify-content: flex-end;
+  }
+
+  .card__icon {
+    width: 32px;
+    height: 32px;
+    fill: currentColor;
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card__body--cta {
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .carousel__controls[hidden] {
+    display: none;
+  }
+
+  .carousel__button {
+    position: absolute;
+    top: calc(40px + var(--card-h) / 2);
+    translate: 0 -50%;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--surface-control);
+    color: var(--text-on-control);
+    cursor: pointer;
+    transition: opacity 0.2s, scale 0.2s var(--ease-out);
+  }
+
+  .carousel__button :global(svg) {
+    width: 40px;
+    height: 40px;
+  }
+
+  .carousel__button:hover {
+    scale: 1.08;
+  }
+
+  .carousel__button:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .carousel__button--prev {
+    left: 20px;
+  }
+
+  .carousel__button--next {
+    right: 20px;
+  }
+
+  .carousel__dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    translate: -50% 0;
+    display: flex;
+    gap: 8px;
+  }
+
+  .carousel__dots :global(span) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.2;
+    transition: opacity 0.2s;
+  }
+
+  .carousel__dots :global(span.is-active) {
+    opacity: 1;
+  }
+
+  @media (max-width: 767px) {
+    .carousel {
+      --inset: var(--gutter);
+    }
+
+    .carousel__button {
+      display: none;
+    }
+  }
+</style>

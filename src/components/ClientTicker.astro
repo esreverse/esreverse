@@ -1,0 +1,99 @@
+---
+/**
+ * Endless logo strip. Pure CSS marquee: the list is rendered twice and the
+ * track moves by exactly one list width. Pauses on hover and for reduced motion.
+ */
+import Allianz from '../assets/logos/allianz.svg';
+import Bmw from '../assets/logos/bmw.svg';
+import Bosch from '../assets/logos/bosch.svg';
+import CocaCola from '../assets/logos/coca-cola.svg';
+import FcBayern from '../assets/logos/fcbayern.svg';
+import Ikea from '../assets/logos/ikea.svg';
+import MediaMarkt from '../assets/logos/mediamarkt.svg';
+import O2 from '../assets/logos/o2.svg';
+import Rosenbauer from '../assets/logos/rosenbauer.svg';
+import Saturn from '../assets/logos/saturn.svg';
+
+const logos = [
+  { name: 'Allianz', Logo: Allianz, width: 123, height: 32 },
+  { name: 'BMW', Logo: Bmw, width: 40, height: 40 },
+  { name: 'Bosch', Logo: Bosch, width: 144, height: 32 },
+  { name: 'Coca-Cola', Logo: CocaCola, width: 102, height: 32 },
+  { name: 'FC Bayern München', Logo: FcBayern, width: 40, height: 40 },
+  { name: 'IKEA', Logo: Ikea, width: 80, height: 32 },
+  { name: 'MediaMarkt', Logo: MediaMarkt, width: 226, height: 32 },
+  { name: 'O2', Logo: O2, width: 38, height: 40 },
+  { name: 'Rosenbauer', Logo: Rosenbauer, width: 210, height: 32 },
+  { name: 'Saturn', Logo: Saturn, width: 160, height: 32 },
+];
+---
+
+<section class="ticker" aria-label="Selected clients" data-nav-section="home">
+  <div class="ticker__track">
+    {
+      [false, true].map((isCopy) => (
+        <ul class="ticker__list" role="list" aria-hidden={isCopy ? 'true' : undefined}>
+          {logos.map(({ name, Logo, width, height }) => (
+            <li>
+              <Logo
+                width={width}
+                height={height}
+                preserveAspectRatio="none"
+                role={isCopy ? undefined : 'img'}
+                aria-label={isCopy ? undefined : name}
+              />
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .ticker {
+    --gap: 80px;
+
+    height: 120px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--surface-strip);
+    color: var(--text-primary);
+  }
+
+  .ticker__track {
+    display: flex;
+    gap: var(--gap);
+    width: max-content;
+    opacity: var(--logo-strip-opacity);
+    animation: ticker 40s linear infinite;
+  }
+
+  .ticker:hover .ticker__track {
+    animation-play-state: paused;
+  }
+
+  .ticker__list {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+  }
+
+  .ticker__list li {
+    flex-shrink: 0;
+  }
+
+  @keyframes ticker {
+    to {
+      /* one list width plus the gap between the two lists */
+      transform: translateX(calc(-50% - var(--gap) / 2));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker__track {
+      animation: none;
+    }
+  }
+</style>

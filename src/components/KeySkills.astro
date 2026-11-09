@@ -1,0 +1,151 @@
+---
+import ArrowIcon from './ArrowIcon.astro';
+import PatternCarousel from './PatternCarousel.astro';
+import { behavioralPatternsUrl } from '../data/site';
+---
+
+<section class="skills" id="keyskills" aria-labelledby="keyskills-title" data-nav-section="keyskills">
+  <div class="container skills__intro">
+    <h2 class="t-display reveal" id="keyskills-title">Key Skills</h2>
+    <p class="t-lead skills__lead reveal">
+      Besides making everything pretty, a11y, readable, understandable, easily digestible, and
+      minimizing cognitive load, I developed a set of key skills that are crucial to deliver great
+      results.
+    </p>
+  </div>
+
+  <article class="container skills__block skills__block--patterns">
+    <h3 class="t-heading reveal">Ergonomy &amp; Psychology</h3>
+    <div class="skills__text reveal">
+      <p>
+        Every single interaction anywhere, anytime requires an initial impulse, motivation, and
+        effort to complete. The higher the motivation, the more effort users will accept to achieve
+        their goals. To maximize user interaction, Experience Designers combine two powerful tools:
+      </p>
+      <p>
+        Behavioral patterns, which leverage a wide variety of psychological triggers (see below)
+        that persuade users to take action and
+      </p>
+      <p>
+        UI patterns, which implement those behavioral patterns in the form of best practice
+        components that help the users to complete their tasks and achieve their goals.
+      </p>
+    </div>
+  </article>
+
+  <PatternCarousel />
+
+  <div class="container skills__block skills__block--after-carousel">
+    <p class="reveal">
+      In the last two decades, I’ve worked with more and more of those roundabout 120 patterns
+      consciously and have lots of experience choosing and implementing the right ones and thereby
+      boosting business significantly.
+    </p>
+    <a class="button reveal" href={behavioralPatternsUrl} target="_blank" rel="noopener">
+      All Behavioral Patterns <ArrowIcon tight />
+    </a>
+  </div>
+
+  <article class="container skills__block">
+    <h3 class="t-heading reveal">Business &amp; Constraints</h3>
+    <div class="skills__text reveal">
+      <p>
+        To provide effective consulting, it’s essential to understand a company and its ecosystem as
+        a whole. This includes analyzing the business model, industry landscape, competitors,
+        trends, and target audience, as well as considering all existing products, services, and
+        technical, legal and economical constraints.
+      </p>
+      <p>
+        In over 25 years, I have worked with many large companies from various industries. This has
+        not only given me deep knowledge in diverse sectors but also the ability to combine insights
+        and learnings across industries and bring new perspectives from the outside.
+      </p>
+    </div>
+    <a class="button reveal" href="#clients">My Clients <ArrowIcon tight /></a>
+  </article>
+
+  <div class="container skills__columns">
+    <article class="skills__column">
+      <h3 class="t-heading reveal">Designer &amp; Developer</h3>
+      <div class="skills__text reveal">
+        <p>
+          As a UX/UI designer, I combine independent excellence with team leadership capabilities,
+          leveraging deep development knowledge to bridge the designer-developer gap.
+        </p>
+        <p>
+          My strategic approach centers on agile prioritization – doing the right things right at
+          the right time – while maintaining focus on feasible, iterative implementation for
+          business growth.
+        </p>
+      </div>
+    </article>
+    <article class="skills__column">
+      <h3 class="t-heading reveal">Enabler &amp; Facilitator</h3>
+      <div class="skills__text reveal">
+        <p>
+          When not designing, I support teams as a facilitator, using strong communication skills
+          to foster open dialogue and constructive conflict resolution. I create a supportive
+          environment while maintaining focus and transparency, guiding teams toward their goals.
+        </p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .skills {
+    padding-block: var(--section-space);
+  }
+
+  .skills__intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-l);
+  }
+
+  .skills__lead {
+    max-width: 810px;
+  }
+
+  .skills__block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--stack-s);
+    padding-top: var(--section-space);
+  }
+
+  .skills__block--patterns {
+    padding-bottom: 40px;
+  }
+
+  .skills__block--after-carousel {
+    padding-top: var(--stack-l);
+  }
+
+  .skills__text {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .skills__columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--column-gap);
+    padding-top: var(--section-space);
+  }
+
+  .skills__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-s);
+  }
+
+  @media (max-width: 767px) {
+    .skills__columns {
+      grid-template-columns: 1fr;
+      gap: var(--section-space);
+    }
+  }
+</style>

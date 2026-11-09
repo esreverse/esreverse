@@ -1,0 +1,78 @@
+---
+import { mailto } from '../data/site';
+---
+
+<section class="clients" id="clients" aria-labelledby="clients-title" data-nav-section="clients">
+  <div class="clients__box">
+    <h2 class="t-display reveal" id="clients-title">Clients</h2>
+
+    <div class="clients__columns">
+      <div class="clients__group reveal">
+        <h3 class="t-label">As a Consultant</h3>
+        <p class="t-lead">
+          Audi, Bacardi, BMW &amp; MINI, Coca-Cola, Deutsche Post, IKEA, Mazda, Mercedes-Benz,
+          Montblanc, Telefonica/O2, Siemens, Swarovski, T-Online &amp; T-Mobile, Vitra
+        </p>
+      </div>
+      <div class="clients__group reveal">
+        <h3 class="t-label">As Ex-Co-Founder of Satellytes</h3>
+        <p class="t-lead">
+          ADAC, Allianz, Bosch, FC Bayern München, MediaMarktSaturn, Rosenbauer, Stadtwerke Augsburg
+        </p>
+      </div>
+    </div>
+
+    <p class="reveal">
+      All projects for all those clients were either large projects (6+ months) or complete website
+      relaunches. <a class="link" href={mailto}>Please contact me</a> if you are interested in seeing
+      my portfolio.
+    </p>
+  </div>
+</section>
+
+<style>
+  .clients {
+    padding: 32px;
+  }
+
+  .clients__box {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-l);
+    padding-block: var(--section-space);
+    padding-inline: clamp(var(--gutter), 12.5vw, 172px);
+    border-radius: var(--radius-box);
+    background: var(--surface-highlight);
+  }
+
+  .clients__columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--column-gap);
+  }
+
+  .clients__group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .clients__group h3 {
+    font-weight: 400;
+  }
+
+  @media (max-width: 767px) {
+    .clients {
+      padding: 0;
+    }
+
+    .clients__box {
+      padding: 80px var(--gutter);
+    }
+
+    .clients__columns {
+      grid-template-columns: 1fr;
+      gap: var(--stack-l);
+    }
+  }
+</style>

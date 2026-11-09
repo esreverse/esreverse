@@ -1,0 +1,24 @@
+---
+/** The "XD" brand mark. Inherits its colour from `currentColor`. */
+interface Props {
+  class?: string;
+  title?: string;
+}
+const { class: className, title } = Astro.props;
+---
+
+<svg
+  class={className}
+  viewBox="0 0 105 66"
+  fill="currentColor"
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+>
+  {title && <title>{title}</title>}
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M0 64L14.3064 31.0192L1.47997 0H20.8429L32.806 30.1609L44.5225 0H70.7286C90.2202 0 103 14.72 103 32C103 50.56 90.2202 64 70.7286 64H46.4958L32.806 32.1226L18.7463 64H0ZM69.0737 51.0171C80.0147 51.0171 88.2895 44.5257 88.2895 32C88.2895 20.1143 80.0147 12.9829 69.0737 12.9829H58.5L51.1824 31.5096L59.5 51.0171H69.0737Z"
+  ></path>
+</svg>

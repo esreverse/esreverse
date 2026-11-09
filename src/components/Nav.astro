@@ -1,0 +1,237 @@
+---
+/**
+ * Floating section navigation.
+ * - Desktop/tablet: pill with all sections and a sliding "active" marker.
+ * - Phone: round menu button opening a native popover (no JS needed).
+ * The script only adds the scroll-spy; without it the nav works as plain links.
+ */
+import XdLogo from './XdLogo.astro';
+import { navItems } from '../data/site';
+
+interface Props {
+  /** Extra link shown after the sections, e.g. a product page */
+  extra?: { href: string; label: string };
+}
+const { extra } = Astro.props;
+---
+
+<nav class="nav" aria-label="Sections" data-nav>
+  <div class="nav__bar">
+    <span class="nav__marker" aria-hidden="true"></span>
+    <a class="nav__link nav__link--home" href="#home" data-nav-link="home">
+      <XdLogo class="nav__logo" />
+      <span class="visually-hidden">Home</span>
+    </a>
+    {
+      navItems.map(({ id, label }) => (
+        <a class="nav__link" href={`#${id}`} data-nav-link={id}>
+          {label}
+        </a>
+      ))
+    }
+    {
+      extra && (
+        <a class="nav__link" href={extra.href}>
+          {extra.label}
+        </a>
+      )
+    }
+  </div>
+
+  <button class="nav__toggle" type="button" popovertarget="nav-menu" aria-label="Menu">
+    <svg viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M4 6h12M4 10h12M4 14h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      ></path>
+    </svg>
+  </button>
+
+  <div class="nav__menu" id="nav-menu" popover>
+    <a class="nav__link" href="#home">Home</a>
+    {
+      navItems.map(({ id, label }) => (
+        <a class="nav__link" href={`#${id}`}>
+          {label}
+        </a>
+      ))
+    }
+    {
+      extra && (
+        <a class="nav__link" href={extra.href}>
+          {extra.label}
+        </a>
+      )
+    }
+  </div>
+</nav>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+
+  if (nav) {
+    const bar = nav.querySelector<HTMLElement>('.nav__bar')!;
+    const links = new Map(
+      [...nav.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')].map((a) => [a.dataset.navLink!, a]),
+    );
+    // Every page region names the nav item it belongs to (data-nav-section).
+    const sections = [...document.querySelectorAll<HTMLElement>('[data-nav-section]')];
+
+    let current: HTMLAnchorElement | undefined;
+
+    const moveMarker = () => {
+      if (!current) return;
+      bar.style.setProperty('--marker-x', `${current.offsetLeft}px`);
+      bar.style.setProperty('--marker-w', `${current.offsetWidth}px`);
+    };
+
+    const setActive = (id: string) => {
+      const link = links.get(id);
+      if (!link || link === current) return;
+      current?.removeAttribute('aria-current');
+      link.setAttribute('aria-current', 'location');
+      current = link;
+      moveMarker();
+      // Place the marker instantly the first time, animate afterwards.
+      if (!('ready' in bar.dataset)) {
+        requestAnimationFrame(() => requestAnimationFrame(() => (bar.dataset.ready = '')));
+      }
+    };
+
+    // A section is "current" while it crosses the vertical centre of the viewport.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive((entry.target as HTMLElement).dataset.navSection!);
+        }
+      },
+      { rootMargin: '-50% 0px -50% 0px' },
+    );
+    sections.forEach((section) => observer.observe(section));
+    new ResizeObserver(moveMarker).observe(bar);
+
+    // Close the phone menu after choosing a section.
+    const menu = nav.querySelector<HTMLElement>('#nav-menu');
+    menu?.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) menu.hidePopover();
+    });
+  }
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    z-index: 100;
+    left: 50%;
+    bottom: 40px;
+    translate: -50% 0;
+    font-size: var(--text-nav);
+    line-height: 18px;
+    font-weight: 500;
+    font-variation-settings: normal;
+  }
+
+  .nav__bar {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 100px;
+    background: var(--surface-nav);
+    box-shadow: var(--nav-shadow);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
+
+  .nav__marker {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    width: var(--marker-w, 0);
+    translate: var(--marker-x, 0) 0;
+    border-radius: 100px;
+    background: var(--surface-nav-active);
+    opacity: 0;
+  }
+
+  .nav__bar[data-ready] .nav__marker {
+    opacity: 1;
+    transition:
+      translate 0.45s var(--ease-out),
+      width 0.45s var(--ease-out);
+  }
+
+  .nav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 100px;
+    color: var(--text-primary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.3s;
+  }
+
+  .nav__link[aria-current] {
+    color: var(--text-on-active);
+  }
+
+  .nav__link--home {
+    padding: 11px 13px;
+  }
+
+  .nav :global(.nav__logo) {
+    width: 25px;
+  }
+
+  .nav__toggle,
+  .nav__menu {
+    display: none;
+  }
+
+  /* Phone: round toggle + popover menu */
+  @media (max-width: 767px) {
+    .nav__bar {
+      display: none;
+    }
+
+    .nav__toggle {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: var(--surface-card);
+      color: var(--text-primary);
+      box-shadow: var(--nav-shadow);
+      cursor: pointer;
+    }
+
+    .nav__toggle svg {
+      width: 20px;
+    }
+
+    .nav__menu:popover-open {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: fixed;
+      inset: auto auto 96px 50%;
+      translate: -50% 0;
+      margin: 0;
+      padding: 8px;
+      border: 0;
+      border-radius: 28px;
+      background: var(--surface-card);
+      box-shadow: var(--nav-shadow);
+      font: inherit;
+      text-align: center;
+    }
+
+    .nav__menu .nav__link {
+      justify-content: center;
+    }
+  }
+</style>
