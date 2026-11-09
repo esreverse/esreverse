@@ -60,6 +60,20 @@ const screenshots = await Promise.all(
 );
 
 const downloadUrl = 'https://github.com/esreverse/tinypointer/releases/latest/download/TinyPointer.dmg';
+const latestReleaseApi = 'https://api.github.com/repos/esreverse/tinypointer/releases/latest';
+
+// Latest version at build time, so it shows without JS; the page script
+// refreshes it from GitHub on every visit (new releases appear without a rebuild).
+let latest: { version: string; url: string } | null = null;
+try {
+  const response = await fetch(latestReleaseApi, { headers: { Accept: 'application/vnd.github+json' } });
+  if (response.ok) {
+    const release = await response.json();
+    latest = { version: String(release.tag_name).replace(/^v/, ''), url: release.html_url };
+  }
+} catch {
+  // offline build: the script fills it in later, or the line stays hidden
+}
 const tinyHandUrl = 'https://github.com/nilbuild/tinyhand';
 const tinyHandAuthorUrl = 'https://github.com/nilbuild';
 const screenBrushUrl = 'https://imagestudiopro.com/screenbrush/';
@@ -167,6 +181,13 @@ const hands: HandChoice[] = await Promise.all(
         <a class="download" href={downloadUrl} data-cursor-grow>
           Download for macOS <ArrowIcon tight bold />
         </a>
+        <p class="download__version" data-latest-release={latestReleaseApi} hidden={!latest}>
+          Version <span data-version>{latest?.version}</span> (<a
+            class="hover-link"
+            href={latest?.url ?? 'https://github.com/esreverse/tinypointer/releases/latest'}
+            data-release-notes>Release notes</a
+          >)
+        </p>
         <footer class="outro__footer">
           <p class="outro__thanks">
             Huge shoutout to <a class="hover-link" href={tinyHandAuthorUrl}>Kamran Ahmed</a> for the brilliant
@@ -414,6 +435,19 @@ const hands: HandChoice[] = await Promise.all(
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
+  }
+  // Latest released version under the download button, fresh from GitHub
+  // (public API, CORS-enabled). On failure the build-time value stays.
+  const versionLine = document.querySelector<HTMLElement>('[data-latest-release]');
+  if (versionLine) {
+    fetch(versionLine.dataset.latestRelease!, { headers: { Accept: 'application/vnd.github+json' } })
+      .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+      .then((release: { tag_name: string; html_url: string }) => {
+        versionLine.querySelector('[data-version]')!.textContent = release.tag_name.replace(/^v/, '');
+        versionLine.querySelector<HTMLAnchorElement>('[data-release-notes]')!.href = release.html_url;
+        versionLine.hidden = false;
+      })
+      .catch(() => {});
   }
 </script>
 
@@ -751,6 +785,19 @@ const hands: HandChoice[] = await Promise.all(
   }
 
   /* classic default button: rounded, with a thick outer ring */
+  .download__version {
+    margin-top: 20px;
+    font-family: var(--font-mono);
+    font-variation-settings: normal;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    opacity: 0.6;
+  }
+
+  .download__version[hidden] {
+    display: none;
+  }
+
   .download {
     display: inline-flex;
     align-items: center;
