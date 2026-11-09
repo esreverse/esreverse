@@ -291,28 +291,6 @@ const hands: HandChoice[] = await Promise.all(
       rig.style.setProperty('--tip-y', `${Number(tipY) * 100}%`);
     });
 
-    // Tap sound, as in the app (default "pop"): plays when the hand taps,
-    // i.e. a click or touch without dragging – drawing stays silent.
-    const soundUrl = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/sounds/tap-pop.wav`;
-    let audio: AudioContext | null = null;
-    let tapBuffer: AudioBuffer | null = null;
-    const loadSound = () => {
-      if (audio) return;
-      audio = new AudioContext();
-      fetch(soundUrl)
-        .then((r) => r.arrayBuffer())
-        .then((data) => audio!.decodeAudioData(data))
-        .then((buffer) => (tapBuffer = buffer))
-        .catch(() => {});
-    };
-    const playTap = () => {
-      if (!audio || !tapBuffer) return;
-      const source = audio.createBufferSource();
-      source.buffer = tapBuffer;
-      source.connect(audio.destination);
-      source.start();
-    };
-
     // Tap ripple, as in the app (ArmView.ripple): a filled circle in the ink
     // colour, radius 40px, grows from 0.35x to 3x and fades out in 0.8s.
     const ripple = (x: number, y: number) => {
@@ -338,11 +316,18 @@ const hands: HandChoice[] = await Promise.all(
       // Mouse: the hand follows the pointer everywhere. Browsers only report the
       // position with an event; besides moves, take it from wheel/trackpad
       // scrolling and from content sliding under a resting pointer.
-      const track = (e: MouseEvent) => (pointer = { x: e.clientX, y: e.clientY });
+      // While the window is inactive, browsers report the mouse only now and
+      // then (Safari: only while scrolling), so the hand would get stuck. It
+      // parks in its corner instead and the normal cursor shows until the
+      // window is active again.
+      const track = (e: MouseEvent) => {
+        pointer = document.hasFocus() ? { x: e.clientX, y: e.clientY } : null;
+      };
       for (const type of ['pointermove', 'pointerover', 'wheel'] as const) {
         window.addEventListener(type, track, { passive: true });
       }
       root.addEventListener('pointerleave', () => (pointer = null));
+      window.addEventListener('blur', () => (pointer = null));
     }
 
     // Touch and pen: the hand waits at the bottom right and only follows the
@@ -360,7 +345,6 @@ const hands: HandChoice[] = await Promise.all(
     let downAt: { x: number; y: number } | null = null;
 
     window.addEventListener('pointerdown', (e) => {
-      loadSound(); // audio may only start after a user gesture
       if (e.button !== 0) return;
       const onSheet = !!(e.target as Element | null)?.closest?.('[data-sheet]');
       if (isTouch(e) && onSheet && root.hasAttribute('data-hand-arrived')) {
@@ -378,7 +362,6 @@ const hands: HandChoice[] = await Promise.all(
     const release = (e: PointerEvent) => {
       held = false;
       if (e.type === 'pointerup' && downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) < 5) {
-        playTap();
         // placing a number stamp is not a plain tap: no ripple there
         const onStampSheet = (e.target as Element | null)?.closest?.('[data-sheet="stamp"]');
         if (!onStampSheet) ripple(e.clientX, e.clientY);
