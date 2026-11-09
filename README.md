@@ -118,7 +118,7 @@ one sheet of paper per feature, ending with the download.
 
 ## Third-Party Assets and Licences
 
-- **Inter** and **Playpen Sans:** SIL Open Font License, via Fontsource.
+- **Inter**, **Playpen Sans** and **DM Mono:** SIL Open Font License, via Fontsource.
 - **TinyPointer hands:** from the TinyPointer repository (MIT License); the Christmas tree hand is
   Eric's own.
 - **Lenis:** MIT License.

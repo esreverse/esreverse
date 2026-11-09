@@ -6,13 +6,14 @@
  */
 type Kind = 'disk' | 'folder' | 'document' | 'trash';
 
-// slot: position from the top (0, 1, 2 …); -1 = bottom corner
+// slot: 0, 1, 2 … from the top; -1, -2 … from the bottom.
+// The top right corner is left to the XD logo.
 const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }[] = [
-  { kind: 'disk', label: 'TinyPointer HD', side: 'right', slot: 1 },
-  { kind: 'folder', label: 'Hands', side: 'right', slot: 2 },
+  { kind: 'disk', label: 'TinyPointer HD', side: 'left', slot: 0 },
+  { kind: 'document', label: 'Read Me', side: 'left', slot: 1 },
+  { kind: 'folder', label: 'Sheets', side: 'left', slot: -2 },
+  { kind: 'folder', label: 'Hands', side: 'left', slot: -1 },
   { kind: 'trash', label: 'Trash', side: 'right', slot: -1 },
-  { kind: 'document', label: 'Read Me', side: 'left', slot: 0 },
-  { kind: 'folder', label: 'Sheets', side: 'left', slot: 1 },
 ];
 ---
 
@@ -43,9 +44,10 @@ const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }
           )}
           {kind === 'trash' && (
             <>
-              <path d="M8 9h16v20H8z" fill="#fff" />
-              <path d="M13 3h6v1h-6zM12 4h1v2h-1zM19 4h1v2h-1zM5 6h22v1H5zM5 7h1v2H5zM26 7h1v2h-1zM5 9h22v1H5zM7 10h1v19H7zM24 10h1v19h-1zM8 29h16v1H8z" />
-              <path d="M11 12h1v15h-1zM15 12h2v15h-2zM20 12h1v15h-1z" />
+              {/* odd widths (can 17px inside, lid 23px) so the middle rib sits exactly centred */}
+              <path d="M8 9h17v20H8zM6 7h21v2H6zM13 4h7v2h-7z" fill="#fff" />
+              <path d="M13 3h7v1h-7zM12 4h1v2h-1zM20 4h1v2h-1zM5 6h23v1H5zM5 7h1v2H5zM27 7h1v2h-1zM5 9h23v1H5zM7 10h1v19H7zM25 10h1v19h-1zM8 29h17v1H8z" />
+              <path d="M11 12h1v15h-1zM16 12h1v15h-1zM21 12h1v15h-1z" />
             </>
           )}
         </svg>
@@ -78,7 +80,7 @@ const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }
 
   .icon--bottom {
     top: auto;
-    bottom: 32px;
+    bottom: calc(32px + (-1 - var(--slot)) * var(--step));
   }
 
   .icon--left {
@@ -106,18 +108,10 @@ const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }
     white-space: nowrap;
   }
 
-  /* On small screens the icons would sit under the content: keep the corners only. */
-  @media (max-width: 767px) {
-    .icon {
-      --step: 88px;
-    }
-
-    .icon svg {
-      width: 40px;
-      height: 40px;
-    }
-
-    .icon--left {
+  /* When the window gets too narrow, the icons would sit under the content:
+     then only the XD logo stays. */
+  @media (max-width: 1199px) {
+    .icons {
       display: none;
     }
   }

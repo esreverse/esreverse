@@ -154,7 +154,8 @@ button {
 }
 
 .link:hover {
-  text-decoration-thickness: 2px;
+  /* about as thick as the letters' own stems */
+  text-decoration-thickness: 0.08em;
 }
 
 /* --- Pill button ------------------------------------------------------------ */

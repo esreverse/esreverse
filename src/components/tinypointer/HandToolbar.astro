@@ -44,6 +44,39 @@ const { hands } = Astro.props;
       </button>
     ))
   }
+  <span class="toolbar__divider" aria-hidden="true"></span>
+  <button class="toolbar__add" type="button" popovertarget="own-hand" data-cursor-grow>
+    <svg viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <span class="visually-hidden">Add your own hand</span>
+  </button>
+</div>
+
+<!-- "Add your own" hint: a classic black-and-white dialog (native popover, no JS) -->
+<div class="dialog" id="own-hand" popover role="dialog" aria-labelledby="own-hand-title">
+  <div class="dialog__bar">
+    <span class="dialog__title" id="own-hand-title">Make your own hand</span>
+  </div>
+  <div class="dialog__body">
+    <p>
+      In TinyPointer you can turn any idea into your own hand, for example with ChatGPT. Open
+      <strong>Settings → Pointers → Make your own…</strong> and:
+    </p>
+    <ol>
+      <li>Describe your hand, e.g. “knitted wool in mustard yellow”.</li>
+      <li>
+        Click <strong>Open in ChatGPT</strong> (or copy the prompt for another image tool) and download
+        the result as a PNG with a transparent background.
+      </li>
+      <li>Drop the PNG into TinyPointer. Your hand is ready in the toolbar.</li>
+    </ol>
+    <div class="dialog__actions">
+      <button class="dialog__ok" type="button" popovertarget="own-hand" popovertargetaction="hide">
+        OK
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -109,6 +142,117 @@ const { hands } = Astro.props;
 
   .toolbar__hand[aria-pressed='true'] {
     background: rgb(255 255 255 / 0.18);
+  }
+
+  .toolbar__divider {
+    width: 1px;
+    height: 32px;
+    margin-inline: 4px;
+    background: rgb(255 255 255 / 0.2);
+  }
+
+  .toolbar__add {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--color-white);
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .toolbar__add:hover,
+  .toolbar__add:focus-visible {
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .toolbar__add svg {
+    width: 22px;
+  }
+
+  /* --- Classic black-and-white dialog --- */
+  .dialog {
+    width: min(460px, calc(100vw - 32px));
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--color-black);
+    border-radius: 0;
+    background: var(--color-white);
+    color: var(--color-black);
+    box-shadow: 3px 3px 0 var(--color-black);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .dialog::backdrop {
+    background: rgb(0 0 0 / 0.25);
+  }
+
+  .dialog__bar {
+    display: grid;
+    place-items: center;
+    height: 22px;
+    border-bottom: 1px solid var(--color-black);
+  }
+
+  .dialog__title {
+    font-size: 13px;
+    line-height: 14px;
+    font-weight: 700;
+    font-variation-settings: normal;
+  }
+
+  .dialog__body {
+    display: grid;
+    gap: 12px;
+    padding: 20px 24px 24px;
+  }
+
+  .dialog__body ol {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.25em;
+  }
+
+  .dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+
+  /* classic default button with the thick outer ring */
+  .dialog__ok {
+    min-width: 88px;
+    padding: 6px 20px;
+    border: 0;
+    border-radius: 10px;
+    outline: 3px solid var(--color-black);
+    outline-offset: 3px;
+    background: var(--color-white);
+    color: var(--color-black);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .dialog__ok:hover {
+    background: var(--color-black);
+    color: var(--color-white);
+  }
+
+  /* While the dialog is open it sits above the hand, so the normal cursor comes back. */
+  :global(html:has(#own-hand:popover-open)),
+  :global(html:has(#own-hand:popover-open) *) {
+    cursor: auto !important;
+  }
+
+  :global(html:has(#own-hand:popover-open) button) {
+    cursor: pointer !important;
   }
 
   .toolbar__hand :global(img) {
