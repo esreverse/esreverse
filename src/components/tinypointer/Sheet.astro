@@ -1,9 +1,10 @@
 ---
 /**
- * A landscape sheet of paper lying on the "desktop", with the feature's
- * headline above it (slot "title"). Each sheet unlocks its feature: inside the sheet the visitor can try it with the
- * hand (draw, rainbow ink, number stamps, arrows). The sheet clips the ink.
- * Below the sheet: the shortcut that does the same in the app.
+ * A landscape sheet of paper in a classic black-and-white document window,
+ * with the feature's headline above it (slot "title"). Each sheet unlocks its
+ * feature: inside the sheet the visitor can try it with the hand (draw,
+ * rainbow ink, number stamps, arrows). The sheet clips the ink.
+ * Below the window: the shortcut that does the same in the app.
  */
 interface Props {
   feature: 'draw' | 'rainbow' | 'stamp' | 'arrow';
@@ -11,21 +12,29 @@ interface Props {
   hint: string;
 }
 const { feature, hint } = Astro.props;
+
+const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow: 'Arrows' };
 ---
 
 <figure class="sheet-wrap">
   <slot name="title" />
-  <article class="sheet" data-sheet={feature}>
-    <p class="sheet__hint">{hint}</p>
-    <canvas class="sheet__ink" aria-hidden="true"></canvas>
-  </article>
+  <div class="window">
+    <div class="window__bar" aria-hidden="true">
+      <span class="window__close"></span>
+      <span class="window__title">{windowTitles[feature]}</span>
+    </div>
+    <article class="sheet" data-sheet={feature}>
+      <p class="sheet__hint">{hint}</p>
+      <canvas class="sheet__ink" aria-hidden="true"></canvas>
+    </article>
+  </div>
   <figcaption class="sheet__shortcut">
     <slot name="shortcut" />
   </figcaption>
 </figure>
 
 <script>
-  import { initSheets } from "./sheet-ink";
+  import { initSheets } from './sheet-ink';
   initSheets();
 </script>
 
@@ -38,34 +47,64 @@ const { feature, hint } = Astro.props;
     margin: 0;
   }
 
+  /* --- Classic window: 1px frame, hard 1-bit shadow, striped title bar --- */
+  .window {
+    width: 100%;
+    border: 1px solid var(--color-black);
+    background: var(--color-white);
+    box-shadow: 2px 2px 0 var(--color-black);
+  }
+
+  .window__bar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 22px;
+    padding: 4px 3px;
+    border-bottom: 1px solid var(--color-black);
+    background: repeating-linear-gradient(var(--color-black) 0 1px, var(--color-white) 1px 2px) content-box;
+  }
+
+  .window__close {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    width: 13px;
+    height: 13px;
+    translate: 0 -50%;
+    border: 1px solid var(--color-black);
+    background: var(--color-white);
+    box-shadow: 0 0 0 2px var(--color-white);
+  }
+
+  .window__title {
+    padding: 0 8px;
+    background: var(--color-white);
+    color: var(--color-black);
+    font-size: 13px;
+    line-height: 14px;
+    font-weight: 700;
+    font-variation-settings: normal;
+  }
+
   .sheet {
     position: relative;
     width: 100%;
     aspect-ratio: 297 / 210;
     overflow: hidden; /* the sheet masks the ink */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    display: grid;
+    place-items: center;
     padding: clamp(20px, 5%, 48px);
-    border-radius: 4px;
-    background: #fffefa;
+    background: var(--color-white);
     color: var(--color-black);
-    box-shadow:
-      0 1px 2px rgb(0 0 0 / 0.06),
-      0 4px 12px rgb(20 20 60 / 0.06);
     touch-action: pan-y;
   }
 
-  /* secondary text: hint on the sheet and the app shortcut below it */
-  .sheet__hint,
-  .sheet__shortcut {
+  .sheet__hint {
+    text-align: center;
     font-size: clamp(0.875rem, 1.6vw, 1.125rem);
     line-height: 1.75;
     opacity: 0.55;
-  }
-
-  .sheet__shortcut {
-    font-size: clamp(0.75rem, 1.4vw, 1rem); /* 2px smaller than the hint */
   }
 
   .sheet__ink {
@@ -75,34 +114,38 @@ const { feature, hint } = Astro.props;
     height: 100%;
   }
 
+  /* --- App shortcut: a small white label on the desktop --- */
+  .sheet__shortcut {
+    padding: 2px 8px;
+    border: 1px solid var(--color-black);
+    background: var(--color-white);
+    color: var(--color-black);
+    font-family: var(--font-mono);
+    font-variation-settings: normal;
+    font-size: clamp(0.75rem, 1.3vw, 0.9375rem);
+    line-height: 1.75;
+  }
+
   .sheet__shortcut :global(kbd) {
     display: inline-block;
     min-width: 1.9em;
     margin-inline: 0.2em;
-    padding: 0.05em 0.6em;
-    border-radius: 6px;
-    background: rgb(0 0 0 / 0.1);
+    padding: 0 0.5em;
+    border: 1px solid var(--color-black);
+    border-radius: 3px;
+    background: var(--color-white);
+    box-shadow: 1px 1px 0 var(--color-black);
     font: inherit;
     line-height: 1.4;
     font-weight: 600;
     text-align: center;
   }
 
-  /* DARK MODE – disabled while the light mode is being refined.
-   Remove this comment wrapper to switch it back on.
-@media (prefers-color-scheme: dark) {
-    .sheet__shortcut :global(kbd) {
-      background: rgb(255 255 255 / 0.12);
-      box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.4);
-    }
-  }
-*/
-
-  /* Parallax: the sheet travels a little slower than the page.
+  /* Parallax: the window travels a little slower than the page.
      CSS scroll-driven animation, no JS. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .sheet {
+      .window {
         animation: sheet-settle linear both;
         animation-timeline: view();
         animation-range: entry 0% cover 45%;

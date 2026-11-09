@@ -3,8 +3,8 @@
  * Custom cursor as on the original site: a 16px white dot (blend mode
  * "difference") replaces the system cursor.
  * Only for precise pointers when motion is welcome; otherwise the normal
- * system cursor stays. It doubles over links and triples over buttons
- * (.button, [data-cursor-grow]).
+ * system cursor stays. It grows to three times its size (48px) over links
+ * and buttons.
  */
 ---
 
@@ -70,10 +70,7 @@
     opacity: 1;
   }
 
-  .cursor[data-link] {
-    scale: 2; /* 32px over text links */
-  }
-
+  .cursor[data-link],
   .cursor[data-grow] {
     scale: 3; /* 48px */
   }

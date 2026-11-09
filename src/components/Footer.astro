@@ -126,13 +126,19 @@ const reasons = ['to connect', 'to meet', 'to help'];
     gap: 24px;
   }
 
-  /* the product link underlines only its name, not the chip */
-  .footer__product {
-    text-decoration: none;
+  /* footer links are underlined on hover only (the product link: its name, not the chip) */
+  .footer__links .link {
+    text-decoration-color: transparent;
+    transition: text-decoration-color 0.2s;
   }
 
-  .footer__product:hover .link {
-    text-decoration-thickness: 2px;
+  .footer__links a:hover .link,
+  .footer__links .link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .footer__product {
+    text-decoration: none;
   }
 
   .footer__product {

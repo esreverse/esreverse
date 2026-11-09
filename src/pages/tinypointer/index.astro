@@ -16,6 +16,7 @@ import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Sheet from '../../components/tinypointer/Sheet.astro';
 import HandToolbar, { type HandChoice } from '../../components/tinypointer/HandToolbar.astro';
+import DesktopIcons from '../../components/tinypointer/DesktopIcons.astro';
 import XdLogo from '../../components/XdLogo.astro';
 import ArrowIcon from '../../components/ArrowIcon.astro';
 import { url } from '../../lib/url';
@@ -75,49 +76,49 @@ const hands: HandChoice[] = await Promise.all(
 
   <main class="story">
     <div class="stage" aria-hidden="true">
-      <div class="stage__wallpaper"></div>
+      <DesktopIcons />
     </div>
 
     <div class="steps">
       <section class="step step--intro">
-        <h1 class="step__title">Imagine this is your desktop.</h1>
+        <h1 class="step__title"><span>Imagine this is your desktop.</span></h1>
       </section>
 
       <section class="step step--hand">
-        <h2 class="step__title">And you need a hand to point out some things.</h2>
+        <h2 class="step__title"><span>And you need a hand to point out some things.</span></h2>
       </section>
 
       <section class="step step--sheet">
         <Sheet feature="draw" hint="Draw something now">
-          <h2 class="sheet-title" slot="title">Imagine you could draw.</h2>
+          <h2 class="sheet-title" slot="title"><span>Imagine you could draw.</span></h2>
           <Fragment slot="shortcut">In the app: hold and drag to draw · <kbd>⌃⇥</kbd> turns the pointer on and off</Fragment>
         </Sheet>
       </section>
 
       <section class="step step--sheet">
         <Sheet feature="rainbow" hint="Draw in rainbow colours now">
-          <h2 class="sheet-title" slot="title">In all colors of the rainbow.</h2>
+          <h2 class="sheet-title" slot="title"><span>In all colors of the rainbow.</span></h2>
           <Fragment slot="shortcut">In the app: press <kbd>R</kbd> for rainbow ink, <kbd>A</kbd> for automatic colour</Fragment>
         </Sheet>
       </section>
 
       <section class="step step--sheet">
         <Sheet feature="stamp" hint="Click to stamp numbers now">
-          <h2 class="sheet-title" slot="title">Imagine you could stamp numbers to describe an order or select options.</h2>
+          <h2 class="sheet-title" slot="title"><span>Imagine you could stamp numbers to describe an order or select options.</span></h2>
           <Fragment slot="shortcut">In the app: hold <kbd>⌥</kbd> and click</Fragment>
         </Sheet>
       </section>
 
       <section class="step step--sheet">
         <Sheet feature="arrow" hint="Draw an arrow now">
-          <h2 class="sheet-title" slot="title">Then imagine you could also draw arrows.</h2>
+          <h2 class="sheet-title" slot="title"><span>Then imagine you could also draw arrows.</span></h2>
           <Fragment slot="shortcut">In the app: hold <kbd>⌃</kbd> and drag</Fragment>
         </Sheet>
       </section>
 
       <section class="step step--outro" aria-labelledby="outro-title">
-        <p class="step__title outro__lead">Imagine TinyHand and ScreenBrush had a baby.</p>
-        <h2 class="step__title outro__lead" id="outro-title">This is TinyPointer.</h2>
+        <p class="step__title outro__lead"><span>Imagine TinyHand and ScreenBrush had a baby.</span></p>
+        <h2 class="step__title outro__lead" id="outro-title"><span>This is TinyPointer.</span></h2>
         <a class="download" href={downloadUrl} data-cursor-grow>
           Download for macOS <ArrowIcon tight bold />
         </a>
@@ -164,6 +165,7 @@ const hands: HandChoice[] = await Promise.all(
   const img = document.querySelector<HTMLImageElement>('[data-hand]');
   const body = document.querySelector<HTMLElement>('[data-hand-body]');
   const trigger = document.querySelector<HTMLElement>('.step--hand');
+  const outro = document.querySelector<HTMLElement>('.step--outro');
   const root = document.documentElement;
   const canFollow = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -219,6 +221,9 @@ const hands: HandChoice[] = await Promise.all(
     const frame = () => {
       const arrived = trigger.getBoundingClientRect().top < window.innerHeight * 0.3;
       root.toggleAttribute('data-hand-arrived', arrived);
+      // the hand toolbar is only needed while the sheets are on screen
+      const outroReached = !!outro && outro.getBoundingClientRect().top < window.innerHeight * 0.6;
+      root.toggleAttribute('data-toolbar', arrived && !outroReached);
       const following = arrived && canFollow && pointer !== null;
       root.toggleAttribute('data-hand-following', following);
 
@@ -251,13 +256,14 @@ const hands: HandChoice[] = await Promise.all(
 
 <style>
   /* --- Page-level tokens ---------------------------------------------------- */
+  /* Classic 1-bit look: black and white on a dithered grey desktop
+     (2 × 2 checkerboard). Only the hands and the ink are in colour. */
   :global(body) {
-    --desktop-top: #b2b2fc;
-    --desktop-mid: #d9d4f4;
-    --desktop-bottom: #fdfeb3;
     --story-text: var(--color-black);
+    --desktop-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E");
 
-    background: var(--desktop-bottom);
+    background: #fff var(--desktop-pattern) 0 0 / 2px 2px repeat;
+    image-rendering: pixelated;
   }
 
   /* DARK MODE – disabled while the light mode is being refined.
@@ -318,13 +324,6 @@ const hands: HandChoice[] = await Promise.all(
     overflow: hidden;
   }
 
-  .stage__wallpaper {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(60% 50% at 80% 10%, rgb(255 255 255 / 0.35), transparent 70%),
-      linear-gradient(170deg, var(--desktop-top), var(--desktop-mid) 45%, var(--desktop-bottom));
-  }
 
   .steps {
     position: relative;
@@ -419,13 +418,41 @@ const hands: HandChoice[] = await Promise.all(
   .step__title {
     max-width: 14ch;
     font-size: clamp(2.5rem, 7vw, 5.5rem);
-    line-height: 1.05;
+    line-height: 1.12;
     letter-spacing: -0.02em;
     font-weight: 400;
     text-align: center;
   }
 
-  /* Centred on the first screen … */
+  /* text on the desktop sits on white, like a selected label */
+  .step__title > span,
+  .sheet-title > span {
+    padding: 0 0.18em;
+    background: var(--color-white);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* The first two lines share the sheets' column and left edge. */
+  .step--intro .step__title,
+  .step--hand .step__title {
+    width: min(880px, 100%, 130svh);
+    max-width: none;
+    text-align: left;
+  }
+
+  .step--intro .step__title > span,
+  .step--hand .step__title > span {
+    /* keep the lines short enough to read as a headline */
+    display: inline;
+  }
+
+  .step--intro .step__title,
+  .step--hand .step__title {
+    padding-right: 20%;
+  }
+
+  /* Vertically centred on the first screen … */
   .step--intro {
     height: 100svh;
     min-height: 0;
@@ -450,7 +477,7 @@ const hands: HandChoice[] = await Promise.all(
   .sheet-title {
     max-width: 20ch;
     font-size: clamp(2rem, 4.5vw, 3.75rem);
-    line-height: 1.05;
+    line-height: 1.15;
     letter-spacing: -0.02em;
     font-weight: 400;
     margin-bottom: 18px;
@@ -474,34 +501,30 @@ const hands: HandChoice[] = await Promise.all(
     margin-top: 1.1em;
   }
 
-  .download {
-    margin-top: clamp(64px, 12svh, 128px);
-  }
-
+  /* classic default button: rounded frame with a thick outer ring */
   .download {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 24px;
-    border-radius: var(--radius-pill);
-    background: var(--color-black);
-    color: var(--color-white);
+    margin-top: clamp(64px, 12svh, 128px);
+    padding: 10px 26px;
+    border: 2px solid var(--color-black);
+    border-radius: 12px;
+    outline: 3px solid var(--color-black);
+    outline-offset: 3px;
+    background: var(--color-white);
+    color: var(--color-black);
     font-size: var(--text-body);
     line-height: var(--leading-body);
     font-weight: 600;
     text-decoration: none;
-    border: 1.5px solid var(--color-black);
-    box-shadow: 0 2px 6px rgb(0 0 0 / 0.12);
-    transition:
-      background-color 0.2s,
-      color 0.2s,
-      scale 0.15s var(--ease-out);
+    transition: scale 0.15s var(--ease-out);
   }
 
-  /* hover inverts the button, a press pushes it in a little */
+  /* hover inverts it, a press pushes it in a little */
   .download:hover {
-    background: var(--color-white);
-    color: var(--color-black);
+    background: var(--color-black);
+    color: var(--color-white);
   }
 
   .download:active {
@@ -513,26 +536,21 @@ const hands: HandChoice[] = await Promise.all(
     height: 20px;
   }
 
-  /* DARK MODE – disabled while the light mode is being refined.
-   Remove this comment wrapper to switch it back on.
-@media (prefers-color-scheme: dark) {
-    .download {
-      background: var(--color-yellow-100);
-      color: var(--color-black);
-    }
-  }
-*/
-
-  /* sits at the very bottom of the page */
+  /* sits at the very bottom of the page, as a white label */
   .outro__meta {
     position: absolute;
-    inset-inline: var(--gutter);
+    left: 50%;
     bottom: 32px;
-    margin-inline: auto;
-    max-width: 40rem;
-    font-size: 0.8125rem;
+    translate: -50% 0;
+    width: max-content;
+    max-width: calc(100% - 2 * var(--gutter));
+    padding: 2px 8px;
+    border: 1px solid var(--color-black);
+    background: var(--color-white);
+    font-family: var(--font-mono);
+    font-variation-settings: normal;
+    font-size: 0.75rem;
     line-height: 1.6;
     text-align: center;
-    opacity: 0.7;
   }
 </style>

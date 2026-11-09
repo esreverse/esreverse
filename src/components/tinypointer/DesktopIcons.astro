@@ -1,0 +1,124 @@
+---
+/**
+ * Decorative 1-bit desktop icons in the spirit of the classic Mac desktop.
+ * Drawn here on a 32 × 32 pixel grid (no original Apple artwork).
+ * Placed on the sticky "desktop" behind the story, left and right.
+ */
+type Kind = 'disk' | 'folder' | 'document' | 'trash';
+
+// slot: position from the top (0, 1, 2 …); -1 = bottom corner
+const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }[] = [
+  { kind: 'disk', label: 'TinyPointer HD', side: 'right', slot: 1 },
+  { kind: 'folder', label: 'Hands', side: 'right', slot: 2 },
+  { kind: 'trash', label: 'Trash', side: 'right', slot: -1 },
+  { kind: 'document', label: 'Read Me', side: 'left', slot: 0 },
+  { kind: 'folder', label: 'Sheets', side: 'left', slot: 1 },
+];
+---
+
+<ul class="icons" role="list" aria-hidden="true">
+  {
+    icons.map(({ kind, label, side, slot }) => (
+      <li class:list={['icon', `icon--${side}`, { 'icon--bottom': slot < 0 }]} style={`--slot: ${slot}`}>
+        <svg viewBox="0 0 32 32" shape-rendering="crispEdges">
+          {kind === 'disk' && (
+            <>
+              <path d="M2 10h28v14H2z" fill="#fff" />
+              <path d="M2 9h28v1H2zM2 24h28v1H2zM1 10h1v14H1zM30 10h1v14h-1zM2 25h28v1H2z" />
+              <path d="M5 19h14v2H5zM24 19h3v2h-3z" />
+            </>
+          )}
+          {kind === 'folder' && (
+            <>
+              <path d="M3 9h10v3h16v16H3z" fill="#fff" />
+              <path d="M3 8h10v1H3zM13 9h1v2h-1zM14 11h15v1H14zM2 9h1v19H2zM29 12h1v16h-1zM3 28h26v1H3zM3 14h26v1H3z" />
+            </>
+          )}
+          {kind === 'document' && (
+            <>
+              <path d="M7 3h13l6 6v20H7z" fill="#fff" />
+              <path d="M7 2h13v1H7zM6 3h1v26H6zM7 29h19v1H7zM26 9h1v20h-1zM20 3h1v1h-1zM21 4h1v1h-1zM22 5h1v1h-1zM23 6h1v1h-1zM24 7h1v1h-1zM25 8h1v1h-1zM19 3h1v6h-1zM20 8h6v1h-6z" />
+              <path d="M10 13h12v1H10zM10 16h12v1H10zM10 19h12v1H10zM10 22h8v1h-8z" />
+            </>
+          )}
+          {kind === 'trash' && (
+            <>
+              <path d="M8 9h16v20H8z" fill="#fff" />
+              <path d="M13 3h6v1h-6zM12 4h1v2h-1zM19 4h1v2h-1zM5 6h22v1H5zM5 7h1v2H5zM26 7h1v2h-1zM5 9h22v1H5zM7 10h1v19H7zM24 10h1v19h-1zM8 29h16v1H8z" />
+              <path d="M11 12h1v15h-1zM15 12h2v15h-2zM20 12h1v15h-1z" />
+            </>
+          )}
+        </svg>
+        <span class="icon__label">{label}</span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .icons {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    pointer-events: none;
+  }
+
+  .icon {
+    --step: 104px;
+
+    position: absolute;
+    top: calc(40px + var(--slot) * var(--step));
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    width: 96px;
+  }
+
+  .icon--bottom {
+    top: auto;
+    bottom: 32px;
+  }
+
+  .icon--left {
+    left: 24px;
+  }
+
+  .icon--right {
+    right: 24px;
+  }
+
+  .icon svg {
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+  }
+
+  .icon__label {
+    padding: 0 4px;
+    background: var(--color-white);
+    color: var(--color-black);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    font-variation-settings: normal;
+    white-space: nowrap;
+  }
+
+  /* On small screens the icons would sit under the content: keep the corners only. */
+  @media (max-width: 767px) {
+    .icon {
+      --step: 88px;
+    }
+
+    .icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .icon--left {
+      display: none;
+    }
+  }
+</style>
