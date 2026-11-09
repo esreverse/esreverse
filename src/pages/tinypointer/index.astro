@@ -413,8 +413,10 @@ const hands: HandChoice[] = await Promise.all(
 
   /* --- Page-level tokens ---------------------------------------------------- */
   /* Classic black-and-white look on a plain grey desktop.
-     Only the hands and the ink are in colour. */
-  :global(body) {
+     Only the hands and the ink are in colour.
+     "html body" (not just "body") so it wins over the global body background,
+     whatever order the stylesheets end up in after the build. */
+  :global(html body) {
     --story-text: var(--color-black);
     --desktop-grey: #b4b4b4;
 
@@ -424,7 +426,7 @@ const hands: HandChoice[] = await Promise.all(
   /* Dark mode for this page: the black-and-white world is simply inverted.
      The hands, the ink (inverted back) and the app toolbar keep their colours. */
   @media (prefers-color-scheme: dark) {
-    :global(body) {
+    :global(html body) {
       background: #4b4b4b; /* = inverted #b4b4b4 */
     }
 
