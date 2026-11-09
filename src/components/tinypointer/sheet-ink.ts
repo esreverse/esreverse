@@ -204,13 +204,19 @@ function setUpSheet(sheet: HTMLElement, feature: Feature) {
     ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.font = `600 ${Math.round(r * 1.15)}px "Playpen Sans Variable", sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    // optical centring, proportional to the stamp (1px at the full 22px size):
-    // digits a little lower; the "1" a little further left
-    const nudge = r / STAMP_RADIUS;
-    const nudgeX = stamp.n === 1 ? -nudge : 0;
-    ctx.fillText(String(stamp.n), stamp.x * w + nudgeX, stamp.y * w + r * 0.06 + nudge);
+    // Centre the digits on their measured glyph box, not on a text baseline:
+    // browsers place "middle" differently (Safari sat the digits ~2px low).
+    const text = String(stamp.n);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    const m = ctx.measureText(text);
+    const cx = stamp.x * w;
+    const cy = stamp.y * w;
+    // optical tweak: the "1" a little further left (1px at the full 22px size)
+    const nudgeX = stamp.n === 1 ? -r / STAMP_RADIUS : 0;
+    const x = cx - (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2 + nudgeX;
+    const y = cy + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
+    ctx.fillText(text, x, y);
   }
 }
 
