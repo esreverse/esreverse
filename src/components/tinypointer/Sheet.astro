@@ -13,7 +13,16 @@ interface Props {
 }
 const { feature, hint } = Astro.props;
 
-const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow: 'Arrows', zoom: 'Zoom' };
+import SheetContent from './SheetContent.astro';
+
+// every sheet is a "document" with a file name in its title bar
+const windowTitles = {
+  draw: 'brilliant presentation.pptx',
+  rainbow: 'very informative diagram.pptx',
+  arrow: 'super cool flowchart.pptx',
+  stamp: 'very nice figma design.fig',
+  zoom: 'bugs.png',
+};
 
 ---
 
@@ -21,7 +30,7 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
   <slot name="title" />
   <div class="window">
     <div class="window__bar" aria-hidden="true">
-      <span class="window__close"></span>
+      <span class="window__boxes"><span></span><span></span><span></span></span>
       <span class="window__title">{windowTitles[feature]}</span>
     </div>
     {
@@ -36,7 +45,7 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
         </article>
       ) : (
         <article class="sheet" data-sheet={feature}>
-          <p class="sheet__hint">{hint}</p>
+          <SheetContent feature={feature} hint={hint} />
           <canvas class="sheet__ink" aria-hidden="true" />
         </article>
       )
@@ -69,36 +78,42 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     box-shadow: 2px 2px 0 var(--color-black);
   }
 
+  /* 22px bar incl. its bottom line: 21px inside, the 9px boxes sit with
+     an even 6px padding to the top, the bottom line and the left frame */
   .window__bar {
     position: relative;
     display: grid;
     place-items: center;
     height: 22px;
-    padding: 4px 3px;
+    padding: 0 60px; /* keeps a long file name clear of the boxes */
     border-bottom: 1px solid var(--color-black);
     background: var(--color-white);
   }
 
-  .window__close {
+  .window__boxes {
     position: absolute;
-    left: 10px;
-    top: 50%;
-    width: 13px;
-    height: 13px;
-    translate: 0 -50%;
+    left: 6px;
+    top: 6px;
+    display: flex;
+    gap: 4px;
+  }
+
+  .window__boxes span {
+    width: 9px;
+    height: 9px;
     border: 1px solid var(--color-black);
-    background: var(--color-white);
-    box-shadow: 0 0 0 2px var(--color-white);
   }
 
   .window__title {
-    padding: 0 8px;
-    background: var(--color-white);
+    max-width: 100%;
+    overflow: hidden;
     color: var(--color-black);
-    font-size: 13px;
-    line-height: 14px;
+    font-size: 12px;
+    line-height: 1;
     font-weight: 700;
     font-variation-settings: normal;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .sheet {
@@ -106,9 +121,7 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     width: 100%;
     aspect-ratio: 297 / 210;
     overflow: hidden; /* the sheet masks the ink */
-    display: grid;
-    place-items: center;
-    padding: clamp(20px, 5%, 48px);
+    container-type: inline-size; /* the wireframe content scales with the sheet */
     background: var(--color-white);
     color: var(--color-black);
     /* the finger draws on the sheet instead of scrolling the page; scrolling
@@ -116,17 +129,8 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     touch-action: none;
   }
 
-  .sheet__hint {
-    text-align: center;
-    font-size: clamp(0.875rem, 1.6vw, 1.125rem);
-    line-height: 1.75;
-    opacity: 0.55;
-  }
-
   /* --- Zoom: ants and loupe --- */
   .sheet--zoom {
-    display: block;
-    padding: 0;
     cursor: none;
   }
 

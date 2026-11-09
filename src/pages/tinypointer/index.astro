@@ -28,14 +28,23 @@ import handGlove from '../../assets/tinypointer/hand-glove.png';
 import handCookie from '../../assets/tinypointer/hand-cookie.png';
 import handChoco from '../../assets/tinypointer/hand-choco.png';
 import handTree from '../../assets/tinypointer/hand-tree.png';
+import handChrome from '../../assets/tinypointer/hand-chrome.png';
+import handJelly from '../../assets/tinypointer/hand-jelly.png';
+import handSkeleton from '../../assets/tinypointer/hand-skeleton.png';
 import thumbGlove from '../../assets/tinypointer/thumbs/glove.png';
 import thumbCookie from '../../assets/tinypointer/thumbs/cookie.png';
 import thumbChoco from '../../assets/tinypointer/thumbs/choco.png';
 import thumbTree from '../../assets/tinypointer/thumbs/tree.png';
+import thumbChrome from '../../assets/tinypointer/thumbs/chrome.png';
+import thumbJelly from '../../assets/tinypointer/thumbs/jelly.png';
+import thumbSkeleton from '../../assets/tinypointer/thumbs/skeleton.png';
 import stickGlove from '../../assets/tinypointer/sticks/glove.png';
 import stickCookie from '../../assets/tinypointer/sticks/cookie.png';
 import stickChoco from '../../assets/tinypointer/sticks/choco.png';
 import stickTree from '../../assets/tinypointer/sticks/tree.png';
+import stickChrome from '../../assets/tinypointer/sticks/chrome.png';
+import stickJelly from '../../assets/tinypointer/sticks/jelly.png';
+import stickSkeleton from '../../assets/tinypointer/sticks/skeleton.png';
 
 // Settings screenshots (light and dark) for the "Screenshots" dialog
 const shotFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/tinypointer/screenshots/*.png', {
@@ -86,6 +95,9 @@ const handDefs = [
   { id: 'cookie', label: 'Gingerbread', image: handCookie, thumb: thumbCookie, stick: stickCookie, tip: [0.414, 0.108] },
   { id: 'choco', label: 'Chocolate', image: handChoco, thumb: thumbChoco, stick: stickChoco, tip: [0.47, 0.125] },
   { id: 'tree', label: 'Christmas tree', image: handTree, thumb: thumbTree, stick: stickTree, tip: [0.423, 0.108] },
+  { id: 'chrome', label: 'Chrome', image: handChrome, thumb: thumbChrome, stick: stickChrome, tip: [0.458, 0.104] },
+  { id: 'jelly', label: 'Jelly', image: handJelly, thumb: thumbJelly, stick: stickJelly, tip: [0.468, 0.13] },
+  { id: 'skeleton', label: 'Skeleton', image: handSkeleton, thumb: thumbSkeleton, stick: stickSkeleton, tip: [0.459, 0.12] },
 ];
 const hands: HandChoice[] = await Promise.all(
   handDefs.map(async ({ id, label, image, thumb, stick, tip }) => {
@@ -147,7 +159,7 @@ const hands: HandChoice[] = await Promise.all(
       </section>
 
       <section class="step step--sheet">
-        <Sheet feature="arrow" hint="Draw an arrow now">
+        <Sheet feature="arrow" hint="Draw some arrows">
           <h2 class="sheet-title" slot="title"><span>Then imagine you could also draw arrows.</span></h2>
           <Fragment slot="shortcut">In the app: Hold <kbd>⌃</kbd> and drag</Fragment>
         </Sheet>
@@ -500,7 +512,7 @@ const hands: HandChoice[] = await Promise.all(
      The hands, the ink (inverted back) and the app toolbar keep their colours. */
   @media (prefers-color-scheme: dark) {
     :global(html body) {
-      background: #4b4b4b; /* = inverted #b4b4b4 */
+      background: #2b2b2b; /* darker than the inverted #b4b4b4 (#4b4b4b) */
     }
 
     .stage,

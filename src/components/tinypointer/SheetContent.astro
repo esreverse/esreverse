@@ -1,0 +1,506 @@
+---
+/**
+ * The "document" on a sheet: black-and-white wireframes of real use cases
+ * (a presentation, a chart, a flowchart, phone variants), so the visitor
+ * draws, points and stamps on something. Purely decorative: the ink canvas
+ * lies on top and takes all input. Sizes in cqi scale with the sheet.
+ */
+interface Props {
+  feature: 'draw' | 'rainbow' | 'stamp' | 'arrow';
+  hint: string;
+}
+const { feature, hint } = Astro.props;
+
+const bars = [
+  { label: 'Jan', h: 28 },
+  { label: 'Feb', h: 42 },
+  { label: 'Mar', h: 36 },
+  { label: 'Apr', h: 64 },
+  { label: 'May', h: 92 },
+];
+
+---
+
+<div class:list={['page', `page--${feature}`]} aria-hidden="true">
+  <div class="page__body">
+    {
+      feature === 'draw' && (
+        <div class="slide">
+          <div class="slide__text">
+            <p class="kicker">Q3 Review</p>
+            <p class="title">Very Important<br />Results</p>
+            <ul class="bullets">
+              <li>Revenue is up, mostly</li>
+              <li>Meetings are down, finally</li>
+              <li>Synergies were leveraged</li>
+              <li>Next steps: more slides</li>
+            </ul>
+          </div>
+          <div class="image" />
+        </div>
+      )
+    }
+
+    {
+      feature === 'rainbow' && (
+        <div class="slide">
+          <div class="slide__text">
+            <p class="kicker">Q4 Outlook</p>
+            <p class="title">Growth, Visualised</p>
+            <div class="chart">
+              {bars.map(({ label, h }) => (
+                <div class="chart__col">
+                  <span class="chart__bar" style={`height: ${h}%`}>
+                    <span class="chart__label">{label}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="stats">
+            <p>
+              <span class="stats__value">+212%</span>
+              <span class="stats__label">of something</span>
+            </p>
+            <p>
+              <span class="stats__value">3×</span>
+              <span class="stats__label">more charts</span>
+            </p>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      feature === 'arrow' && (
+        <div class="flow">
+          <p class="kicker flow__kicker">How we ship things</p>
+          <span class="node node--pill" style="grid-area: idea">Idea</span>
+          <span class="node" style="grid-area: meeting">Meeting</span>
+          <span class="node node--diamond" style="grid-area: decide">
+            <svg viewBox="0 0 100 60" preserveAspectRatio="none">
+              <polygon points="50,1 99,30 50,59 1,30" vector-effect="non-scaling-stroke" />
+            </svg>
+            <span>Approved?</span>
+          </span>
+          <span class="node" style="grid-area: again">Another meeting</span>
+          <span class="node node--pill" style="grid-area: ship">Ship it</span>
+        </div>
+      )
+    }
+
+    {
+      feature === 'stamp' && (
+        <div class="phones">
+          {/* one onboarding flow in three steps: welcome, features, sign up */}
+          <div class="phone">
+            <span class="phone__notch" />
+            <div class="image phone__image" />
+            <span class="phone__title">Welcome</span>
+            <span class="line" />
+            <span class="line line--short" />
+            <span class="dots"><span class="on" /><span /><span /></span>
+            <span class="cta">Next</span>
+          </div>
+
+          <div class="phone">
+            <span class="phone__notch" />
+            <span class="phone__title phone__title--top">What you get</span>
+            {[1, 2, 3].map(() => (
+              <div class="row">
+                <span class="image row__thumb" />
+                <div class="row__lines">
+                  <span class="line" />
+                  <span class="line line--short" />
+                </div>
+              </div>
+            ))}
+            <span class="dots"><span /><span class="on" /><span /></span>
+            <span class="cta">Next</span>
+          </div>
+
+          <div class="phone">
+            <span class="phone__notch" />
+            <span class="phone__title phone__title--top">Create account</span>
+            <span class="field">Name</span>
+            <span class="field">Email</span>
+            <span class="field">Password</span>
+            <span class="dots"><span /><span /><span class="on" /></span>
+            <span class="cta">Get started</span>
+          </div>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="page__foot">
+    <span class="page__hint">{hint}</span>
+    {(feature === 'draw' || feature === 'rainbow') && <span class="page__number">{feature === 'draw' ? '3 / 42' : '17 / 42'}</span>}
+  </div>
+</div>
+
+<style>
+  /* the page fills the sheet; the ink canvas comes after it and lies on top */
+  .page {
+    --line: 1px solid var(--color-black);
+    --fill: rgb(0 0 0 / 0.07);
+
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 2.5cqi;
+    padding: 5.5cqi 6.5cqi 3cqi;
+    color: var(--color-black);
+    font-size: 1.9cqi;
+    line-height: 1.35;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .page p,
+  .page ul {
+    margin: 0;
+  }
+
+  /* softer wireframes: the whole drawing at 60% at most, so the thin
+     lines and the anti-aliasing look less harsh on the white */
+  .page__body {
+    min-height: 0;
+    opacity: 0.6;
+  }
+
+  .page__foot {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: baseline;
+    font-size: max(10px, 1.6cqi);
+  }
+
+  .page__hint {
+    grid-column: 2;
+    opacity: 0.55;
+  }
+
+  /* in the corner: as far from the right edge as from the bottom */
+  .page__number {
+    position: absolute;
+    right: 3cqi;
+    bottom: 3cqi;
+    opacity: 0.4;
+    font-size: 0.85em;
+    line-height: 1;
+  }
+
+  /* --- shared wireframe parts --- */
+  .kicker {
+    font-size: 0.8em;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  .title {
+    margin-top: 0.6cqi !important;
+    font-size: 4.4cqi;
+    line-height: 1.1;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  /* image placeholder: a plain grey frame */
+  .image {
+    border: var(--line);
+    background: var(--fill);
+  }
+
+  .line {
+    display: block;
+    height: 0.9cqi;
+    border-radius: 1cqi;
+    background: rgb(0 0 0 / 0.3);
+  }
+
+  .line--short {
+    width: 65%;
+  }
+
+  /* --- presentation slides --- */
+  .slide {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 5cqi;
+    height: 100%;
+  }
+
+  /* chart slide and flowchart: content pulled in towards the middle, with
+     about the same white space all around */
+  /* every sheet: the white space left and right of the content matches the
+     space above it (page padding 6.5cqi + these) */
+  .page--rainbow .slide {
+    padding: 4cqi 3cqi 3cqi;
+  }
+
+
+  .slide__text {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* the first slide: text and image centred as one block, so the white
+     space around it is about the same on all four sides; the image is as
+     tall as the whole text block */
+  .page--draw .page__body {
+    display: grid;
+    align-content: center;
+  }
+
+  .page--draw .slide {
+    grid-template-columns: auto 1fr;
+    gap: 10cqi;
+    height: auto;
+    padding-inline: 11.3cqi;
+  }
+
+  .bullets {
+    display: grid;
+    gap: 1.6cqi;
+    margin-top: 4cqi !important;
+    padding-left: 1.2em;
+    font-size: 2.2cqi;
+    list-style: square;
+  }
+
+  .page--draw .image {
+    align-self: stretch;
+  }
+
+  .chart {
+    flex: 1;
+    display: flex;
+    gap: 2cqi;
+    min-height: 0;
+    margin-top: 3.5cqi;
+    border-bottom: var(--line);
+  }
+
+  .chart__col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  /* the month sits inside its bar, at the bottom */
+  .chart__bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 2cqi;
+    border: var(--line);
+    border-bottom: 0;
+    background: var(--fill);
+  }
+
+  .chart__label {
+    font-size: 0.75em;
+    line-height: 1;
+    opacity: 0.5;
+  }
+
+  /* bottom-aligned with the chart's baseline */
+  .stats {
+    display: grid;
+    align-content: end;
+    gap: 4cqi;
+  }
+
+  .stats p {
+    display: grid;
+    padding-left: 2cqi;
+    border-left: var(--line);
+  }
+
+  .stats__value {
+    font-size: 5.6cqi;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .stats__label {
+    opacity: 0.55;
+  }
+
+  /* --- flowchart: boxes only, the arrows are the visitor's job --- */
+  /* the five shapes as one group, centred on the page and spread out; the
+     kicker sits apart in the top left corner */
+  .flow {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'idea meeting decide'
+      '. again ship';
+    align-content: center;
+    padding: 3cqi 3cqi 0;
+    column-gap: 5cqi;
+    row-gap: 10cqi;
+    height: 100%;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .flow__kicker {
+    position: absolute;
+    top: 0;
+    left: 3cqi;
+  }
+
+  .node {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 8cqi;
+    padding: 1cqi 2cqi;
+    border: var(--line);
+    background: var(--color-white);
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .node--pill {
+    border-radius: 99px;
+    background: var(--fill);
+  }
+
+  .node--diamond {
+    position: relative;
+    min-height: 12cqi;
+    border: 0;
+    background: none;
+  }
+
+  .node--diamond svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: var(--color-white);
+    stroke: var(--color-black);
+    stroke-width: 1px;
+  }
+
+  .node--diamond span {
+    position: relative;
+  }
+
+  /* --- phone variants --- */
+  /* sized by the sheet's width (cqi), so three phones always fit */
+  .phones {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4cqi;
+    height: 100%;
+  }
+
+  .phone {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3cqi;
+    width: 21cqi;
+    aspect-ratio: 9 / 17;
+    padding: 1.2cqi 1.6cqi 2cqi;
+    border: var(--line);
+    border-radius: 2.8cqi;
+    font-size: 1.6cqi;
+  }
+
+  .phone__notch {
+    align-self: center;
+    width: 30%;
+    height: 1.1cqi;
+    border: var(--line);
+    border-radius: 1cqi;
+  }
+
+  .phone__image {
+    flex: 1;
+    margin-top: 0.6cqi;
+    border-radius: 1cqi;
+  }
+
+  /* step 2 and 3: title at the top, content, then dots and button at the bottom */
+  .phone__title--top {
+    margin-top: 1.4cqi !important;
+    margin-bottom: 0.6cqi;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 1.2cqi;
+    padding-block: 0.6cqi;
+  }
+
+  .row__thumb {
+    flex: none;
+    width: 4.5cqi;
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+
+  .row__lines {
+    flex: 1;
+    display: grid;
+    gap: 0.7cqi;
+  }
+
+  .field {
+    padding: 0.9cqi 1.2cqi;
+    border: var(--line);
+    border-radius: 0.8cqi;
+    font-size: 0.9em;
+    opacity: 0.6;
+  }
+
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.6cqi;
+    margin-top: auto;
+  }
+
+  .dots span {
+    width: 0.8cqi;
+    height: 0.8cqi;
+    border: var(--line);
+    border-radius: 50%;
+  }
+
+  .dots .on {
+    background: var(--color-black);
+  }
+
+  .phone__title {
+    margin-top: 0.6cqi;
+    font-size: 2.2cqi;
+    font-weight: 400;
+  }
+
+  .cta {
+    display: grid;
+    place-items: center;
+    margin-top: 1cqi;
+    padding: 1cqi;
+    border: var(--line); /* outline buttons */
+    border-radius: 99px;
+    font-weight: 600;
+  }
+
+
+</style>

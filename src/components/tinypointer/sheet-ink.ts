@@ -265,7 +265,125 @@ function setUpLoupe(sheet: HTMLElement) {
 
 // --- Ants: tiny ants wandering slowly over the zoom sheet ------------------
 
-type Ant = { x: number; y: number; heading: number; speed: number; turn: number; phase: number };
+type Accessory = 'none' | 'leaf' | 'eyes' | 'crumb' | 'hat' | 'stripes';
+type Ant = {
+  x: number;
+  y: number;
+  heading: number;
+  speed: number;
+  turn: number;
+  phase: number;
+  /** body length factor */
+  size: number;
+  /** abdomen width factor: skinny … chubby */
+  fat: number;
+  /** leg length factor */
+  legs: number;
+  /** antenna curl */
+  curl: number;
+  /** pairs of legs: 2 to 8 legs */
+  legPairs: number;
+  shape: Shape;
+  accessory: Accessory;
+};
+type Shape = 'classic' | 'round' | 'square' | 'long' | 'triangle';
+const SHAPES: Shape[] = ['classic', 'round', 'square', 'long', 'triangle', 'round', 'classic', 'square', 'long'];
+const LEG_PAIRS = [3, 1, 4, 2, 3, 4, 1, 3, 2];
+
+// every ant looks a bit different; some carry something or wear something
+const ACCESSORIES: Accessory[] = ['leaf', 'eyes', 'none', 'crumb', 'hat', 'none', 'stripes', 'eyes', 'stripes'];
+
+/**
+ * The "moving photo": a cross-section of soil in the wireframe style of the
+ * other sheets – wavy layers with small stones and pebbles. Coordinates on a
+ * 1000 × 707 sheet; drawn on the sheet and, magnified, inside the loupe.
+ */
+const LANDSCAPE_W = 1000;
+const SURFACE_Y = 0.04; // fraction of the height the ants keep from the top
+const STONE = 'rgba(0,0,0,0.06)';
+
+type Pt = [number, number];
+
+// smooth line through the points (Catmull-Rom as Bézier curves)
+const smooth = (pts: Pt[]) => {
+  const p = new Path2D();
+  p.moveTo(...pts[0]);
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [x0, y0] = pts[Math.max(0, i - 1)];
+    const [x1, y1] = pts[i];
+    const [x2, y2] = pts[i + 1];
+    const [x3, y3] = pts[Math.min(pts.length - 1, i + 2)];
+    p.bezierCurveTo(x1 + (x2 - x0) / 6, y1 + (y2 - y0) / 6, x2 - (x3 - x1) / 6, y2 - (y3 - y1) / 6, x2, y2);
+  }
+  return p;
+};
+
+// [x, y, r, alpha]: every stone and grain a little lighter or darker
+type Dot = [number, number, number, number];
+let soil: { layers: [Path2D, number][]; pebbles: Dot[]; grains: Dot[] } | null = null;
+const buildSoil = () => {
+  // completely random: a new picture on every visit
+  const rnd = Math.random;
+  const alpha = () => 0.1 + rnd() * 0.5; // 10–60 %
+  // wavy layers across the sheet
+  const layers = [120, 240, 360, 480, 600].map((y0, i) => {
+    const pts: Pt[] = [];
+    for (let x = -20; x <= 1020; x += 80) {
+      pts.push([x, y0 + Math.sin(x / 140 + i * 1.7) * 14 + (rnd() - 0.5) * 12]);
+    }
+    return [smooth(pts), alpha()] as [Path2D, number];
+  });
+  // small stones (outlined circles) and grains (dots)
+  const pebbles: Dot[] = [];
+  const grains: Dot[] = [];
+  while (pebbles.length < 34) {
+    const r = 3 + rnd() * 20;
+    const x = 20 + rnd() * 960;
+    const y = 20 + rnd() * 667;
+    if (pebbles.every(([px, py, pr]) => Math.hypot(px - x, py - y) > pr + r + 10)) pebbles.push([x, y, r, alpha()]);
+  }
+  while (grains.length < 110) {
+    const x = rnd() * 1000;
+    const y = rnd() * 707;
+    if (pebbles.every(([px, py, pr]) => Math.hypot(px - x, py - y) > pr + 4)) grains.push([x, y, 1 + rnd() * 1.8, alpha()]);
+  }
+  return { layers, pebbles, grains };
+};
+
+const drawLandscape = (ctx: CanvasRenderingContext2D, w: number) => {
+  soil ??= buildSoil();
+  const s = w / LANDSCAPE_W;
+  const hair = 1 / s; // 1 CSS px on the sheet, magnified in the loupe
+  ctx.save();
+  ctx.scale(s, s);
+  ctx.globalAlpha = 0.6;
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = hair;
+  ctx.lineCap = 'round';
+  for (const [p, a] of soil.layers) {
+    ctx.globalAlpha = a;
+    ctx.stroke(p);
+  }
+  for (const [x, y, r, a] of soil.pebbles) {
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#fff'; // covers the layer lines behind the stone
+    ctx.fill();
+    ctx.globalAlpha = a;
+    ctx.fillStyle = STONE;
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#000';
+  for (const [x, y, r, a] of soil.grains) {
+    ctx.globalAlpha = a;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+};
 
 const ANT_COUNT = 9;
 const ANT_LENGTH = 7; // px at 1×
@@ -296,13 +414,20 @@ function setUpAnts(sheet: HTMLElement, loupe: HTMLElement, zoom: () => number) {
   resize();
 
   const rand = (a: number, b: number) => a + Math.random() * (b - a);
-  const ants: Ant[] = Array.from({ length: ANT_COUNT }, () => ({
+  const ants: Ant[] = Array.from({ length: ANT_COUNT }, (_, i) => ({
     x: rand(0.1, 0.9) * (w || 800),
-    y: rand(0.1, 0.9) * (h || 560),
+    y: rand(0.25, 0.9) * (h || 560), // underground
     heading: rand(0, Math.PI * 2),
     speed: rand(6, 14), // px per second: slow
     turn: 0,
     phase: rand(0, Math.PI * 2),
+    size: rand(0.7, 1.8),
+    fat: rand(0.75, 1.5),
+    legs: rand(0.8, 1.35),
+    curl: rand(-0.25, 0.45),
+    legPairs: LEG_PAIRS[i % LEG_PAIRS.length],
+    shape: SHAPES[i % SHAPES.length],
+    accessory: ACCESSORIES[i % ACCESSORIES.length],
   }));
 
   const step = (ant: Ant, dt: number) => {
@@ -310,8 +435,9 @@ function setUpAnts(sheet: HTMLElement, loupe: HTMLElement, zoom: () => number) {
     ant.turn += rand(-1, 1) * 2 * dt;
     ant.turn *= 0.97;
     const margin = 24;
-    if (ant.x < margin || ant.x > w - margin || ant.y < margin || ant.y > h - margin) {
-      const toCentre = Math.atan2(h / 2 - ant.y, w / 2 - ant.x);
+    const ground = h * SURFACE_Y + 20; // below the surface
+    if (ant.x < margin || ant.x > w - margin || ant.y < ground || ant.y > h - margin) {
+      const toCentre = Math.atan2((ground + h) / 2 - ant.y, w / 2 - ant.x);
       let diff = toCentre - ant.heading;
       diff = Math.atan2(Math.sin(diff), Math.cos(diff));
       ant.turn += diff * 1.5 * dt;
@@ -322,8 +448,47 @@ function setUpAnts(sheet: HTMLElement, loupe: HTMLElement, zoom: () => number) {
     ant.phase += ant.speed * dt * 0.9;
   };
 
+  // The body outline per shape, in the ant's frame (x points forward)
+  const bodyPath = (ctx: CanvasRenderingContext2D, ant: Ant, l: number) => {
+    const f = ant.fat;
+    ctx.beginPath();
+    switch (ant.shape) {
+      case 'round':
+        ctx.arc(-l * 0.08, 0, l * 0.24 * Math.sqrt(f), 0, Math.PI * 2);
+        ctx.moveTo(l * 0.38, 0);
+        ctx.arc(l * 0.28, 0, l * 0.1, 0, Math.PI * 2);
+        break;
+      case 'square': {
+        const hw = l * 0.18 * f;
+        ctx.roundRect(-l * 0.45, -hw, l * 0.6, hw * 2, l * 0.04);
+        ctx.roundRect(l * 0.2, -l * 0.09, l * 0.18, l * 0.18, l * 0.02);
+        break;
+      }
+      case 'long':
+        ctx.ellipse(-l * 0.38, 0, l * 0.3, l * 0.08 * f, 0, 0, Math.PI * 2);
+        ctx.moveTo(l * 0.1, 0);
+        ctx.ellipse(0, 0, l * 0.1, l * 0.05, 0, 0, Math.PI * 2);
+        ctx.moveTo(l * 0.38, 0);
+        ctx.ellipse(l * 0.3, 0, l * 0.08, l * 0.07, 0, 0, Math.PI * 2);
+        break;
+      case 'triangle':
+        ctx.moveTo(l * 0.42, 0);
+        ctx.lineTo(-l * 0.4, -l * 0.24 * f);
+        ctx.lineTo(-l * 0.4, l * 0.24 * f);
+        ctx.closePath();
+        break;
+      default:
+        ctx.ellipse(-l * 0.32, 0, l * 0.2 * Math.min(f, 1.2), l * 0.14 * f, 0, 0, Math.PI * 2);
+        ctx.moveTo(l * 0.14, 0);
+        ctx.ellipse(0, 0, l * 0.14, l * 0.07, 0, 0, Math.PI * 2);
+        ctx.moveTo(l * 0.4, 0);
+        ctx.ellipse(l * 0.3, 0, l * 0.1, l * 0.09, 0, 0, Math.PI * 2);
+    }
+  };
+
+  // Every ant is symmetric: legs, antennae and extras mirror left and right.
   const drawAnt = (ctx: CanvasRenderingContext2D, ant: Ant) => {
-    const l = ANT_LENGTH;
+    const l = ANT_LENGTH * ant.size;
     ctx.save();
     ctx.translate(ant.x, ant.y);
     ctx.rotate(ant.heading);
@@ -331,40 +496,101 @@ function setUpAnts(sheet: HTMLElement, loupe: HTMLElement, zoom: () => number) {
     ctx.strokeStyle = '#1a1410';
     ctx.lineWidth = l * 0.06;
     ctx.lineCap = 'round';
-    // legs: three pairs, alternating gait
-    for (let i = 0; i < 3; i++) {
-      const base = -l * 0.08 + i * l * 0.08;
-      const swing = Math.sin(ant.phase + (i % 2 ? Math.PI : 0)) * l * 0.12;
+    ctx.lineJoin = 'round';
+    // legs: 1 to 4 pairs, both sides of a pair swing together
+    const n = ant.legPairs;
+    for (let i = 0; i < n; i++) {
+      const base = n === 1 ? -l * 0.05 : -l * 0.22 + (i * l * 0.32) / (n - 1);
+      const swing = Math.sin(ant.phase + i * 1.3) * l * 0.1;
       for (const side of [-1, 1]) {
         ctx.beginPath();
         ctx.moveTo(base, 0);
-        ctx.lineTo(base + l * 0.08 + swing * side, side * l * 0.2);
-        ctx.lineTo(base + l * 0.02 + swing * side * 1.4, side * l * 0.36);
+        ctx.lineTo(base + l * 0.06 + swing, side * l * 0.22 * ant.legs);
+        ctx.lineTo(base + swing * 1.4, side * l * 0.38 * ant.legs);
         ctx.stroke();
       }
     }
     // antennae
     for (const side of [-1, 1]) {
       ctx.beginPath();
-      ctx.moveTo(l * 0.42, 0);
-      ctx.quadraticCurveTo(l * 0.58, side * l * 0.12, l * 0.66, side * l * 0.22);
+      ctx.moveTo(l * 0.38, 0);
+      ctx.quadraticCurveTo(
+        l * 0.56,
+        side * l * (0.12 + ant.curl * 0.1),
+        l * (0.66 - ant.curl * 0.08),
+        side * l * (0.22 + ant.curl * 0.12),
+      );
       ctx.stroke();
     }
-    // body: abdomen, thorax, head
-    const ellipse = (x: number, rx: number, ry: number) => {
-      ctx.beginPath();
-      ctx.ellipse(x, 0, rx, ry, 0, 0, Math.PI * 2);
-      ctx.fill();
-    };
-    ellipse(-l * 0.32, l * 0.2, l * 0.14);
-    ellipse(0, l * 0.14, l * 0.07);
-    ellipse(l * 0.3, l * 0.1, l * 0.09);
+    bodyPath(ctx, ant, l);
+    ctx.fill();
+    drawAccessory(ctx, ant, l);
     ctx.restore();
+  };
+
+  // small symmetric extras; they only really show inside the loupe
+  const drawAccessory = (ctx: CanvasRenderingContext2D, ant: Ant, l: number) => {
+    ctx.lineWidth = l * 0.04;
+    const outlined = (draw: () => void) => {
+      ctx.beginPath();
+      draw();
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.stroke();
+    };
+    switch (ant.accessory) {
+      case 'leaf':
+        // a leafcutter ant: a leaf held up over its back
+        outlined(() => {
+          ctx.moveTo(-l * 0.5, 0);
+          ctx.quadraticCurveTo(0, -l * 0.42, l * 0.5, 0);
+          ctx.quadraticCurveTo(0, l * 0.42, -l * 0.5, 0);
+        });
+        ctx.beginPath();
+        ctx.moveTo(-l * 0.45, 0);
+        ctx.lineTo(l * 0.45, 0);
+        ctx.stroke();
+        break;
+      case 'crumb':
+        outlined(() => ctx.arc(l * 0.6, 0, l * 0.16, 0, Math.PI * 2));
+        break;
+      case 'eyes':
+        for (const side of [-1, 1]) {
+          outlined(() => ctx.arc(l * 0.32, side * l * 0.07, l * 0.065, 0, Math.PI * 2));
+          ctx.beginPath();
+          ctx.arc(l * 0.35, side * l * 0.07, l * 0.03, 0, Math.PI * 2);
+          ctx.fillStyle = '#1a1410';
+          ctx.fill();
+        }
+        break;
+      case 'hat':
+        outlined(() => {
+          ctx.moveTo(l * 0.22, -l * 0.1);
+          ctx.lineTo(l * 0.6, 0);
+          ctx.lineTo(l * 0.22, l * 0.1);
+          ctx.closePath();
+        });
+        outlined(() => ctx.arc(l * 0.62, 0, l * 0.045, 0, Math.PI * 2));
+        break;
+      case 'stripes':
+        // white body with black stripes across
+        ctx.save();
+        bodyPath(ctx, ant, l);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+        ctx.stroke();
+        ctx.clip();
+        ctx.fillStyle = '#1a1410';
+        for (let x = -l * 0.6; x < l * 0.5; x += l * 0.12) ctx.fillRect(x, -l, l * 0.05, l * 2);
+        ctx.restore();
+        break;
+    }
   };
 
   const render = () => {
     sheetCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     sheetCtx.clearRect(0, 0, w, h);
+    drawLandscape(sheetCtx, w);
     for (const ant of ants) drawAnt(sheetCtx, ant);
 
     if (state.focus) {
@@ -377,6 +603,7 @@ function setUpAnts(sheet: HTMLElement, loupe: HTMLElement, zoom: () => number) {
       loupeCtx.clearRect(0, 0, lens, lens);
       loupeCtx.translate(r - state.focus.x * z, r - state.focus.y * z);
       loupeCtx.scale(z, z);
+      drawLandscape(loupeCtx, w);
       for (const ant of ants) drawAnt(loupeCtx, ant);
     }
   };
