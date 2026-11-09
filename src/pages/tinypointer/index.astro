@@ -12,6 +12,8 @@
  * On the sheets the visitor can try each feature (see Sheet.astro).
  */
 import '@fontsource-variable/playpen-sans/wght.css';
+import '@fontsource/iosevka/400.css';
+import '@fontsource/iosevka/600.css';
 import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Sheet from '../../components/tinypointer/Sheet.astro';
@@ -36,6 +38,9 @@ import stickTree from '../../assets/tinypointer/sticks/tree.png';
 
 const downloadUrl = 'https://github.com/esreverse/tinypointer/releases/latest/download/TinyPointer.dmg';
 const repoUrl = 'https://github.com/esreverse/tinypointer';
+const tinyHandUrl = 'https://github.com/nilbuild/tinyhand';
+const tinyHandAuthorUrl = 'https://github.com/nilbuild';
+const screenBrushUrl = 'https://imagestudiopro.com/screenbrush/';
 
 const handSizes = 'clamp(180px, 22vw, 320px)';
 // tip: where the ink comes out, as fractions of the image (measured: topmost
@@ -90,7 +95,7 @@ const hands: HandChoice[] = await Promise.all(
 
       <section class="step step--sheet">
         <Sheet feature="draw" hint="Draw something now">
-          <h2 class="sheet-title" slot="title"><span>Imagine you could draw.</span></h2>
+          <h2 class="sheet-title" slot="title"><span>Imagine you could draw anywhere on your screen.</span></h2>
           <Fragment slot="shortcut">In the app: hold and drag to draw · <kbd>⌃⇥</kbd> turns the pointer on and off</Fragment>
         </Sheet>
       </section>
@@ -117,15 +122,30 @@ const hands: HandChoice[] = await Promise.all(
       </section>
 
       <section class="step step--outro" aria-labelledby="outro-title">
-        <p class="step__title outro__lead"><span>Imagine TinyHand and ScreenBrush had a baby.</span></p>
+        <p class="step__title outro__lead">
+          <span
+            >Imagine <a class="hover-link" href={tinyHandUrl}>TinyHand</a> and <a
+              class="hover-link"
+              href={screenBrushUrl}>ScreenBrush</a
+            > had a baby.</span
+          >
+        </p>
         <h2 class="step__title outro__lead" id="outro-title"><span>This is TinyPointer.</span></h2>
         <a class="download" href={downloadUrl} data-cursor-grow>
           Download for macOS <ArrowIcon tight bold />
         </a>
-        <p class="outro__meta">
-          Free &amp; open source · macOS 13 or later · Apple Silicon &amp; Intel · Signed &amp; notarized
-          by Apple · <a class="link" href={repoUrl}>GitHub</a>
-        </p>
+        <footer class="outro__footer">
+          <p class="outro__thanks">
+            Big thanks to <a class="hover-link" href={tinyHandAuthorUrl}>Kamran Ahmed</a> for <a
+              class="hover-link"
+              href={tinyHandUrl}>TinyHand</a
+            >, which TinyPointer grew out of.
+          </p>
+          <p class="outro__meta">
+            Free &amp; open source · macOS 13 or later · Apple Silicon &amp; Intel · Signed &amp; notarized
+            by Apple · <a class="link" href={repoUrl}>GitHub</a>
+          </p>
+        </footer>
       </section>
     </div>
 
@@ -192,6 +212,7 @@ const hands: HandChoice[] = await Promise.all(
     let tilt = 0;
     let held = false;
     let press = 0;
+    let lock = 0; // 0 = eased, 1 = fingertip locked to the pointer
 
     window.addEventListener('tinypointer:hand', (event) => {
       const { src, srcset, stick, tipX, tipY } = (
@@ -235,11 +256,15 @@ const hands: HandChoice[] = await Promise.all(
         target = { x: pointer.x - restX, y: pointer.y - restY };
       }
 
-      // ease towards the target, with a little tilt from the horizontal speed
-      const ease = reduced ? 1 : 0.22;
+      // While following, the fingertip sits exactly on the pointer (as in the
+      // app), so the ink never runs ahead of the hand. Only arriving and
+      // returning to rest are eased. A little tilt comes from the speed.
+      // ramp the lock up over a few frames so the hand doesn't jump when it starts following
+      lock += ((following ? 1 : 0) - lock) * 0.12;
+      const ease = reduced ? 1 : following ? 0.22 + 0.78 * Math.min(1, lock * 1.25) : 0.22;
       const dx = (target.x - offset.x) * ease;
       offset = { x: offset.x + dx, y: offset.y + (target.y - offset.y) * ease };
-      tilt += (Math.max(-8, Math.min(8, dx * 0.4)) - tilt) * 0.15;
+      tilt += (Math.max(-8, Math.min(8, dx * 0.25)) - tilt) * 0.15;
       rig.style.transform = `translate(${offset.x}px, ${offset.y}px) rotate(${tilt}deg)`;
 
       if (!held) press += (0 - press) * 0.18;
@@ -256,14 +281,13 @@ const hands: HandChoice[] = await Promise.all(
 
 <style>
   /* --- Page-level tokens ---------------------------------------------------- */
-  /* Classic 1-bit look: black and white on a dithered grey desktop
-     (2 × 2 checkerboard). Only the hands and the ink are in colour. */
+  /* Classic black-and-white look on a plain grey desktop.
+     Only the hands and the ink are in colour. */
   :global(body) {
     --story-text: var(--color-black);
-    --desktop-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E");
+    --desktop-grey: #b4b4b4;
 
-    background: #fff var(--desktop-pattern) 0 0 / 2px 2px repeat;
-    image-rendering: pixelated;
+    background: var(--desktop-grey);
   }
 
   /* DARK MODE – disabled while the light mode is being refined.
@@ -415,23 +439,16 @@ const hands: HandChoice[] = await Promise.all(
     padding: 96px var(--gutter);
   }
 
+  /* one headline size for the whole page (same as the sheet headlines) */
   .step__title {
-    max-width: 14ch;
-    font-size: clamp(2.5rem, 7vw, 5.5rem);
-    line-height: 1.12;
+    max-width: 20ch;
+    font-size: clamp(2rem, 4.5vw, 3.75rem);
+    line-height: 1.15;
     letter-spacing: -0.02em;
     font-weight: 400;
     text-align: center;
   }
 
-  /* text on the desktop sits on white, like a selected label */
-  .step__title > span,
-  .sheet-title > span {
-    padding: 0 0.18em;
-    background: var(--color-white);
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-  }
 
   /* The first two lines share the sheets' column and left edge. */
   .step--intro .step__title,
@@ -493,7 +510,6 @@ const hands: HandChoice[] = await Promise.all(
 
   .outro__lead {
     max-width: 22ch;
-    font-size: clamp(1.25rem, 3.5vw, 2.75rem);
   }
 
   /* one empty line between the two sentences */
@@ -536,14 +552,43 @@ const hands: HandChoice[] = await Promise.all(
     height: 20px;
   }
 
-  /* sits at the very bottom of the page, as a white label */
-  .outro__meta {
+  /* links in running text: underlined on hover only */
+  .hover-link {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.18em;
+    transition: text-decoration-color 0.2s;
+  }
+
+  .hover-link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* thanks and facts at the very bottom of the page, as white labels */
+  .outro__footer {
     position: absolute;
     left: 50%;
     bottom: 32px;
     translate: -50% 0;
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    width: calc(100% - 2 * var(--gutter));
+  }
+
+  .outro__thanks {
+    padding: 2px 10px;
+    border: 1px solid var(--color-black);
+    background: var(--color-white);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .outro__meta {
     width: max-content;
-    max-width: calc(100% - 2 * var(--gutter));
+    max-width: 100%;
     padding: 2px 8px;
     border: 1px solid var(--color-black);
     background: var(--color-white);

@@ -47,7 +47,7 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     margin: 0;
   }
 
-  /* --- Classic window: 1px frame, hard 1-bit shadow, striped title bar --- */
+  /* --- Classic window: 1px frame, hard 1-bit shadow, plain title bar --- */
   .window {
     width: 100%;
     border: 1px solid var(--color-black);
@@ -62,7 +62,7 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     height: 22px;
     padding: 4px 3px;
     border-bottom: 1px solid var(--color-black);
-    background: repeating-linear-gradient(var(--color-black) 0 1px, var(--color-white) 1px 2px) content-box;
+    background: var(--color-white);
   }
 
   .window__close {
@@ -114,11 +114,8 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     height: 100%;
   }
 
-  /* --- App shortcut: a small white label on the desktop --- */
+  /* --- App shortcut: directly on the desktop pattern --- */
   .sheet__shortcut {
-    padding: 2px 8px;
-    border: 1px solid var(--color-black);
-    background: var(--color-white);
     color: var(--color-black);
     font-family: var(--font-mono);
     font-variation-settings: normal;
@@ -130,22 +127,20 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     display: inline-block;
     min-width: 1.9em;
     margin-inline: 0.2em;
-    padding: 0 0.5em;
-    border: 1px solid var(--color-black);
-    border-radius: 3px;
-    background: var(--color-white);
-    box-shadow: 1px 1px 0 var(--color-black);
+    padding: 0.05em 0.6em;
+    border-radius: 6px;
+    background: rgb(0 0 0 / 0.1);
     font: inherit;
     line-height: 1.4;
     font-weight: 600;
     text-align: center;
   }
 
-  /* Parallax: the window travels a little slower than the page.
-     CSS scroll-driven animation, no JS. */
+  /* Parallax: headline, window and shortcut travel up together as one group,
+     a little slower than the page. CSS scroll-driven animation, no JS. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .window {
+      .sheet-wrap {
         animation: sheet-settle linear both;
         animation-timeline: view();
         animation-range: entry 0% cover 45%;
