@@ -73,6 +73,8 @@ const hands: HandChoice[] = await Promise.all(
 <Base
   title="TinyPointer – A tiny hand on a stick for your Mac"
   description="TinyPointer turns your cursor into a hand that points, taps and draws on top of everything on screen. Free for macOS."
+  ogImage="/og-tinypointer.png"
+  themeColor="#b4b4b4"
 >
   <a class="home-link" href={url('/')}>
     <XdLogo class="home-link__logo" />
@@ -131,6 +133,7 @@ const hands: HandChoice[] = await Promise.all(
           >
         </p>
         <h2 class="step__title outro__lead" id="outro-title"><span>This is TinyPointer.</span></h2>
+        <p class="step__title outro__lead outro__free"><span>Free for macOS.</span></p>
         <a class="download" href={downloadUrl} data-cursor-grow>
           Download for macOS <ArrowIcon tight bold />
         </a>
@@ -142,8 +145,11 @@ const hands: HandChoice[] = await Promise.all(
             >, the app TinyPointer grew out of.
           </p>
           <p class="outro__meta">
-            Free &amp; open source · macOS 13 or later · Apple Silicon &amp; Intel · Signed &amp; notarized
-            by Apple · <a class="link" href={repoUrl}>GitHub</a>
+            <span>Free &amp; open source ·</span>{' '}
+            <span>macOS 13 or later ·</span>{' '}
+            <span>Apple Silicon &amp; Intel ·</span>{' '}
+            <span>Signed &amp; notarized by Apple ·</span>{' '}
+            <a class="link" href={repoUrl}>GitHub</a>
           </p>
         </footer>
       </section>
@@ -184,7 +190,7 @@ const hands: HandChoice[] = await Promise.all(
   const rig = document.querySelector<HTMLElement>('[data-hand-rig]');
   const img = document.querySelector<HTMLImageElement>('[data-hand]');
   const body = document.querySelector<HTMLElement>('[data-hand-body]');
-  const trigger = document.querySelector<HTMLElement>('.step--hand');
+  const trigger = document.querySelector<HTMLElement>('.step--hand .step__title');
   const outro = document.querySelector<HTMLElement>('.step--outro');
   const root = document.documentElement;
   const canFollow = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -244,7 +250,9 @@ const hands: HandChoice[] = await Promise.all(
     }
 
     const frame = () => {
-      const arrived = trigger.getBoundingClientRect().top < window.innerHeight * 0.3;
+      // arrived once the hand has risen, i.e. shortly after the headline passed the centre
+      const line = trigger.getBoundingClientRect();
+      const arrived = line.top + line.height / 2 < window.innerHeight * 0.28;
       root.toggleAttribute('data-hand-arrived', arrived);
       // the hand toolbar is only needed while the sheets are on screen
       const outroReached = !!outro && outro.getBoundingClientRect().top < window.innerHeight * 0.6;
@@ -293,6 +301,26 @@ const hands: HandChoice[] = await Promise.all(
 
     background: var(--desktop-grey);
   }
+
+  /* DARK MODE (inverted) – disabled, the light grey is preferred for now.
+     The black-and-white world is simply inverted; hands, ink (inverted back)
+     and the app toolbar keep their colours. Remove this comment wrapper to enable.
+  @media (prefers-color-scheme: dark) {
+    :global(body) {
+      background: #4b4b4b; /* = inverted #b4b4b4 */
+    }
+
+    .stage,
+    .steps,
+    .home-link {
+      filter: invert(1);
+    }
+
+    .steps :global(.sheet__ink) {
+      filter: invert(1);
+    }
+  }
+*/
 
   /* DARK MODE – disabled while the light mode is being refined.
    Remove this comment wrapper to switch it back on.
@@ -412,14 +440,15 @@ const hands: HandChoice[] = await Promise.all(
 
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .step--hand {
+      /* the headline itself drives the hand: it rises once the line is centred */
+      .step--hand .step__title {
         view-timeline: --hand-in block;
       }
 
       .hand-body {
         animation: hand-in linear both;
         animation-timeline: --hand-in;
-        animation-range: entry 30% contain 30%;
+        animation-range: cover 50% cover 70%;
       }
     }
   }
@@ -507,11 +536,18 @@ const hands: HandChoice[] = await Promise.all(
   }
 
   /* --- Outro ----------------------------------------------------------------- */
+  /* Content centred in the remaining space, footer at the bottom – in the
+     normal flow, so wrapping footer lines push nothing into the content. */
   .step--outro {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     min-height: 100svh;
-    align-content: center;
-    gap: 0;
+    padding-bottom: 32px;
+  }
+
+  .step--outro > :first-child {
+    margin-top: auto;
   }
 
   .outro__lead {
@@ -521,6 +557,11 @@ const hands: HandChoice[] = await Promise.all(
   /* one empty line between the two sentences */
   .outro__lead + .outro__lead {
     margin-top: 1.1em;
+  }
+
+  /* directly below "This is TinyPointer." */
+  .outro__lead + .outro__free {
+    margin-top: 0;
   }
 
   /* classic default button: rounded, with a thick outer ring */
@@ -574,10 +615,8 @@ const hands: HandChoice[] = await Promise.all(
 
   /* thanks and facts at the very bottom of the page, directly on the desktop */
   .outro__footer {
-    position: absolute;
-    left: 50%;
-    bottom: 32px;
-    translate: -50% 0;
+    margin-top: auto;
+    padding-top: 64px;
     display: grid;
     justify-items: center;
     gap: 10px;
@@ -585,7 +624,18 @@ const hands: HandChoice[] = await Promise.all(
     width: min(66.667%, 100% - 2 * var(--gutter));
   }
 
+  @media (max-width: 767px) {
+    .outro__footer {
+      width: 100%;
+    }
+  }
+
+  .outro__meta span {
+    white-space: nowrap;
+  }
+
   .outro__thanks {
+    text-wrap: balance;
     font-family: var(--font-mono);
     font-variation-settings: normal;
     font-size: 0.75rem; /* same as the line below */
@@ -594,8 +644,8 @@ const hands: HandChoice[] = await Promise.all(
   }
 
   .outro__meta {
-    width: max-content;
     max-width: 100%;
+    text-wrap: balance;
     font-family: var(--font-mono);
     font-variation-settings: normal;
     font-size: 0.75rem;

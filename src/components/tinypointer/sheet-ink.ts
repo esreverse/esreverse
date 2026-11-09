@@ -24,6 +24,8 @@ const STAMP_RADIUS = 22;
 const HEAD_LENGTH = 24;
 const HEAD_ANGLE = (28 * Math.PI) / 180;
 const RAINBOW_DEG_PER_PX = 0.35;
+/** Input smoothing: each new point moves this far towards the raw pointer (0..1, lower = smoother). */
+const SMOOTHING = 0.4;
 
 export function initSheets() {
   for (const sheet of document.querySelectorAll<HTMLElement>('[data-sheet]')) {
@@ -76,21 +78,38 @@ function setUpSheet(sheet: HTMLElement, feature: Feature) {
     strokes.push(current);
   });
 
-  canvas.addEventListener('pointermove', (event) => {
+  /** Adds one input sample to the current line, eased towards the raw pointer. */
+  const addSample = (raw: Point) => {
     if (!current) return;
     const last = current.points[current.points.length - 1];
-    const p = toSheet(event);
+    // ease each point towards the pointer, which irons out jitter and corners
+    const p = { x: last.x + (raw.x - last.x) * SMOOTHING, y: last.y + (raw.y - last.y) * SMOOTHING, hue };
     const dist = Math.hypot(p.x - last.x, p.y - last.y) * width();
-    if (dist < 1.5) return;
+    if (dist < 0.5) return;
     if (current.rainbow) hue += dist * RAINBOW_DEG_PER_PX;
     p.hue = hue;
     current.points.push(p);
+  };
+
+  let lastRaw: Point | null = null;
+
+  canvas.addEventListener('pointermove', (event) => {
+    if (!current) return;
+    // use every sample the browser collected since the last frame, not just the latest
+    const samples = event.getCoalescedEvents?.() ?? [];
+    for (const sample of samples.length ? samples : [event]) {
+      lastRaw = toSheet(sample);
+      addSample(lastRaw);
+    }
     redraw();
   });
 
   const end = () => {
+    // let the smoothed line catch up with where the pointer was released
+    if (current && lastRaw) for (let i = 0; i < 8; i++) addSample(lastRaw);
     if (current && current.points.length < 2) strokes.pop();
     current = null;
+    lastRaw = null;
     redraw();
   };
   canvas.addEventListener('pointerup', end);
