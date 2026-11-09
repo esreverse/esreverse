@@ -5,6 +5,7 @@
  * Selecting a hand dispatches `tinypointer:hand` with the image sources.
  */
 import { Image } from 'astro:assets';
+import RetroDialog from './RetroDialog.astro';
 
 export interface HandChoice {
   id: string;
@@ -45,7 +46,7 @@ const { hands } = Astro.props;
     ))
   }
   <span class="toolbar__divider" aria-hidden="true"></span>
-  <button class="toolbar__add" type="button" aria-controls="own-hand" aria-haspopup="dialog" data-dialog-open>
+  <button class="toolbar__add" type="button" aria-controls="own-hand" aria-haspopup="dialog" data-dialog-open="own-hand">
     <svg viewBox="0 0 20 20" aria-hidden="true">
       <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
     </svg>
@@ -53,56 +54,22 @@ const { hands } = Astro.props;
   </button>
 </div>
 
-<!-- "Add your own" hint: a classic black-and-white dialog. Not a native popover/
-     <dialog>: those always sit in the browser's top layer, above the hand. -->
-<div class="dialog-layer" id="own-hand" hidden data-dialog>
-<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="own-hand-title">
-  <div class="dialog__bar">
-    <span class="dialog__title" id="own-hand-title">Make your own hand</span>
-  </div>
-  <div class="dialog__body">
-    <p>
-      In TinyPointer you can turn any idea into your own hand, for example with ChatGPT. Open
-      <strong>Settings → Pointers → Make your own…</strong> and:
-    </p>
-    <ol>
-      <li>Describe your hand, e.g. “knitted wool in mustard yellow”.</li>
-      <li>
-        Click <strong>Open in ChatGPT</strong> (or copy the prompt for another image tool) and download
-        the result as a PNG with a transparent background.
-      </li>
-      <li>Drop the PNG into TinyPointer. Your hand is ready in the toolbar.</li>
-    </ol>
-    <div class="dialog__actions">
-      <button class="dialog__ok" type="button" data-dialog-close>OK</button>
-    </div>
-  </div>
-</div>
-</div>
+<RetroDialog id="own-hand" title="Make your own hand">
+  <p>
+    In TinyPointer you can turn any idea into your own hand, for example with ChatGPT. Open
+    <strong>Settings → Pointers → Make your own…</strong> and:
+  </p>
+  <ol>
+    <li>Describe your hand, e.g. “knitted wool in mustard yellow”.</li>
+    <li>
+      Click <strong>Open in ChatGPT</strong> (or copy the prompt for another image tool) and download the
+      result as a PNG with a transparent background.
+    </li>
+    <li>Drop the PNG into TinyPointer. Your hand is ready in the toolbar.</li>
+  </ol>
+</RetroDialog>
 
 <script>
-  // "Make your own hand" dialog: open, close (OK, backdrop, Esc), focus handling
-  const layer = document.querySelector<HTMLElement>('[data-dialog]');
-  const opener = document.querySelector<HTMLButtonElement>('[data-dialog-open]');
-  if (layer && opener) {
-    const ok = layer.querySelector<HTMLButtonElement>('[data-dialog-close]')!;
-    const close = () => {
-      layer.hidden = true;
-      opener.focus();
-    };
-    opener.addEventListener('click', () => {
-      layer.hidden = false;
-      ok.focus();
-    });
-    ok.addEventListener('click', close);
-    layer.addEventListener('click', (event) => {
-      if (event.target === layer) close();
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !layer.hidden) close();
-    });
-  }
-
   const toolbar = document.querySelector<HTMLElement>('[data-hand-toolbar]');
   toolbar?.addEventListener('click', (event) => {
     const button = (event.target as Element).closest<HTMLButtonElement>('.toolbar__hand');
@@ -195,95 +162,6 @@ const { hands } = Astro.props;
 
   .toolbar__add svg {
     width: 22px;
-  }
-
-  /* --- Classic black-and-white dialog --- */
-  /* above toolbar and sheets, below the hand (z-index 3) */
-  .dialog-layer {
-    position: fixed;
-    z-index: 2;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    padding: 16px;
-    background: rgb(0 0 0 / 0.25);
-  }
-
-  .dialog-layer[hidden] {
-    display: none;
-  }
-
-  /* DARK MODE (inverted) – disabled together with the page's dark mode.
-  @media (prefers-color-scheme: dark) {
-    .dialog {
-      filter: invert(1);
-    }
-  }
-*/
-
-  .dialog {
-    width: min(460px, 100%);
-    padding: 0;
-    border: 1px solid var(--color-black);
-    border-radius: 0;
-    background: var(--color-white);
-    color: var(--color-black);
-    box-shadow: 3px 3px 0 var(--color-black);
-    font-size: 0.9375rem;
-    line-height: 1.5;
-  }
-
-  .dialog__bar {
-    display: grid;
-    place-items: center;
-    height: 22px;
-    border-bottom: 1px solid var(--color-black);
-  }
-
-  .dialog__title {
-    font-size: 13px;
-    line-height: 14px;
-    font-weight: 700;
-    font-variation-settings: normal;
-  }
-
-  .dialog__body {
-    display: grid;
-    gap: 12px;
-    padding: 20px 24px 24px;
-  }
-
-  .dialog__body ol {
-    display: grid;
-    gap: 6px;
-    margin: 0;
-    padding-left: 1.25em;
-  }
-
-  .dialog__actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 8px;
-  }
-
-  /* classic default button with the thick outer ring */
-  .dialog__ok {
-    min-width: 88px;
-    padding: 6px 20px;
-    border: 0;
-    border-radius: 10px;
-    outline: 3px solid var(--color-black);
-    outline-offset: 3px;
-    background: var(--color-white);
-    color: var(--color-black);
-    font: inherit;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .dialog__ok:hover {
-    background: var(--color-black);
-    color: var(--color-white);
   }
 
   .toolbar__hand :global(img) {

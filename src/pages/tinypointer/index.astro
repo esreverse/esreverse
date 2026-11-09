@@ -19,6 +19,7 @@ import Base from '../../layouts/Base.astro';
 import Sheet from '../../components/tinypointer/Sheet.astro';
 import HandToolbar, { type HandChoice } from '../../components/tinypointer/HandToolbar.astro';
 import DesktopIcons from '../../components/tinypointer/DesktopIcons.astro';
+import RetroDialog from '../../components/tinypointer/RetroDialog.astro';
 import XdLogo from '../../components/XdLogo.astro';
 import ArrowIcon from '../../components/ArrowIcon.astro';
 import { url } from '../../lib/url';
@@ -35,6 +36,28 @@ import stickGlove from '../../assets/tinypointer/sticks/glove.png';
 import stickCookie from '../../assets/tinypointer/sticks/cookie.png';
 import stickChoco from '../../assets/tinypointer/sticks/choco.png';
 import stickTree from '../../assets/tinypointer/sticks/tree.png';
+
+// Settings screenshots (light and dark) for the "Screenshots" dialog
+const shotFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/tinypointer/screenshots/*.png', {
+  eager: true,
+});
+const shotOf = (name: string) => shotFiles[`../../assets/tinypointer/screenshots/${name}.png`].default;
+const screenshots = await Promise.all(
+  [
+    // row by row, two per row: General, Shortcuts / Draw, Zoom / Pointers, Sound
+    { id: 'general', title: 'General', text: 'Startup, updates, permissions' },
+    { id: 'shortcuts', title: 'Shortcuts', text: 'Every action on a key' },
+    { id: 'drawing', title: 'Draw', text: 'Size, opacity, colours, rainbow' },
+    { id: 'zoom', title: 'Zoom', text: 'Loupe size, factor, animation' },
+    { id: 'pointers', title: 'Pointers', text: 'Your toolbar and your own hands' },
+    { id: 'sound', title: 'Sound', text: 'Tap sounds and when they play' },
+  ].map(async (shot) => {
+    const widths = [480, 860, 1560];
+    const light = await getImage({ src: shotOf(`settings-${shot.id}-light`), widths, format: 'webp' });
+    const dark = await getImage({ src: shotOf(`settings-${shot.id}-dark`), widths, format: 'webp' });
+    return { ...shot, light, dark };
+  }),
+);
 
 const downloadUrl = 'https://github.com/esreverse/tinypointer/releases/latest/download/TinyPointer.dmg';
 const repoUrl = 'https://github.com/esreverse/tinypointer';
@@ -82,7 +105,7 @@ const hands: HandChoice[] = await Promise.all(
   </a>
 
   <main class="story">
-    <div class="stage" aria-hidden="true">
+    <div class="stage">
       <DesktopIcons />
     </div>
 
@@ -98,28 +121,35 @@ const hands: HandChoice[] = await Promise.all(
       <section class="step step--sheet">
         <Sheet feature="draw" hint="Draw something now">
           <h2 class="sheet-title" slot="title"><span>Imagine you could draw anywhere on your screen.</span></h2>
-          <Fragment slot="shortcut">In the app: hold and drag to draw · <kbd>⌃⇥</kbd> turns the pointer on and off</Fragment>
+          <Fragment slot="shortcut">In the app: Hold and drag to draw · <kbd>⌃⇥</kbd> turns the pointer on and off</Fragment>
         </Sheet>
       </section>
 
       <section class="step step--sheet">
         <Sheet feature="rainbow" hint="Draw in rainbow colours now">
           <h2 class="sheet-title" slot="title"><span>In all colors of the rainbow.</span></h2>
-          <Fragment slot="shortcut">In the app: press <kbd>R</kbd> for rainbow ink, <kbd>A</kbd> for automatic colour</Fragment>
-        </Sheet>
-      </section>
-
-      <section class="step step--sheet">
-        <Sheet feature="stamp" hint="Click to stamp numbers now">
-          <h2 class="sheet-title" slot="title"><span>Imagine you could stamp numbers to describe an order or select options.</span></h2>
-          <Fragment slot="shortcut">In the app: hold <kbd>⌥</kbd> and click</Fragment>
+          <Fragment slot="shortcut">In the app: Press <kbd>R</kbd> for rainbow ink, <kbd>A</kbd> for automatic colour</Fragment>
         </Sheet>
       </section>
 
       <section class="step step--sheet">
         <Sheet feature="arrow" hint="Draw an arrow now">
           <h2 class="sheet-title" slot="title"><span>Then imagine you could also draw arrows.</span></h2>
-          <Fragment slot="shortcut">In the app: hold <kbd>⌃</kbd> and drag</Fragment>
+          <Fragment slot="shortcut">In the app: Hold <kbd>⌃</kbd> and drag</Fragment>
+        </Sheet>
+      </section>
+
+      <section class="step step--sheet">
+        <Sheet feature="stamp" hint="Click to stamp numbers now">
+          <h2 class="sheet-title" slot="title"><span>Maybe you need to stamp numbers to show an order or to number variants.</span></h2>
+          <Fragment slot="shortcut">In the app: Hold <kbd>⌥</kbd> and click</Fragment>
+        </Sheet>
+      </section>
+
+      <section class="step step--sheet">
+        <Sheet feature="zoom" hint="Hover to zoom anywhere on the screen">
+          <h2 class="sheet-title" slot="title"><span>Or take a closer look at everything on your screen.</span></h2>
+          <Fragment slot="shortcut">In the app: Hold <kbd>⇧</kbd> · turn on the zoom loupe in Settings first</Fragment>
         </Sheet>
       </section>
 
@@ -178,6 +208,35 @@ const hands: HandChoice[] = await Promise.all(
   </main>
 
   <HandToolbar hands={hands} />
+
+  <RetroDialog id="screenshots" title="Screenshots" wide>
+    <ul class="shots" role="list">
+      {
+        screenshots.map(({ title, text, light, dark }) => (
+          <li>
+            <figure>
+              <picture>
+                <source media="(prefers-color-scheme: dark)" srcset={dark.srcSet.attribute} sizes="(min-width: 900px) 400px, 90vw" />
+                <img
+                  src={light.src}
+                  srcset={light.srcSet.attribute}
+                  sizes="(min-width: 900px) 400px, 90vw"
+                  width="1560"
+                  height="1136"
+                  alt={`TinyPointer settings: ${title}`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+              <figcaption>
+                <strong>{title}:</strong> {text}
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+  </RetroDialog>
 </Base>
 
 <script>
@@ -240,13 +299,42 @@ const hands: HandChoice[] = await Promise.all(
         window.addEventListener(type, track, { passive: true });
       }
       root.addEventListener('pointerleave', () => (pointer = null));
+      // Tap sound, as in the app (default "pop"): plays when the hand taps,
+      // i.e. a click without dragging – drawing stays silent.
+      const soundUrl = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/sounds/tap-pop.wav`;
+      let audio: AudioContext | null = null;
+      let tapBuffer: AudioBuffer | null = null;
+      const loadSound = () => {
+        if (audio) return;
+        audio = new AudioContext();
+        fetch(soundUrl)
+          .then((r) => r.arrayBuffer())
+          .then((data) => audio!.decodeAudioData(data))
+          .then((buffer) => (tapBuffer = buffer))
+          .catch(() => {});
+      };
+      const playTap = () => {
+        if (!audio || !tapBuffer) return;
+        const source = audio.createBufferSource();
+        source.buffer = tapBuffer;
+        source.connect(audio.destination);
+        source.start();
+      };
+      let downAt: { x: number; y: number } | null = null;
+
       window.addEventListener('pointerdown', (e) => {
+        loadSound(); // audio may only start after a user gesture
         if (e.button === 0 && root.hasAttribute('data-hand-following')) {
           held = true;
           press = 1;
+          downAt = { x: e.clientX, y: e.clientY };
         }
       });
-      window.addEventListener('pointerup', () => (held = false));
+      window.addEventListener('pointerup', (e) => {
+        held = false;
+        if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) < 5) playTap();
+        downAt = null;
+      });
     }
 
     const frame = () => {
@@ -292,6 +380,38 @@ const hands: HandChoice[] = await Promise.all(
 </script>
 
 <style>
+  /* --- Screenshots dialog ------------------------------------------------------ */
+  .shots {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .shots figure {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .shots img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-black);
+  }
+
+  .shots figcaption {
+    font-size: 0.8125rem;
+  }
+
+  @media (max-width: 600px) {
+    .shots {
+      grid-template-columns: 1fr;
+    }
+  }
+
   /* --- Page-level tokens ---------------------------------------------------- */
   /* Classic black-and-white look on a plain grey desktop.
      Only the hands and the ink are in colour. */
@@ -302,9 +422,8 @@ const hands: HandChoice[] = await Promise.all(
     background: var(--desktop-grey);
   }
 
-  /* DARK MODE (inverted) – disabled, the light grey is preferred for now.
-     The black-and-white world is simply inverted; hands, ink (inverted back)
-     and the app toolbar keep their colours. Remove this comment wrapper to enable.
+  /* Dark mode for this page: the black-and-white world is simply inverted.
+     The hands, the ink (inverted back) and the app toolbar keep their colours. */
   @media (prefers-color-scheme: dark) {
     :global(body) {
       background: #4b4b4b; /* = inverted #b4b4b4 */
@@ -316,11 +435,12 @@ const hands: HandChoice[] = await Promise.all(
       filter: invert(1);
     }
 
+    /* ink keeps its colours; the ants are inverted with the paper, so they
+       stay visible as light ants on the dark sheet */
     .steps :global(.sheet__ink) {
       filter: invert(1);
     }
   }
-*/
 
   /* DARK MODE – disabled while the light mode is being refined.
    Remove this comment wrapper to switch it back on.
@@ -333,6 +453,15 @@ const hands: HandChoice[] = await Promise.all(
     }
   }
 */
+
+  /* Over the zoom sheet the hand turns into the loupe. */
+  :global(html[data-hand-loupe]) .hand-layer {
+    opacity: 0;
+  }
+
+  .hand-layer {
+    transition: opacity 0.15s;
+  }
 
   /* The hand is the pointer while it follows the mouse. */
   :global(html[data-hand-following]),
@@ -372,10 +501,12 @@ const hands: HandChoice[] = await Promise.all(
     color: var(--story-text);
   }
 
+  /* above the steps so the "Hands" icon can be clicked; only icons catch clicks */
   .stage {
     position: sticky;
     top: 0;
-    z-index: 0;
+    z-index: 2;
+    pointer-events: none;
     height: 100svh;
     overflow: hidden;
   }

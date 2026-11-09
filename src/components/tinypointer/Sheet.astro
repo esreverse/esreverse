@@ -3,17 +3,18 @@
  * A landscape sheet of paper in a classic black-and-white document window,
  * with the feature's headline above it (slot "title"). Each sheet unlocks its
  * feature: inside the sheet the visitor can try it with the hand (draw,
- * rainbow ink, number stamps, arrows). The sheet clips the ink.
+ * rainbow ink, number stamps, arrows, zoom loupe). The sheet clips the ink.
  * Below the window: the shortcut that does the same in the app.
  */
 interface Props {
-  feature: 'draw' | 'rainbow' | 'stamp' | 'arrow';
-  /** Call to action at the bottom left of the sheet */
+  feature: 'draw' | 'rainbow' | 'stamp' | 'arrow' | 'zoom';
+  /** Call to action in the middle of the sheet (not shown on the zoom sheet) */
   hint: string;
 }
 const { feature, hint } = Astro.props;
 
-const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow: 'Arrows' };
+const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow: 'Arrows', zoom: 'Zoom' };
+
 ---
 
 <figure class="sheet-wrap">
@@ -23,10 +24,23 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
       <span class="window__close"></span>
       <span class="window__title">{windowTitles[feature]}</span>
     </div>
-    <article class="sheet" data-sheet={feature}>
-      <p class="sheet__hint">{hint}</p>
-      <canvas class="sheet__ink" aria-hidden="true"></canvas>
-    </article>
+    {
+      feature === 'zoom' ? (
+        <article class="sheet sheet--zoom" data-sheet={feature}>
+          <canvas class="sheet__ants" aria-hidden="true" />
+          <div class="loupe" aria-hidden="true">
+            <div class="loupe__lens">
+              <canvas class="loupe__ants" />
+            </div>
+          </div>
+        </article>
+      ) : (
+        <article class="sheet" data-sheet={feature}>
+          <p class="sheet__hint">{hint}</p>
+          <canvas class="sheet__ink" aria-hidden="true" />
+        </article>
+      )
+    }
   </div>
   <figcaption class="sheet__shortcut">
     <slot name="shortcut" />
@@ -105,6 +119,68 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     font-size: clamp(0.875rem, 1.6vw, 1.125rem);
     line-height: 1.75;
     opacity: 0.55;
+  }
+
+  /* --- Zoom: ants and loupe --- */
+  .sheet--zoom {
+    display: block;
+    padding: 0;
+    cursor: none;
+  }
+
+  /* The hand turns into this loupe over the sheet: 3× magnification inside a
+     thick Liquid Glass ring (blurred, brightened backdrop with light edges),
+     modelled on the app's loupe. */
+  .loupe {
+    --size: 220px;
+    --ring: 14px;
+    --zoom: 3;
+
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.1); /* grey glass ring */
+    -webkit-backdrop-filter: blur(10px) saturate(1.8) brightness(1.08);
+    backdrop-filter: blur(10px) saturate(1.8) brightness(1.08);
+    box-shadow:
+      inset 0 1.5px 1px rgb(255 255 255 / 0.85),
+      inset 0 -1.5px 2px rgb(0 0 0 / 0.18),
+      inset 0 0 0 0.5px rgb(255 255 255 / 0.6),
+      0 0 0 0.5px rgb(0 0 0 / 0.2),
+      0 10px 28px rgb(0 0 0 / 0.28);
+    pointer-events: none;
+    opacity: 0;
+    scale: 0.6;
+    transition:
+      opacity 0.15s,
+      scale 0.2s var(--ease-out);
+  }
+
+  .loupe__lens {
+    position: absolute;
+    inset: var(--ring);
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--color-white);
+    box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.25);
+  }
+
+  .loupe[data-on] {
+    opacity: 1;
+    scale: 1;
+  }
+
+  .sheet__ants,
+  .loupe__ants {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
   }
 
   .sheet__ink {

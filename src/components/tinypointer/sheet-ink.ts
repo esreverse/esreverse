@@ -6,12 +6,13 @@
  *   rainbow  – drag to draw a line that runs through every colour
  *   stamp    – click to put down numbered circles 1, 2, 3 …
  *   arrow    – drag to draw a line that ends in an open arrowhead
+ *   zoom     – the hand turns into a 3× loupe over the sheet
  *
  * Strokes are stored in sheet-relative units (fractions of the sheet width),
  * so they survive resizes. The sheet itself clips the canvas.
  */
 
-type Feature = 'draw' | 'rainbow' | 'stamp' | 'arrow';
+type Feature = 'draw' | 'rainbow' | 'stamp' | 'arrow' | 'zoom';
 type Point = { x: number; y: number; hue: number };
 type Stroke =
   | { kind: 'line'; rainbow: boolean; arrow: boolean; points: Point[] }
@@ -29,7 +30,9 @@ const SMOOTHING = 0.4;
 
 export function initSheets() {
   for (const sheet of document.querySelectorAll<HTMLElement>('[data-sheet]')) {
-    setUpSheet(sheet, sheet.dataset.sheet as Feature);
+    const feature = sheet.dataset.sheet as Feature;
+    if (feature === 'zoom') setUpLoupe(sheet);
+    else setUpSheet(sheet, feature);
   }
 }
 
@@ -202,11 +205,194 @@ function setUpSheet(sheet: HTMLElement, feature: Feature) {
     ctx.font = `600 ${Math.round(r * 1.15)}px "Playpen Sans Variable", sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(String(stamp.n), stamp.x * w, stamp.y * w + r * 0.06);
+    // optical centring: digits 1px lower; the "1" sits 1px further left
+    const nudgeX = stamp.n === 1 ? -1 : 0;
+    ctx.fillText(String(stamp.n), stamp.x * w + nudgeX, stamp.y * w + r * 0.06 + 1);
   }
 }
 
 /** Rainbow colour for a hue; hue may exceed 360 (it keeps counting along the line). */
 function hueColor(hue: number) {
   return `hsl(${hue % 360} 95% 55%)`;
+}
+
+/**
+ * Zoom sheet: while the pointer is over the sheet, the hand is hidden
+ * (html[data-hand-loupe]) and a round loupe shows the sheet 3× magnified.
+ */
+function setUpLoupe(sheet: HTMLElement) {
+  const loupe = sheet.querySelector<HTMLElement>('.loupe')!;
+  const root = document.documentElement;
+  const zoom = () => parseFloat(getComputedStyle(loupe).getPropertyValue('--zoom')) || 3;
+
+  const show = (event: PointerEvent) => {
+    const rect = sheet.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const r = loupe.offsetWidth / 2;
+    const z = zoom();
+    loupe.style.translate = `${x - r}px ${y - r}px`;
+    loupe.dataset.on = '';
+    root.setAttribute('data-hand-loupe', '');
+  };
+  const hide = () => {
+    ants.focus = null;
+    delete loupe.dataset.on;
+    root.removeAttribute('data-hand-loupe');
+  };
+
+  const ants = setUpAnts(sheet, loupe, zoom);
+  const showAndTrack = (event: PointerEvent) => {
+    show(event);
+    const rect = sheet.getBoundingClientRect();
+    ants.focus = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  };
+
+  sheet.addEventListener('pointermove', showAndTrack);
+  sheet.addEventListener('pointerdown', showAndTrack);
+  sheet.addEventListener('pointerleave', hide);
+  sheet.addEventListener('pointercancel', hide);
+}
+
+// --- Ants: tiny ants wandering slowly over the zoom sheet ------------------
+
+type Ant = { x: number; y: number; heading: number; speed: number; turn: number; phase: number };
+
+const ANT_COUNT = 9;
+const ANT_LENGTH = 7; // px at 1×
+
+/**
+ * Small ants walking at random over the sheet. Drawn twice: tiny on the sheet,
+ * and sharp at the loupe's magnification inside the loupe.
+ */
+function setUpAnts(sheet: HTMLElement, loupe: HTMLElement, zoom: () => number) {
+  const sheetCanvas = sheet.querySelector<HTMLCanvasElement>('.sheet__ants')!;
+  const loupeCanvas = loupe.querySelector<HTMLCanvasElement>('.loupe__ants')!;
+  const sheetCtx = sheetCanvas.getContext('2d')!;
+  const loupeCtx = loupeCanvas.getContext('2d')!;
+  const state = { focus: null as { x: number; y: number } | null };
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  let w = 0;
+  let h = 0;
+  const resize = () => {
+    w = sheet.offsetWidth;
+    h = sheet.offsetHeight;
+    sheetCanvas.width = Math.round(w * dpr);
+    sheetCanvas.height = Math.round(h * dpr);
+    loupeCanvas.width = Math.round(loupeCanvas.offsetWidth * dpr);
+    loupeCanvas.height = Math.round(loupeCanvas.offsetHeight * dpr);
+  };
+  new ResizeObserver(resize).observe(sheet);
+  resize();
+
+  const rand = (a: number, b: number) => a + Math.random() * (b - a);
+  const ants: Ant[] = Array.from({ length: ANT_COUNT }, () => ({
+    x: rand(0.1, 0.9) * (w || 800),
+    y: rand(0.1, 0.9) * (h || 560),
+    heading: rand(0, Math.PI * 2),
+    speed: rand(6, 14), // px per second: slow
+    turn: 0,
+    phase: rand(0, Math.PI * 2),
+  }));
+
+  const step = (ant: Ant, dt: number) => {
+    // wander: the turn rate drifts randomly, and ants steer away from the edges
+    ant.turn += rand(-1, 1) * 2 * dt;
+    ant.turn *= 0.97;
+    const margin = 24;
+    if (ant.x < margin || ant.x > w - margin || ant.y < margin || ant.y > h - margin) {
+      const toCentre = Math.atan2(h / 2 - ant.y, w / 2 - ant.x);
+      let diff = toCentre - ant.heading;
+      diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+      ant.turn += diff * 1.5 * dt;
+    }
+    ant.heading += ant.turn * dt * 3;
+    ant.x += Math.cos(ant.heading) * ant.speed * dt;
+    ant.y += Math.sin(ant.heading) * ant.speed * dt;
+    ant.phase += ant.speed * dt * 0.9;
+  };
+
+  const drawAnt = (ctx: CanvasRenderingContext2D, ant: Ant) => {
+    const l = ANT_LENGTH;
+    ctx.save();
+    ctx.translate(ant.x, ant.y);
+    ctx.rotate(ant.heading);
+    ctx.fillStyle = '#1a1410';
+    ctx.strokeStyle = '#1a1410';
+    ctx.lineWidth = l * 0.06;
+    ctx.lineCap = 'round';
+    // legs: three pairs, alternating gait
+    for (let i = 0; i < 3; i++) {
+      const base = -l * 0.08 + i * l * 0.08;
+      const swing = Math.sin(ant.phase + (i % 2 ? Math.PI : 0)) * l * 0.12;
+      for (const side of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(base, 0);
+        ctx.lineTo(base + l * 0.08 + swing * side, side * l * 0.2);
+        ctx.lineTo(base + l * 0.02 + swing * side * 1.4, side * l * 0.36);
+        ctx.stroke();
+      }
+    }
+    // antennae
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.moveTo(l * 0.42, 0);
+      ctx.quadraticCurveTo(l * 0.58, side * l * 0.12, l * 0.66, side * l * 0.22);
+      ctx.stroke();
+    }
+    // body: abdomen, thorax, head
+    const ellipse = (x: number, rx: number, ry: number) => {
+      ctx.beginPath();
+      ctx.ellipse(x, 0, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+    };
+    ellipse(-l * 0.32, l * 0.2, l * 0.14);
+    ellipse(0, l * 0.14, l * 0.07);
+    ellipse(l * 0.3, l * 0.1, l * 0.09);
+    ctx.restore();
+  };
+
+  const render = () => {
+    sheetCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sheetCtx.clearRect(0, 0, w, h);
+    for (const ant of ants) drawAnt(sheetCtx, ant);
+
+    if (state.focus) {
+      // the lens is centred in the loupe, so its centre is the focus point
+      const lens = loupeCanvas.offsetWidth;
+      const r = lens / 2;
+      const z = zoom();
+      if (loupeCanvas.width !== Math.round(lens * dpr)) resize();
+      loupeCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      loupeCtx.clearRect(0, 0, lens, lens);
+      loupeCtx.translate(r - state.focus.x * z, r - state.focus.y * z);
+      loupeCtx.scale(z, z);
+      for (const ant of ants) drawAnt(loupeCtx, ant);
+    }
+  };
+
+  // run only while the sheet is on screen
+  let running = false;
+  let last = 0;
+  const frame = (t: number) => {
+    if (!running) return;
+    const dt = Math.min(0.05, (t - (last || t)) / 1000);
+    last = t;
+    for (const ant of ants) step(ant, dt);
+    render();
+    requestAnimationFrame(frame);
+  };
+  new IntersectionObserver(([entry]) => {
+    const visible = entry.isIntersecting;
+    if (visible && !running) {
+      running = true;
+      last = 0;
+      requestAnimationFrame(frame);
+    } else if (!visible) {
+      running = false;
+    }
+  }).observe(sheet);
+
+  return state;
 }

@@ -1,27 +1,70 @@
 ---
 /**
- * Decorative 1-bit desktop icons in the spirit of the classic Mac desktop.
+ * 1-bit desktop icons in the spirit of the classic Mac desktop.
  * Drawn here on a 32 × 32 pixel grid (no original Apple artwork).
- * Placed on the sticky "desktop" behind the story, left and right.
+ * "GitHub" and "LinkedIn" are links; "Screenshots" and "Hands" open dialogs.
  */
-type Kind = 'disk' | 'folder' | 'document' | 'trash';
+type Kind = 'disk' | 'folder' | 'document' | 'trash' | 'globe';
 
 // slot: 0, 1, 2 … from the top; -1, -2 … from the bottom.
 // The top right corner is left to the XD logo.
-const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }[] = [
-  { kind: 'disk', label: 'TinyPointer HD', side: 'left', slot: 0 },
-  { kind: 'document', label: 'Read Me', side: 'left', slot: 1 },
-  { kind: 'folder', label: 'Sheets', side: 'left', slot: -2 },
-  { kind: 'folder', label: 'Hands', side: 'left', slot: -1 },
+type Icon = {
+  kind: Kind;
+  label: string;
+  side: 'left' | 'right';
+  slot: number;
+  /** id of a RetroDialog to open */
+  dialog?: string;
+  /** link target */
+  href?: string;
+  /** accessible name for clickable icons */
+  name?: string;
+};
+
+const icons: Icon[] = [
+  { kind: 'disk', label: 'Macintosh HD', side: 'left', slot: 0 },
+  {
+    kind: 'document',
+    label: 'GitHub',
+    side: 'left',
+    slot: 1,
+    href: 'https://github.com/esreverse/tinypointer',
+    name: 'TinyPointer on GitHub',
+  },
+  {
+    kind: 'globe',
+    label: 'LinkedIn',
+    side: 'left',
+    slot: 2,
+    href: 'https://www.linkedin.com/in/eric-singhartinger/',
+    name: 'Eric Singhartinger on LinkedIn',
+  },
+  { kind: 'folder', label: 'Screenshots', side: 'left', slot: -2, dialog: 'screenshots', name: 'Screenshots of the settings' },
+  { kind: 'folder', label: 'Hands', side: 'left', slot: -1, dialog: 'own-hand', name: 'Hands: make your own hand' },
   { kind: 'trash', label: 'Trash', side: 'right', slot: -1 },
 ];
 ---
 
-<ul class="icons" role="list" aria-hidden="true">
+<ul class="icons" role="list">
   {
-    icons.map(({ kind, label, side, slot }) => (
-      <li class:list={['icon', `icon--${side}`, { 'icon--bottom': slot < 0 }]} style={`--slot: ${slot}`}>
-        <svg viewBox="0 0 32 32" shape-rendering="crispEdges">
+    icons.map(({ kind, label, side, slot, dialog, href, name }) => (
+      <li
+        class:list={['icon', `icon--${side}`, { 'icon--bottom': slot < 0 }]}
+        style={`--slot: ${slot}`}
+        aria-hidden={dialog || href ? undefined : 'true'}
+      >
+        {dialog && (
+          <button
+            class="icon__button"
+            type="button"
+            aria-controls={dialog}
+            aria-haspopup="dialog"
+            aria-label={name}
+            data-dialog-open={dialog}
+          />
+        )}
+        {href && <a class="icon__button" href={href} aria-label={name} />}
+        <svg viewBox="0 0 32 32" shape-rendering="crispEdges" aria-hidden="true">
           {kind === 'disk' && (
             <>
               <path d="M2 10h28v14H2z" fill="#fff" />
@@ -42,6 +85,13 @@ const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }
               <path d="M10 13h12v1H10zM10 16h12v1H10zM10 19h12v1H10zM10 22h8v1h-8z" />
             </>
           )}
+          {kind === 'globe' && (
+            <>
+              <path d="M12 5h8v1H12zM10 6h12v1H10zM8 7h16v1H8zM7 8h18v1H7zM7 9h18v1H7zM6 10h20v1H6zM6 11h20v1H6zM5 12h22v1H5zM5 13h22v1H5zM5 14h22v1H5zM5 15h22v1H5zM5 16h22v1H5zM5 17h22v1H5zM5 18h22v1H5zM5 19h22v1H5zM6 20h20v1H6zM6 21h20v1H6zM7 22h18v1H7zM7 23h18v1H7zM8 24h16v1H8zM10 25h12v1H10zM12 26h8v1H12z" fill="#fff" />
+              <path d="M12 4h8v1H12zM10 5h2v1H10zM20 5h2v1H20zM8 6h2v1H8zM22 6h2v1H22zM7 7h1v1H7zM24 7h1v1H24zM6 8h1v1H6zM25 8h1v1H25zM6 9h1v1H6zM25 9h1v1H25zM5 10h1v1H5zM26 10h1v1H26zM5 11h1v1H5zM26 11h1v1H26zM4 12h1v1H4zM27 12h1v1H27zM4 13h1v1H4zM27 13h1v1H27zM4 14h1v1H4zM27 14h1v1H27zM4 15h1v1H4zM27 15h1v1H27zM4 16h1v1H4zM27 16h1v1H27zM4 17h1v1H4zM27 17h1v1H27zM4 18h1v1H4zM27 18h1v1H27zM4 19h1v1H4zM27 19h1v1H27zM5 20h1v1H5zM26 20h1v1H26zM5 21h1v1H5zM26 21h1v1H26zM6 22h1v1H6zM25 22h1v1H25zM6 23h1v1H6zM25 23h1v1H25zM7 24h1v1H7zM24 24h1v1H24zM8 25h2v1H8zM22 25h2v1H22zM10 26h2v1H10zM20 26h2v1H20zM12 27h8v1H12z" />
+              <path d="M15 5h1v22h-1zM13 5h1v1h-1zM18 5h1v1h-1zM13 6h1v1h-1zM18 6h1v1h-1zM12 7h1v1h-1zM19 7h1v1h-1zM12 8h1v1h-1zM19 8h1v1h-1zM12 9h1v1h-1zM19 9h1v1h-1zM11 10h1v1h-1zM20 10h1v1h-1zM11 11h1v1h-1zM20 11h1v1h-1zM11 12h1v1h-1zM20 12h1v1h-1zM11 13h1v1h-1zM20 13h1v1h-1zM11 14h1v1h-1zM20 14h1v1h-1zM11 15h1v1h-1zM20 15h1v1h-1zM11 16h1v1h-1zM20 16h1v1h-1zM11 17h1v1h-1zM20 17h1v1h-1zM11 18h1v1h-1zM20 18h1v1h-1zM11 19h1v1h-1zM20 19h1v1h-1zM11 20h1v1h-1zM20 20h1v1h-1zM11 21h1v1h-1zM20 21h1v1h-1zM12 22h1v1h-1zM19 22h1v1h-1zM12 23h1v1h-1zM19 23h1v1h-1zM12 24h1v1h-1zM19 24h1v1h-1zM13 25h1v1h-1zM18 25h1v1h-1zM13 26h1v1h-1zM18 26h1v1h-1zM6 10h20v1H6zM5 15h22v1H5zM6 21h20v1H6z" />
+            </>
+          )}
           {kind === 'trash' && (
             <>
               {/* odd widths (can 17px inside, lid 23px) so the middle rib sits exactly centred */}
@@ -51,7 +101,7 @@ const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }
             </>
           )}
         </svg>
-        <span class="icon__label">{label}</span>
+        <span class="icon__label" aria-hidden="true">{label}</span>
       </li>
     ))
   }
@@ -89,6 +139,24 @@ const icons: { kind: Kind; label: string; side: 'left' | 'right'; slot: number }
 
   .icon--right {
     right: 24px;
+  }
+
+  /* clickable icon: the whole icon is the button (a covering hit area) */
+  .icon__button {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .icon:has(.icon__button:hover) .icon__label,
+  .icon:has(.icon__button:focus-visible) .icon__label {
+    background: var(--color-black);
+    color: var(--color-white);
   }
 
   .icon svg {

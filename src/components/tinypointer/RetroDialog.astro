@@ -1,0 +1,164 @@
+---
+/**
+ * Classic black-and-white dialog window.
+ *
+ * Opened by any element with data-dialog-open="<id>", closed by OK, Esc or a
+ * click on the backdrop. Deliberately not a native popover/<dialog>: those
+ * always sit in the browser's top layer, above the TinyPointer hand.
+ */
+interface Props {
+  id: string;
+  title: string;
+  /** wider window, e.g. for screenshots */
+  wide?: boolean;
+}
+const { id, title, wide = false } = Astro.props;
+---
+
+<div class="dialog-layer" id={id} hidden data-dialog>
+  <div class:list={['dialog', { 'dialog--wide': wide }]} role="dialog" aria-modal="true" aria-labelledby={`${id}-title`}>
+    <div class="dialog__bar">
+      <span class="dialog__title" id={`${id}-title`}>{title}</span>
+    </div>
+    <div class="dialog__body" data-lenis-prevent>
+      <slot />
+    </div>
+    <div class="dialog__actions">
+      <button class="dialog__ok" type="button" data-dialog-close>OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // One handler for all dialogs on the page.
+  let lastOpener: HTMLElement | null = null;
+
+  const close = (layer: HTMLElement) => {
+    layer.hidden = true;
+    lastOpener?.focus();
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element;
+    const opener = target.closest<HTMLElement>('[data-dialog-open]');
+    if (opener) {
+      const layer = document.getElementById(opener.dataset.dialogOpen!);
+      if (!layer) return;
+      lastOpener = opener;
+      layer.hidden = false;
+      layer.querySelector<HTMLElement>('[data-dialog-close]')?.focus();
+      return;
+    }
+    const layer = target.closest<HTMLElement>('[data-dialog]');
+    if (layer && (target === layer || target.closest('[data-dialog-close]'))) close(layer);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    const open = document.querySelector<HTMLElement>('[data-dialog]:not([hidden])');
+    if (open) close(open);
+  });
+</script>
+
+<style>
+  /* above toolbar and sheets, below the hand (z-index 3) */
+  .dialog-layer {
+    position: fixed;
+    z-index: 2;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgb(0 0 0 / 0.25);
+  }
+
+  .dialog-layer[hidden] {
+    display: none;
+  }
+
+  .dialog {
+    display: flex;
+    flex-direction: column;
+    width: min(460px, 100%);
+    max-height: calc(100svh - 32px);
+    border: 1px solid var(--color-black);
+    background: var(--color-white);
+    color: var(--color-black);
+    box-shadow: 3px 3px 0 var(--color-black);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .dialog--wide {
+    width: min(900px, 100%);
+  }
+
+  .dialog__bar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    height: 22px;
+    border-bottom: 1px solid var(--color-black);
+  }
+
+  .dialog__title {
+    font-size: 13px;
+    line-height: 14px;
+    font-weight: 700;
+    font-variation-settings: normal;
+  }
+
+  .dialog__body {
+    display: grid;
+    gap: 12px;
+    padding: 20px 24px 8px;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .dialog__body :global(ol) {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.25em;
+  }
+
+  .dialog__actions {
+    flex: none;
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px 24px;
+  }
+
+  /* classic default button with the thick outer ring */
+  .dialog__ok {
+    min-width: 88px;
+    padding: 6px 20px;
+    border: 0;
+    border-radius: 10px;
+    outline: 3px solid var(--color-black);
+    outline-offset: 3px;
+    background: var(--color-white);
+    color: var(--color-black);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .dialog__ok:hover {
+    background: var(--color-black);
+    color: var(--color-white);
+  }
+
+  /* dark mode: the classic dialog is inverted like the rest of the page;
+     photos and screenshots inside are inverted back */
+  @media (prefers-color-scheme: dark) {
+    .dialog {
+      filter: invert(1);
+    }
+
+    .dialog :global(img) {
+      filter: invert(1);
+    }
+  }
+</style>
