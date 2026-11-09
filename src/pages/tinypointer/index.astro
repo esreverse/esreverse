@@ -60,7 +60,6 @@ const screenshots = await Promise.all(
 );
 
 const downloadUrl = 'https://github.com/esreverse/tinypointer/releases/latest/download/TinyPointer.dmg';
-const repoUrl = 'https://github.com/esreverse/tinypointer';
 const tinyHandUrl = 'https://github.com/nilbuild/tinyhand';
 const tinyHandAuthorUrl = 'https://github.com/nilbuild';
 const screenBrushUrl = 'https://imagestudiopro.com/screenbrush/';
@@ -178,8 +177,7 @@ const hands: HandChoice[] = await Promise.all(
             <span>Free &amp; open source ·</span>{' '}
             <span>macOS 13 or later ·</span>{' '}
             <span>Apple Silicon &amp; Intel ·</span>{' '}
-            <span>Signed &amp; notarized by Apple ·</span>{' '}
-            <a class="link" href={repoUrl}>GitHub</a>
+            <span>Signed &amp; notarized by Apple</span>
           </p>
         </footer>
       </section>
