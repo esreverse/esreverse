@@ -565,7 +565,7 @@ const hands: HandChoice[] = await Promise.all(
     text-decoration-color: currentColor;
   }
 
-  /* thanks and facts at the very bottom of the page, as white labels */
+  /* thanks and facts at the very bottom of the page, directly on the desktop */
   .outro__footer {
     position: absolute;
     left: 50%;
@@ -578,9 +578,6 @@ const hands: HandChoice[] = await Promise.all(
   }
 
   .outro__thanks {
-    padding: 2px 10px;
-    border: 1px solid var(--color-black);
-    background: var(--color-white);
     font-size: 0.9375rem;
     line-height: 1.6;
     text-align: center;
@@ -589,9 +586,6 @@ const hands: HandChoice[] = await Promise.all(
   .outro__meta {
     width: max-content;
     max-width: 100%;
-    padding: 2px 8px;
-    border: 1px solid var(--color-black);
-    background: var(--color-white);
     font-family: var(--font-mono);
     font-variation-settings: normal;
     font-size: 0.75rem;
