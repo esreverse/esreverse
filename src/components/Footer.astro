@@ -23,17 +23,23 @@ const reasons = ['to connect', 'to meet', 'to help'];
 
   <XdLogo class="footer__logo" />
 
-  <nav class="footer__links" aria-label="Social media">
+  <nav class="footer__links" aria-label="Links">
     <ul role="list">
+      <li>
+        <a class="t-lead footer__product" href="/tinypointer">
+          <span class="link">TinyPointer</span> <span class="chip">for macOS</span>
+        </a>
+      </li>
       {
         socialLinks.map(({ label, href }) => (
           <li>
-            <a class="t-lead" href={href} target="_blank" rel="noopener me">
+            <a class="t-lead link" href={href} target="_blank" rel="noopener me">
               {label}
             </a>
           </li>
         ))
       }
+
     </ul>
   </nav>
 </footer>
@@ -119,13 +125,36 @@ const reasons = ['to connect', 'to meet', 'to help'];
     gap: 24px;
   }
 
-  .footer__links a {
+  /* the product link underlines only its name, not the chip */
+  .footer__product {
     text-decoration: none;
-    transition: opacity 0.2s;
   }
 
-  .footer__links a:hover {
-    opacity: 0.6;
+  .footer__product:hover .link {
+    text-decoration-thickness: 2px;
+  }
+
+  .footer__product {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  /* small dark chip with yellow text */
+  .chip {
+    position: relative;
+    top: 2px;
+    padding: 3px 8px;
+    border-radius: 100px;
+    background: rgb(0 0 0 / 0.6);
+    color: var(--color-yellow-100);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    font-size: 0.6875rem; /* 11px */
+    line-height: 14px;
+    font-weight: 600;
+    font-variation-settings: normal;
+    letter-spacing: 0;
   }
 
   @media (max-width: 767px) {

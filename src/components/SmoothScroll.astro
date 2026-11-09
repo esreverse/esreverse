@@ -1,0 +1,21 @@
+---
+/**
+ * Smooth (inertia) scrolling with Lenis, as on the original Framer site
+ * ("Smooth Scroll" component, intensity 10 → duration 1s).
+ * Native scrolling stays in place for reduced motion and touch devices
+ * (Lenis leaves touch alone by default). In-page anchor links are animated too.
+ */
+---
+
+<script>
+  import Lenis from 'lenis';
+  import 'lenis/dist/lenis.css';
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    new Lenis({
+      duration: 1,
+      autoRaf: true,
+      anchors: true,
+    });
+  }
+</script>

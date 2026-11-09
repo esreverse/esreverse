@@ -4,6 +4,7 @@
  * No framework runtime, no tracking – just HTML, CSS and a few tiny scripts.
  */
 import '../styles/global.css';
+import SmoothScroll from '../components/SmoothScroll.astro';
 
 interface Props {
   title: string;
@@ -34,8 +35,9 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    <meta name="theme-color" content={themeColor} media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0d0d14" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content={themeColor} />
+    <!-- Dark mode is disabled for now:
+    <meta name="theme-color" content="#0d0d14" media="(prefers-color-scheme: dark)" /> -->
 
     <link rel="icon" href="/icons/favicon-light.png" media="(prefers-color-scheme: light)" />
     <link rel="icon" href="/icons/favicon-dark.png" media="(prefers-color-scheme: dark)" />
@@ -56,5 +58,6 @@ const ogImageUrl = new URL(ogImage, Astro.site);
   </head>
   <body>
     <slot />
+    <SmoothScroll />
   </body>
 </html>

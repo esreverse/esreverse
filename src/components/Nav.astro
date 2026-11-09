@@ -7,12 +7,6 @@
  */
 import XdLogo from './XdLogo.astro';
 import { navItems } from '../data/site';
-
-interface Props {
-  /** Extra link shown after the sections, e.g. a product page */
-  extra?: { href: string; label: string };
-}
-const { extra } = Astro.props;
 ---
 
 <nav class="nav" aria-label="Sections" data-nav>
@@ -28,13 +22,6 @@ const { extra } = Astro.props;
           {label}
         </a>
       ))
-    }
-    {
-      extra && (
-        <a class="nav__link" href={extra.href}>
-          {extra.label}
-        </a>
-      )
     }
   </div>
 
@@ -53,13 +40,6 @@ const { extra } = Astro.props;
           {label}
         </a>
       ))
-    }
-    {
-      extra && (
-        <a class="nav__link" href={extra.href}>
-          {extra.label}
-        </a>
-      )
     }
   </div>
 </nav>

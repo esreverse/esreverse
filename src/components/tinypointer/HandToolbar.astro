@@ -1,0 +1,116 @@
+---
+/**
+ * The pointer part of the TinyPointer toolbar (as in the app, without colours
+ * and sound): pick one of a few hands. Appears once the hand is on screen.
+ * Selecting a hand dispatches `tinypointer:hand` with the image sources.
+ */
+import { Image } from 'astro:assets';
+
+export interface HandChoice {
+  id: string;
+  label: string;
+  thumb: ImageMetadata;
+  src: string;
+  srcset: string;
+  /** Repeating slice of the stick (see the page's .hand-stick) */
+  stick: string;
+  /** Fingertip position as fractions of the image */
+  tipX: number;
+  tipY: number;
+}
+
+interface Props {
+  hands: HandChoice[];
+}
+const { hands } = Astro.props;
+---
+
+<div class="toolbar" role="toolbar" aria-label="Choose a hand" data-hand-toolbar>
+  {
+    hands.map((hand, i) => (
+      <button
+        class="toolbar__hand"
+        type="button"
+        aria-pressed={i === 0 ? 'true' : 'false'}
+        data-src={hand.src}
+        data-srcset={hand.srcset}
+        data-stick={hand.stick}
+        data-tip-x={hand.tipX}
+        data-tip-y={hand.tipY}
+        data-cursor-grow
+      >
+        <Image src={hand.thumb} width={56} height={70} alt="" />
+        <span class="visually-hidden">{hand.label}</span>
+      </button>
+    ))
+  }
+</div>
+
+<script>
+  const toolbar = document.querySelector<HTMLElement>('[data-hand-toolbar]');
+  toolbar?.addEventListener('click', (event) => {
+    const button = (event.target as Element).closest<HTMLButtonElement>('.toolbar__hand');
+    if (!button) return;
+    toolbar.querySelectorAll('.toolbar__hand').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+    window.dispatchEvent(
+      new CustomEvent('tinypointer:hand', {
+        detail: { ...button.dataset },
+      }),
+    );
+  });
+</script>
+
+<style>
+  .toolbar {
+    position: fixed;
+    z-index: 2; /* below the hand, above the sheets */
+    left: 50%;
+    bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 16px;
+    background: rgb(28 28 30 / 0.92);
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    translate: -50% calc(100% + 40px);
+    opacity: 0;
+    transition:
+      translate 0.5s var(--ease-out),
+      opacity 0.3s;
+  }
+
+  /* shown once the hand has arrived (set by the page script) */
+  :global(html[data-hand-arrived]) .toolbar {
+    translate: -50% 0;
+    opacity: 1;
+  }
+
+  .toolbar__hand {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .toolbar__hand:hover {
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .toolbar__hand[aria-pressed='true'] {
+    background: rgb(255 255 255 / 0.18);
+  }
+
+  .toolbar__hand :global(img) {
+    width: 32px;
+    height: auto;
+  }
+</style>

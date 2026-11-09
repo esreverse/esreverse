@@ -92,7 +92,8 @@ import { behavioralPatterns, mailto } from '../data/site';
 
 <style>
   .carousel {
-    --inset: 40px;
+    /* first card lines up with the content column */
+    --inset: max(var(--gutter), (100% - var(--content-max)) / 2);
     --card-w: 280px;
     --card-h: 400px;
 
@@ -214,10 +215,6 @@ import { behavioralPatterns, mailto } from '../data/site';
   }
 
   @media (max-width: 767px) {
-    .carousel {
-      --inset: var(--gutter);
-    }
-
     .carousel__button {
       display: none;
     }

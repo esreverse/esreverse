@@ -5,7 +5,8 @@ plus the product page for the Mac app [TinyPointer](https://github.com/esreverse
 `/tinypointer`.
 
 - **Static output:** plain HTML, CSS and a few small scripts. No framework runtime, no tracking.
-- **Light and dark mode** follow the system setting (`prefers-color-scheme`).
+- **Light mode** for now. A dark mode exists in the code but is commented out (search for `DARK MODE`)
+  while the light mode is being refined.
 - **Responsive** with the original breakpoints: phone (< 768 px), tablet (768–1279 px), desktop (≥ 1280 px).
 - **Hostable anywhere** that serves static files.
 
@@ -68,11 +69,14 @@ cut of the original.
 
 ### Motion and JavaScript
 
+- **Smooth scrolling** uses [Lenis](https://github.com/darkroomengineering/lenis) with the same setting
+  as the original site (duration 1 s). Off for reduced motion.
 - **Scroll reveals** and the **TinyPointer story** use CSS scroll-driven animations. Browsers without
   support, and visitors with reduced motion, get the content without motion.
 - **Logo ticker** and **rotating footer words** are CSS animations.
-- **Small scripts:** nav scroll-spy, carousel buttons, the cursor dot, and lazy start of the Unicorn
-  Studio background. Everything works without them.
+- **Small scripts:** nav scroll-spy, carousel buttons, the cursor dot (replaces the system cursor and
+  grows over links and buttons), and lazy start of the Unicorn Studio background. The home page works
+  without them.
 
 
 ### Unicorn Studio
@@ -86,14 +90,22 @@ export it again to `public/unicorn/flow-gradient.json`.
 ### TinyPointer Page
 
 `/tinypointer` is a vertical scroll story: a sticky "desktop", the TinyPointer hand rising in, and
-one sheet of paper per feature. The interactive parts (drawing, rainbow ink, stamps, arrows on the
-sheets) are not built yet; `Sheet.astro` marks where they go.
+one sheet of paper per feature, ending with the download.
+
+- Once the hand has arrived it follows the mouse; clicks press it like in the app (smaller, less
+  lift, softer shadow – values from `ArmView.swift`).
+- A toolbar lets visitors pick one of four hands. Each hand has a measured fingertip (`tip` in the
+  page) where the ink comes out; its stick is extended with a repeated slice of the image.
+- Each sheet unlocks one feature to try (draw, rainbow ink, number stamps, arrows), see
+  `components/tinypointer/sheet-ink.ts`. Below each sheet is the matching shortcut in the app.
 
 
 
 ## Third-Party Assets and Licences
 
 - **Inter** and **Playpen Sans:** SIL Open Font License, via Fontsource.
-- **TinyPointer hand and menu bar icon:** from the TinyPointer repository, MIT License.
+- **TinyPointer hands:** from the TinyPointer repository (MIT License); the Christmas tree hand is
+  Eric's own.
+- **Lenis:** MIT License.
 - **Unicorn Studio runtime:** © Unicorn Studio, self-hosted as their embed docs describe.
 - **Client logos:** trademarks of their owners, shown as client references.

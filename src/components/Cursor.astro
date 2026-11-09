@@ -1,7 +1,10 @@
 ---
 /**
- * Small white dot following the pointer (blend mode "difference"), as on the
- * original site. Only for precise pointers and when motion is welcome.
+ * Custom cursor as on the original site: a 16px white dot (blend mode
+ * "difference") replaces the system cursor.
+ * Only for precise pointers when motion is welcome; otherwise the normal
+ * system cursor stays. It doubles over links and triples over buttons
+ * (.button, [data-cursor-grow]).
  */
 ---
 
@@ -9,22 +12,41 @@
 
 <script>
   const dot = document.querySelector<HTMLElement>('[data-cursor]');
-  const enabled = window.matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+  const enabled = window.matchMedia(
+    '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)',
+  );
+  const GROW = '.button, .download, [data-cursor-grow]';
+  const LINK = 'a[href], button';
 
   if (dot && enabled.matches) {
+    const root = document.documentElement;
+    root.dataset.customCursor = '';
+
     window.addEventListener(
       'pointermove',
       (event) => {
         dot.style.translate = `${event.clientX}px ${event.clientY}px`;
         dot.dataset.visible = '';
+        const target = event.target as Element;
+        const grow = !!target.closest?.(GROW);
+        dot.toggleAttribute('data-grow', grow);
+        dot.toggleAttribute('data-link', !grow && !!target.closest?.(LINK));
       },
       { passive: true },
     );
-    document.documentElement.addEventListener('pointerleave', () => delete dot.dataset.visible);
+    window.addEventListener('pointerdown', () => (dot.dataset.pressed = ''));
+    window.addEventListener('pointerup', () => delete dot.dataset.pressed);
+    root.addEventListener('pointerleave', () => delete dot.dataset.visible);
   }
 </script>
 
 <style>
+  /* Hide the system cursor everywhere, including the hand over links. */
+  :global(html[data-custom-cursor]),
+  :global(html[data-custom-cursor] *) {
+    cursor: none !important;
+  }
+
   .cursor {
     position: fixed;
     z-index: 1000;
@@ -37,12 +59,26 @@
     mix-blend-mode: difference;
     pointer-events: none;
     opacity: 0;
+    will-change: translate;
+    /* position follows the pointer 1:1 (no easing = no lag); only size animates */
     transition:
       opacity 0.2s,
-      translate 0.12s var(--ease-out);
+      scale 0.45s cubic-bezier(0.22, 1, 0.36, 1); /* smooth ease-out */
   }
 
   .cursor[data-visible] {
     opacity: 1;
+  }
+
+  .cursor[data-link] {
+    scale: 2; /* 32px over text links */
+  }
+
+  .cursor[data-grow] {
+    scale: 3; /* 48px */
+  }
+
+  .cursor[data-pressed] {
+    scale: 0.75;
   }
 </style>

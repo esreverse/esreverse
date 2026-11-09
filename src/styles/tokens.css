@@ -27,7 +27,7 @@
   --color-lilac-100: #e6e7ff;
 
   /* --- Semantic: light (default) ---------------------------------------- */
-  color-scheme: light dark;
+  color-scheme: light; /* was: light dark – dark mode is disabled for now */
 
   --surface-page: var(--color-lilac-50);
   --surface-about: var(--color-yellow-100);
@@ -97,6 +97,8 @@
 }
 
 /* --- Semantic: dark ------------------------------------------------------- */
+/* DARK MODE – disabled while the light mode is being refined.
+   Remove this comment wrapper to switch it back on.
 @media (prefers-color-scheme: dark) {
   :root {
     --surface-page: var(--color-ink-950);
@@ -117,3 +119,4 @@
     --nav-shadow: 0 1px 20px rgb(0 0 0 / 0.4);
   }
 }
+*/
