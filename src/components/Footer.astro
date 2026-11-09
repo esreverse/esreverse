@@ -2,6 +2,7 @@
 import UnicornScene from './UnicornScene.astro';
 import XdLogo from './XdLogo.astro';
 import { socialLinks } from '../data/site';
+import { url } from '../lib/url';
 
 const reasons = ['to connect', 'to meet', 'to help'];
 ---
@@ -26,7 +27,7 @@ const reasons = ['to connect', 'to meet', 'to help'];
   <nav class="footer__links" aria-label="Links">
     <ul role="list">
       <li>
-        <a class="t-lead footer__product" href="/tinypointer">
+        <a class="t-lead footer__product" href={url('/tinypointer')}>
           <span class="link">TinyPointer</span> <span class="chip">for macOS</span>
         </a>
       </li>

@@ -18,6 +18,7 @@ import Sheet from '../../components/tinypointer/Sheet.astro';
 import HandToolbar, { type HandChoice } from '../../components/tinypointer/HandToolbar.astro';
 import XdLogo from '../../components/XdLogo.astro';
 import ArrowIcon from '../../components/ArrowIcon.astro';
+import { url } from '../../lib/url';
 
 import handGlove from '../../assets/tinypointer/hand-glove.png';
 import handCookie from '../../assets/tinypointer/hand-cookie.png';
@@ -67,7 +68,7 @@ const hands: HandChoice[] = await Promise.all(
   title="TinyPointer – A tiny hand on a stick for your Mac"
   description="TinyPointer turns your cursor into a hand that points, taps and draws on top of everything on screen. Free for macOS."
 >
-  <a class="home-link" href="/">
+  <a class="home-link" href={url('/')}>
     <XdLogo class="home-link__logo" />
     <span class="visually-hidden">Back to esreverse.com</span>
   </a>

@@ -1,0 +1,43 @@
+# Builds the site and publishes it to GitHub Pages on every push to main.
+#
+# While the domain still points elsewhere, the site is served from
+# https://esreverse.github.io/esreverse/ – hence SITE_URL and SITE_BASE.
+# When www.esreverse.com points to GitHub Pages: delete the two env lines
+# below and add the custom domain in Settings → Pages (see README).
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://esreverse.github.io
+      SITE_BASE: /esreverse
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: withastro/action@v6.1.4
+        with:
+          node-version: 24
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5.0.1

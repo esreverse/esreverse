@@ -33,6 +33,28 @@ Deploy by uploading the contents of `dist/` or by letting a static host build th
 
 
 
+## Deployment
+
+Every push to `main` builds the site and publishes it to **GitHub Pages**
+(`.github/workflows/deploy.yml`). Progress: the repository's **Actions** tab.
+
+Until the domain points to GitHub, the site lives at <https://esreverse.github.io/esreverse/>
+(built with `SITE_URL`/`SITE_BASE`, marked `noindex`). Internal links go through `url()` in
+`src/lib/url.ts`, so they work with and without that sub-path.
+
+
+### Switching www.esreverse.com to GitHub Pages
+
+1. At Host Europe (DNS of esreverse.com), leave all TXT, DKIM and mail records as they are, then:
+   - `esreverse.com`: replace the A record with four A records `185.199.108.153`,
+     `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+   - `www`: replace the A record with a CNAME to `esreverse.github.io`
+2. In `.github/workflows/deploy.yml`, delete the `SITE_URL` and `SITE_BASE` lines and push.
+3. Repository → Settings → Pages → Custom domain: `www.esreverse.com`, then tick
+   "Enforce HTTPS" once the certificate is ready.
+
+
+
 ## Structure
 
 ```text
