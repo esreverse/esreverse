@@ -45,7 +45,7 @@ const { hands } = Astro.props;
     ))
   }
   <span class="toolbar__divider" aria-hidden="true"></span>
-  <button class="toolbar__add" type="button" popovertarget="own-hand" data-cursor-grow>
+  <button class="toolbar__add" type="button" aria-controls="own-hand" aria-haspopup="dialog" data-dialog-open>
     <svg viewBox="0 0 20 20" aria-hidden="true">
       <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
     </svg>
@@ -53,8 +53,10 @@ const { hands } = Astro.props;
   </button>
 </div>
 
-<!-- "Add your own" hint: a classic black-and-white dialog (native popover, no JS) -->
-<div class="dialog" id="own-hand" popover role="dialog" aria-labelledby="own-hand-title">
+<!-- "Add your own" hint: a classic black-and-white dialog. Not a native popover/
+     <dialog>: those always sit in the browser's top layer, above the hand. -->
+<div class="dialog-layer" id="own-hand" hidden data-dialog>
+<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="own-hand-title">
   <div class="dialog__bar">
     <span class="dialog__title" id="own-hand-title">Make your own hand</span>
   </div>
@@ -72,14 +74,35 @@ const { hands } = Astro.props;
       <li>Drop the PNG into TinyPointer. Your hand is ready in the toolbar.</li>
     </ol>
     <div class="dialog__actions">
-      <button class="dialog__ok" type="button" popovertarget="own-hand" popovertargetaction="hide">
-        OK
-      </button>
+      <button class="dialog__ok" type="button" data-dialog-close>OK</button>
     </div>
   </div>
 </div>
+</div>
 
 <script>
+  // "Make your own hand" dialog: open, close (OK, backdrop, Esc), focus handling
+  const layer = document.querySelector<HTMLElement>('[data-dialog]');
+  const opener = document.querySelector<HTMLButtonElement>('[data-dialog-open]');
+  if (layer && opener) {
+    const ok = layer.querySelector<HTMLButtonElement>('[data-dialog-close]')!;
+    const close = () => {
+      layer.hidden = true;
+      opener.focus();
+    };
+    opener.addEventListener('click', () => {
+      layer.hidden = false;
+      ok.focus();
+    });
+    ok.addEventListener('click', close);
+    layer.addEventListener('click', (event) => {
+      if (event.target === layer) close();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !layer.hidden) close();
+    });
+  }
+
   const toolbar = document.querySelector<HTMLElement>('[data-hand-toolbar]');
   toolbar?.addEventListener('click', (event) => {
     const button = (event.target as Element).closest<HTMLButtonElement>('.toolbar__hand');
@@ -175,9 +198,23 @@ const { hands } = Astro.props;
   }
 
   /* --- Classic black-and-white dialog --- */
+  /* above toolbar and sheets, below the hand (z-index 3) */
+  .dialog-layer {
+    position: fixed;
+    z-index: 2;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgb(0 0 0 / 0.25);
+  }
+
+  .dialog-layer[hidden] {
+    display: none;
+  }
+
   .dialog {
-    width: min(460px, calc(100vw - 32px));
-    margin: auto;
+    width: min(460px, 100%);
     padding: 0;
     border: 1px solid var(--color-black);
     border-radius: 0;
@@ -186,10 +223,6 @@ const { hands } = Astro.props;
     box-shadow: 3px 3px 0 var(--color-black);
     font-size: 0.9375rem;
     line-height: 1.5;
-  }
-
-  .dialog::backdrop {
-    background: rgb(0 0 0 / 0.25);
   }
 
   .dialog__bar {
@@ -243,16 +276,6 @@ const { hands } = Astro.props;
   .dialog__ok:hover {
     background: var(--color-black);
     color: var(--color-white);
-  }
-
-  /* While the dialog is open it sits above the hand, so the normal cursor comes back. */
-  :global(html:has(#own-hand:popover-open)),
-  :global(html:has(#own-hand:popover-open) *) {
-    cursor: auto !important;
-  }
-
-  :global(html:has(#own-hand:popover-open) button) {
-    cursor: pointer !important;
   }
 
   .toolbar__hand :global(img) {
