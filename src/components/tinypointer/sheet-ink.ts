@@ -196,7 +196,8 @@ function setUpSheet(sheet: HTMLElement, feature: Feature) {
   }
 
   function drawStamp(stamp: Extract<Stroke, { kind: 'stamp' }>, w: number) {
-    const r = STAMP_RADIUS * unit();
+    // scales with the sheet, but stays big enough to read on small screens
+    const r = Math.max(STAMP_RADIUS * unit(), 16);
     ctx.fillStyle = INK;
     ctx.beginPath();
     ctx.arc(stamp.x * w, stamp.y * w, r, 0, Math.PI * 2);
@@ -205,9 +206,11 @@ function setUpSheet(sheet: HTMLElement, feature: Feature) {
     ctx.font = `600 ${Math.round(r * 1.15)}px "Playpen Sans Variable", sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    // optical centring: digits 1px lower; the "1" sits 1px further left
-    const nudgeX = stamp.n === 1 ? -1 : 0;
-    ctx.fillText(String(stamp.n), stamp.x * w + nudgeX, stamp.y * w + r * 0.06 + 1);
+    // optical centring, proportional to the stamp (1px at the full 22px size):
+    // digits a little lower; the "1" a little further left
+    const nudge = r / STAMP_RADIUS;
+    const nudgeX = stamp.n === 1 ? -nudge : 0;
+    ctx.fillText(String(stamp.n), stamp.x * w + nudgeX, stamp.y * w + r * 0.06 + nudge);
   }
 }
 

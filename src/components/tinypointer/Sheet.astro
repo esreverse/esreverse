@@ -111,7 +111,9 @@ const windowTitles = { draw: 'Draw', rainbow: 'Rainbow', stamp: 'Stamps', arrow:
     padding: clamp(20px, 5%, 48px);
     background: var(--color-white);
     color: var(--color-black);
-    touch-action: pan-y;
+    /* the finger draws on the sheet instead of scrolling the page; scrolling
+       works on the space around the sheets */
+    touch-action: none;
   }
 
   .sheet__hint {
