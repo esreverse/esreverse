@@ -577,8 +577,11 @@ const hands: HandChoice[] = await Promise.all(
         view-timeline: --hand-in block;
       }
 
+      /* longhands only, see .reveal in global.css */
       .hand-body {
-        animation: hand-in linear both;
+        animation-name: hand-in;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: --hand-in;
         animation-range: cover 50% cover 70%;
       }
