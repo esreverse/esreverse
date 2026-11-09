@@ -34,7 +34,7 @@ export const socialLinks = [
   { label: 'Instagram', href: 'https://www.instagram.com/schm_eric/' },
 ];
 
-export const tools = [
+export const tools: { label: string; href?: string; struck?: boolean; internal?: boolean }[] = [
   { label: 'Rive', href: 'https://rive.app/' },
   { label: 'Spline', href: 'https://spline.design/download' },
   { label: 'UnicornStudio', href: 'https://www.unicorn.studio/' },
@@ -50,7 +50,9 @@ export const tools = [
   { label: 'Tripmode', href: 'https://tripmode.ch/' },
   { label: 'TextSniper', href: 'https://textsniper.app/' },
   { label: 'CleanShot X', href: 'https://cleanshot.com/' },
-  { label: 'ScreenBrush', href: 'https://imagestudiopro.com/screenbrush/' },
+  // replaced by my own Tiny Pointer: shown struck through, without a link
+  { label: 'ScreenBrush', struck: true },
+  { label: 'Tiny Pointer', href: '/tinypointer', internal: true },
   { label: 'Endel', href: 'https://endel.io/' },
   { label: 'MeetingBar', href: 'https://meetingbar.app/' },
 ];

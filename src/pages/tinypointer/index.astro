@@ -329,9 +329,33 @@ const hands: HandChoice[] = await Promise.all(
           downAt = { x: e.clientX, y: e.clientY };
         }
       });
+      // Tap ripple, as in the app (ArmView.ripple): a filled circle in the ink
+      // colour, radius 40px, grows from 0.35x to 3x and fades out in 0.8s.
+      const ripple = (x: number, y: number) => {
+        if (reduced) return;
+        const dot = document.createElement('div');
+        dot.className = 'tap-ripple';
+        dot.style.left = `${x}px`;
+        dot.style.top = `${y}px`;
+        document.body.append(dot);
+        dot.animate([{ scale: 0.35 }, { scale: 3 }], {
+          duration: 800,
+          easing: 'cubic-bezier(0.15, 0.55, 0.4, 1)',
+          fill: 'both',
+        });
+        dot.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration: 800,
+          easing: 'cubic-bezier(0.33, 1, 0.68, 1)', // alpha drops fast, then trails off
+          fill: 'both',
+        }).finished.then(() => dot.remove());
+      };
+
       window.addEventListener('pointerup', (e) => {
         held = false;
-        if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) < 5) playTap();
+        if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) < 5) {
+          playTap();
+          ripple(e.clientX, e.clientY);
+        }
         downAt = null;
       });
     }
@@ -454,6 +478,18 @@ const hands: HandChoice[] = await Promise.all(
     }
   }
 */
+
+  /* Tap ripple (created by the script): above the sheets and toolbar, below the hand */
+  :global(.tap-ripple) {
+    position: fixed;
+    z-index: 2;
+    width: 80px;
+    height: 80px;
+    margin: -40px 0 0 -40px;
+    border-radius: 50%;
+    background: #ff3b30; /* the page's ink colour */
+    pointer-events: none;
+  }
 
   /* Over the zoom sheet the hand turns into the loupe. */
   :global(html[data-hand-loupe]) .hand-layer {

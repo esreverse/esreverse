@@ -1,7 +1,13 @@
 ---
 import { tools } from '../data/site';
+import { url } from '../lib/url';
 
-const services = [
+const services: { label: string; text: string; wide?: boolean }[] = [
+  {
+    label: 'Agentic Design Systems',
+    text: 'Enterprise-level agentic design systems: spec-driven design, AI agents and skills, deterministic engines and complete enterprise systems',
+    wide: true,
+  },
   {
     label: 'Craftsmanship',
     text: 'UX/UI Design, Animation, Design Systems, Design Token Systems, Prototyping & Animation, Funnels & Journeys, Optimization, Evaluation & Reports',
@@ -20,8 +26,8 @@ const services = [
     <h2 class="t-display reveal" id="services-title">Services</h2>
     <dl class="services__grid">
       {
-        services.map(({ label, text }) => (
-          <div class="services__item reveal">
+        services.map(({ label, text, wide }) => (
+          <div class:list={['services__item', 'reveal', { 'services__item--wide': wide }]}>
             <dt class="t-label">{label}</dt>
             <dd class="t-lead">{text}</dd>
           </div>
@@ -63,12 +69,20 @@ const services = [
     </h3>
     <p class="reveal">
       {
-        tools.map(({ label, href }, i) => (
+        tools.map(({ label, href, struck, internal }, i) => (
           <>
-            <a class="link" href={href} target="_blank" rel="noopener">
-              {label}
-            </a>
-            {i < tools.length - 1 && ', '}
+            {struck ? (
+              <s>{label}</s>
+            ) : internal ? (
+              <a class="link" href={url(href!)}>
+                {label}
+              </a>
+            ) : (
+              <a class="link" href={href} target="_blank" rel="noopener">
+                {label}
+              </a>
+            )}
+            {i < tools.length - 1 && (struck ? ' ' : ', ')}
           </>
         ))
       }
@@ -98,6 +112,11 @@ const services = [
     display: flex;
     flex-direction: column;
     gap: 12px;
+  }
+
+  /* spans both columns */
+  .services__item--wide {
+    grid-column: 1 / -1;
   }
 
   .services__item dd {
