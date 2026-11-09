@@ -354,7 +354,9 @@ const hands: HandChoice[] = await Promise.all(
         held = false;
         if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) < 5) {
           playTap();
-          ripple(e.clientX, e.clientY);
+          // placing a number stamp is not a plain tap: no ripple there
+          const onStampSheet = (e.target as Element | null)?.closest?.('[data-sheet="stamp"]');
+          if (!onStampSheet) ripple(e.clientX, e.clientY);
         }
         downAt = null;
       });
