@@ -1,7 +1,7 @@
 # esreverse.com
 
 Website of Eric Singhartinger – Experience Designer. A hand-coded rebuild of the former Framer site,
-plus the product page for the Mac app [TinyPointer](https://github.com/esreverse/tinypointer) at
+plus the product page for the Mac app [Tiny Pointer](https://github.com/esreverse/tinypointer) at
 `/tinypointer`.
 
 - **Static output:** plain HTML, CSS and a few small scripts. No framework runtime, no tracking.
@@ -58,11 +58,11 @@ public/                     served as-is
 src/
   assets/                   images and SVGs processed at build time
   components/               one component per section (Hero, About, KeySkills, …)
-  components/tinypointer/   parts of the TinyPointer page
+  components/tinypointer/   parts of the Tiny Pointer page
   data/site.ts              links and lists (nav, social links, tools, patterns)
   layouts/Base.astro        <head>, meta tags, global styles
   pages/index.astro         home page
-  pages/tinypointer/        TinyPointer product page
+  pages/tinypointer/        Tiny Pointer product page
   styles/tokens.css         design tokens (colours, type, spacing, light/dark)
   styles/global.css         reset, typography, shared building blocks
 ```
@@ -86,7 +86,7 @@ cut of the original.
 
 - **Smooth scrolling** uses [Lenis](https://github.com/darkroomengineering/lenis) with the same setting
   as the original site (duration 1 s). Off for reduced motion.
-- **Scroll reveals** and the **TinyPointer story** use CSS scroll-driven animations. Browsers without
+- **Scroll reveals** and the **Tiny Pointer story** use CSS scroll-driven animations. Browsers without
   support, and visitors with reduced motion, get the content without motion.
 - **Logo ticker** and **rotating footer words** are CSS animations.
 - **Small scripts:** nav scroll-spy, carousel buttons, the cursor dot (replaces the system cursor and
@@ -102,9 +102,9 @@ about it; replace that component to swap the effect. After changing the scene in
 export it again to `public/unicorn/flow-gradient.json`.
 
 
-### TinyPointer Page
+### Tiny Pointer Page
 
-`/tinypointer` is a vertical scroll story: a sticky "desktop", the TinyPointer hand rising in, and
+`/tinypointer` is a vertical scroll story: a sticky "desktop", the Tiny Pointer hand rising in, and
 one sheet of paper per feature, ending with the download.
 
 - Once the hand has arrived it follows the mouse; clicks press it like in the app (smaller, less
@@ -119,7 +119,7 @@ one sheet of paper per feature, ending with the download.
 ## Third-Party Assets and Licences
 
 - **Inter**, **Playpen Sans** and **DM Mono:** SIL Open Font License, via Fontsource.
-- **TinyPointer hands:** from the TinyPointer repository (MIT License); the Christmas tree hand is
+- **Tiny Pointer hands:** from the TinyPointer repository (MIT License); the Christmas tree hand is
   Eric's own.
 - **Lenis:** MIT License.
 - **Unicorn Studio runtime:** © Unicorn Studio, self-hosted as their embed docs describe.
