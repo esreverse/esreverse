@@ -29,7 +29,7 @@ const {
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImageUrl = new URL(url(ogImage), Astro.site);
 // Bump when a preview image changes: social networks cache previews per image URL.
-ogImageUrl.searchParams.set('v', '6');
+ogImageUrl.searchParams.set('v', '7');
 // The GitHub Pages preview must not compete with the real domain in search engines.
 const isPreview = import.meta.env.BASE_URL !== '/';
 ---
