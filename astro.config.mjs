@@ -14,7 +14,7 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'ignore',
   build: {
-    // /tinypointer → dist/tinypointer/index.html (works on every static host)
+    // /handpointer → dist/handpointer/index.html (works on every static host)
     format: 'directory',
   },
   devToolbar: {

@@ -1,8 +1,8 @@
 ---
 /**
- * The pointer part of the TinyPointer toolbar (as in the app, without colours
+ * The pointer part of the HandPointer toolbar (as in the app, without colours
  * and sound): pick one of a few hands. Appears once the hand is on screen.
- * Selecting a hand dispatches `tinypointer:hand` with the image sources.
+ * Selecting a hand dispatches `handpointer:hand` with the image sources.
  */
 import { Image } from 'astro:assets';
 import RetroDialog from './RetroDialog.astro';
@@ -56,7 +56,7 @@ const { hands } = Astro.props;
 
 <RetroDialog id="own-hand" title="Make your own hand">
   <p>
-    In Tiny Pointer you can turn any idea into your own hand, for example with ChatGPT.
+    In Hand Pointer you can turn any idea into your own hand, for example with ChatGPT.
     Open <strong>Settings → Pointers → Make your own…</strong> and:
   </p>
   <ol>
@@ -65,7 +65,7 @@ const { hands } = Astro.props;
       Click <strong>Open in ChatGPT</strong> (or copy the prompt for another image tool) and download the
       result as a PNG with a transparent background.
     </li>
-    <li>Drop the PNG into Tiny Pointer. Your hand is ready in the toolbar.</li>
+    <li>Drop the PNG into Hand Pointer. Your hand is ready in the toolbar.</li>
   </ol>
 </RetroDialog>
 
@@ -76,7 +76,7 @@ const { hands } = Astro.props;
     if (!button) return;
     toolbar.querySelectorAll('.toolbar__hand').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
     window.dispatchEvent(
-      new CustomEvent('tinypointer:hand', {
+      new CustomEvent('handpointer:hand', {
         detail: { ...button.dataset },
       }),
     );

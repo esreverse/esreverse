@@ -1,5 +1,5 @@
 /**
- * Try-it-yourself ink for the TinyPointer sheets.
+ * Try-it-yourself ink for the HandPointer sheets.
  *
  * Each `[data-sheet]` gets one behaviour, mirroring the app:
  *   draw     – drag to draw a line
