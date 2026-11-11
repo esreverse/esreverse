@@ -69,7 +69,7 @@ const screenshots = await Promise.all(
   }),
 );
 
-const downloadUrl = 'https://github.com/esreverse/quitehandy/releases/latest/download/HandPointer.dmg'; // QuiteHandy.dmg from the next release on
+const downloadUrl = 'https://github.com/esreverse/quitehandy/releases/latest/download/QuiteHandy.dmg';
 const latestReleaseApi = 'https://api.github.com/repos/esreverse/quitehandy/releases/latest';
 
 // Latest version at build time, so it shows without JS; the page script
@@ -170,7 +170,7 @@ const hands: HandChoice[] = await Promise.all(
       <section class="step step--sheet">
         <Sheet feature="zoom" hint="Hover to zoom anywhere on the screen">
           <h2 class="sheet-title" slot="title"><span>Or take a closer look at everything on your screen.</span></h2>
-          <Fragment slot="shortcut">In the app: Hold <kbd>⇧</kbd> · turn on the zoom loupe in Settings first</Fragment>
+          <Fragment slot="shortcut">In the app: Hold <kbd>⌃</kbd> · turn on the zoom loupe in Settings first</Fragment>
         </Sheet>
       </section>
 
@@ -187,7 +187,7 @@ const hands: HandChoice[] = await Promise.all(
           <span class="outro__this">This is</span>
           <span class="outro__name">Quite Handy</span>
         </h2>
-        <p class="step__title outro__lead outro__free"><span>Free for macOS.</span></p>
+        <p class="step__title outro__lead outro__free"><span>Free for macOS</span></p>
         <a class="download" href={downloadUrl} data-cursor-grow>
           Download for macOS <ArrowIcon tight bold />
         </a>
