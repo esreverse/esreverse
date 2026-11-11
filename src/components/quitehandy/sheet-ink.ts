@@ -1,5 +1,5 @@
 /**
- * Try-it-yourself ink for the HandPointer sheets.
+ * Try-it-yourself ink for the QuiteHandy sheets.
  *
  * Each `[data-sheet]` gets one behaviour, mirroring the app:
  *   draw     – drag to draw a line
@@ -353,7 +353,7 @@ const buildSoil = () => {
 const drawLandscape = (ctx: CanvasRenderingContext2D, w: number) => {
   soil ??= buildSoil();
   const s = w / LANDSCAPE_W;
-  const hair = 1 / s; // 1 CSS px on the sheet, magnified in the loupe
+  const hair = 2 / s; // 2 CSS px on the sheet (like the other wireframes), magnified in the loupe
   ctx.save();
   ctx.scale(s, s);
   ctx.globalAlpha = 0.6;

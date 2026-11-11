@@ -1,13 +1,13 @@
 ---
 /**
- * The app was renamed from Tiny Pointer to Hand Pointer. Old links to
- * /tinypointer land here and move on to /handpointer (static hosting such as
- * GitHub Pages has no server-side redirects).
+ * The app was renamed (Tiny Pointer → Hand Pointer → Quite Handy). Old links
+ * land here and move on to /quitehandy (static hosting such as GitHub Pages
+ * has no server-side redirects). Same file under /handpointer.
  */
 import { url } from '../../lib/url';
 
 // relative, so it also works locally and on previews; canonical stays absolute
-const target = url('/handpointer/');
+const target = url('/quitehandy/');
 const canonical = new URL(target, Astro.site).href;
 ---
 
@@ -15,7 +15,7 @@ const canonical = new URL(target, Astro.site).href;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Hand Pointer</title>
+    <title>Quite Handy</title>
     <meta name="robots" content="noindex" />
     <link rel="canonical" href={canonical} />
     <meta http-equiv="refresh" content={`0; url=${target}`} />
@@ -24,6 +24,6 @@ const canonical = new URL(target, Astro.site).href;
     </script>
   </head>
   <body>
-    <p>Tiny Pointer is now <a href={target}>Hand Pointer</a>.</p>
+    <p>This app is now called <a href={target}>Quite Handy</a>.</p>
   </body>
 </html>

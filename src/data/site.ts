@@ -50,9 +50,9 @@ export const tools: { label: string; href?: string; struck?: boolean; internal?:
   { label: 'Tripmode', href: 'https://tripmode.ch/' },
   { label: 'TextSniper', href: 'https://textsniper.app/' },
   { label: 'CleanShot X', href: 'https://cleanshot.com/' },
-  // replaced by my own Hand Pointer: shown struck through, without a link
+  // replaced by my own Quite Handy: shown struck through, without a link
   { label: 'ScreenBrush', struck: true },
-  { label: 'Hand Pointer', href: '/handpointer', internal: true },
+  { label: 'Quite Handy', href: '/quitehandy', internal: true },
   { label: 'Endel', href: 'https://endel.io/' },
   { label: 'MeetingBar', href: 'https://meetingbar.app/' },
 ];

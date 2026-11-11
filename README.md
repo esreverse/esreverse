@@ -1,8 +1,8 @@
 # esreverse.com
 
 Website of Eric Singhartinger – Experience Designer. A hand-coded rebuild of the former Framer site,
-plus the product page for the Mac app [Hand Pointer](https://github.com/esreverse/handpointer) at
-`/handpointer`.
+plus the product page for the Mac app [Quite Handy](https://github.com/esreverse/quitehandy) at
+`/quitehandy`.
 
 - **Static output:** plain HTML, CSS and a few small scripts. No framework runtime, no tracking.
 - **Light mode** for now. A dark mode exists in the code but is commented out (search for `DARK MODE`)
@@ -58,11 +58,11 @@ public/                     served as-is
 src/
   assets/                   images and SVGs processed at build time
   components/               one component per section (Hero, About, KeySkills, …)
-  components/handpointer/   parts of the Hand Pointer page
+  components/quitehandy/   parts of the Quite Handy page
   data/site.ts              links and lists (nav, social links, tools, patterns)
   layouts/Base.astro        <head>, meta tags, global styles
   pages/index.astro         home page
-  pages/handpointer/        Hand Pointer product page
+  pages/quitehandy/        Quite Handy product page
   styles/tokens.css         design tokens (colours, type, spacing, light/dark)
   styles/global.css         reset, typography, shared building blocks
 ```
@@ -86,7 +86,7 @@ cut of the original.
 
 - **Smooth scrolling** uses [Lenis](https://github.com/darkroomengineering/lenis) with the same setting
   as the original site (duration 1 s). Off for reduced motion.
-- **Scroll reveals** and the **Hand Pointer story** use CSS scroll-driven animations. Browsers without
+- **Scroll reveals** and the **Quite Handy story** use CSS scroll-driven animations. Browsers without
   support, and visitors with reduced motion, get the content without motion.
 - **Logo ticker** and **rotating footer words** are CSS animations.
 - **Small scripts:** nav scroll-spy, carousel buttons, the cursor dot (replaces the system cursor and
@@ -102,9 +102,9 @@ about it; replace that component to swap the effect. After changing the scene in
 export it again to `public/unicorn/flow-gradient.json`.
 
 
-### Hand Pointer Page
+### Quite Handy Page
 
-`/handpointer` is a vertical scroll story: a sticky "desktop", the Hand Pointer hand rising in, and
+`/quitehandy` is a vertical scroll story: a sticky "desktop", the Quite Handy hand rising in, and
 one sheet of paper per feature, ending with the download.
 
 - Once the hand has arrived it follows the mouse; clicks press it like in the app (smaller, less
@@ -112,14 +112,14 @@ one sheet of paper per feature, ending with the download.
 - A toolbar lets visitors pick one of four hands. Each hand has a measured fingertip (`tip` in the
   page) where the ink comes out; its stick is extended with a repeated slice of the image.
 - Each sheet unlocks one feature to try (draw, rainbow ink, number stamps, arrows), see
-  `components/handpointer/sheet-ink.ts`. Below each sheet is the matching shortcut in the app.
+  `components/quitehandy/sheet-ink.ts`. Below each sheet is the matching shortcut in the app.
 
 
 
 ## Third-Party Assets and Licences
 
 - **Inter**, **Playpen Sans** and **DM Mono:** SIL Open Font License, via Fontsource.
-- **Hand Pointer hands:** from the HandPointer repository (MIT License); the Christmas tree hand is
+- **Quite Handy hands:** from the QuiteHandy repository (MIT License); the Christmas tree hand is
   Eric's own.
 - **Lenis:** MIT License.
 - **Unicorn Studio runtime:** © Unicorn Studio, self-hosted as their embed docs describe.

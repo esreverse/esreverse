@@ -1,0 +1,233 @@
+---
+/**
+ * Full-screen viewer for the settings screenshots: one screenshot at a time
+ * at its original size (fitted to the window if that is smaller), with
+ * previous/next buttons, arrow keys and swipe.
+ *
+ * Opened and closed like a RetroDialog (data-dialog-open="<id>", Esc, click
+ * on the backdrop), so it also stays below the hand.
+ */
+import type { GetImageResult } from 'astro';
+
+interface Shot {
+  title: string;
+  text: string;
+  light: GetImageResult;
+  dark: GetImageResult;
+}
+
+interface Props {
+  id: string;
+  shots: Shot[];
+  /** the screenshots are @2x: original size in CSS pixels */
+  width: number;
+  height: number;
+}
+const { id, shots, width, height } = Astro.props;
+---
+
+<div
+  class="viewer"
+  id={id}
+  hidden
+  data-dialog
+  data-viewer
+  role="dialog"
+  aria-modal="true"
+  aria-label="Screenshots"
+  style={`--w: ${width}px; --ratio: ${width / height}`}
+>
+  <div class="viewer__stage">
+    {
+      shots.map(({ title, text, light, dark }, i) => (
+        <figure class="viewer__slide" data-slide hidden={i !== 0}>
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset={dark.srcSet.attribute} sizes={`${width}px`} />
+            <img
+              src={light.src}
+              srcset={light.srcSet.attribute}
+              sizes={`${width}px`}
+              width={width}
+              height={height}
+              alt={`Quite Handy settings: ${title}`}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+          <figcaption>
+            <strong>{title}:</strong> {text}
+            <span class="viewer__count">
+              {i + 1} / {shots.length}
+            </span>
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+
+  <button class="viewer__button viewer__button--prev" type="button" aria-label="Previous screenshot" data-viewer-step="-1">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" /></svg>
+  </button>
+  <button class="viewer__button viewer__button--next" type="button" aria-label="Next screenshot" data-viewer-step="1">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7.5 4 6 6-6 6" /></svg>
+  </button>
+  <button class="viewer__button viewer__button--close" type="button" aria-label="Close" data-dialog-close>
+    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" /></svg>
+  </button>
+</div>
+
+<script>
+  for (const viewer of document.querySelectorAll<HTMLElement>('[data-viewer]')) {
+    const slides = [...viewer.querySelectorAll<HTMLElement>('[data-slide]')];
+    let index = 0;
+
+    const show = (i: number) => {
+      index = (i + slides.length) % slides.length;
+      slides.forEach((slide, n) => (slide.hidden = n !== index));
+    };
+
+    // every time it opens, start with the first screenshot
+    new MutationObserver(() => {
+      if (!viewer.hidden) show(0);
+    }).observe(viewer, { attributes: true, attributeFilter: ['hidden'] });
+
+    viewer.addEventListener('click', (event) => {
+      const step = (event.target as Element).closest<HTMLElement>('[data-viewer-step]');
+      if (step) show(index + Number(step.dataset.viewerStep));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (viewer.hidden) return;
+      if (event.key === 'ArrowRight') show(index + 1);
+      if (event.key === 'ArrowLeft') show(index - 1);
+    });
+
+    // swipe on touch screens
+    let startX: number | null = null;
+    viewer.addEventListener('touchstart', (e) => (startX = e.touches[0].clientX), { passive: true });
+    viewer.addEventListener('touchend', (e) => {
+      if (startX === null) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) show(index + (dx < 0 ? 1 : -1));
+      startX = null;
+    });
+  }
+</script>
+
+<style>
+  /* above toolbar and sheets, below the hand (z-index 3) */
+  .viewer {
+    position: fixed;
+    z-index: 2;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 56px 72px;
+    background: rgb(0 0 0 / 0.92);
+    color: #fff;
+  }
+
+  .viewer[hidden] {
+    display: none;
+  }
+
+  /* clicks on the empty stage go through to the backdrop (closes) */
+  .viewer__stage {
+    display: contents;
+  }
+
+  .viewer__slide {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .viewer__slide[hidden] {
+    display: none;
+  }
+
+  /* original size (the files are @2x), smaller only if the window is */
+  .viewer__slide img {
+    display: block;
+    width: min(var(--w), calc(100vw - 144px), calc((100svh - 150px) * var(--ratio)));
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgb(0 0 0 / 0.5);
+  }
+
+  .viewer__slide figcaption {
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+
+  .viewer__count {
+    margin-left: 0.75em;
+    font-family: var(--font-mono);
+    opacity: 0.6;
+  }
+
+  .viewer__button {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .viewer__button:hover,
+  .viewer__button:focus-visible {
+    background: rgb(255 255 255 / 0.25);
+  }
+
+  .viewer__button svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .viewer__button--prev {
+    left: 16px;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .viewer__button--next {
+    right: 16px;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  /* top left: the XD logo sits in the top right corner */
+  .viewer__button--close {
+    left: 16px;
+    top: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .viewer {
+      padding: 64px 12px;
+    }
+
+    .viewer__slide img {
+      width: min(var(--w), calc(100vw - 24px), calc((100svh - 190px) * var(--ratio)));
+    }
+
+    .viewer__button--prev,
+    .viewer__button--next {
+      top: auto;
+      bottom: 12px;
+      translate: none;
+    }
+  }
+</style>
