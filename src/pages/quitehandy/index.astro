@@ -54,11 +54,12 @@ const shotFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/qui
 const shotOf = (name: string) => shotFiles[`../../assets/quitehandy/screenshots/${name}.png`].default;
 const screenshots = await Promise.all(
   [
-    // row by row, two per row: General, Shortcuts / Draw, Zoom / Pointers, Sound
-    { id: 'general', title: 'General', text: 'Startup, updates, permissions' },
+    // in the order of the app's sidebar (About is left out)
+    { id: 'general', title: 'General', text: 'Startup, menu bar, permissions' },
     { id: 'shortcuts', title: 'Shortcuts', text: 'Every action on a key' },
+    { id: 'toolbar', title: 'Interface', text: 'Toolbar, palette and whiteboard' },
     { id: 'drawing', title: 'Draw', text: 'Size, opacity, colours, rainbow' },
-    { id: 'zoom', title: 'Zoom', text: 'Loupe size, factor, animation' },
+    { id: 'zoom', title: 'Flashlight', text: 'Keys, size, darkness, zoom' },
     { id: 'pointers', title: 'Pointers', text: 'Your toolbar and your own hands' },
     { id: 'sound', title: 'Sound', text: 'Tap sounds and when they play' },
   ].map(async (shot) => {
@@ -155,7 +156,7 @@ const hands: HandChoice[] = await Promise.all(
       <section class="step step--sheet">
         <Sheet feature="rainbow" hint="Draw in rainbow colours now">
           <h2 class="sheet-title" slot="title"><span>In all colors of the rainbow.</span></h2>
-          <Fragment slot="shortcut">In the app: Press <kbd>R</kbd> for rainbow ink, <kbd>A</kbd> for automatic colour</Fragment>
+          <Fragment slot="shortcut">In the app: Press <kbd>⇧A</kbd> for rainbow ink, <kbd>A</kbd> for automatic colour</Fragment>
         </Sheet>
       </section>
 
@@ -163,14 +164,14 @@ const hands: HandChoice[] = await Promise.all(
       <section class="step step--sheet">
         <Sheet feature="stamp" hint="Click to stamp numbers now">
           <h2 class="sheet-title" slot="title"><span>Maybe you need to stamp numbers to show an order or to number variants.</span></h2>
-          <Fragment slot="shortcut">In the app: Hold <kbd>⌥</kbd> and click</Fragment>
+          <Fragment slot="shortcut">In the app: Hold <kbd>⇧</kbd> and click</Fragment>
         </Sheet>
       </section>
 
       <section class="step step--sheet">
         <Sheet feature="zoom" hint="Hover to zoom anywhere on the screen">
           <h2 class="sheet-title" slot="title"><span>Or take a closer look at everything on your screen.</span></h2>
-          <Fragment slot="shortcut">In the app: Hold <kbd>⌃</kbd> · turn on the zoom loupe in Settings first</Fragment>
+          <Fragment slot="shortcut">In the app: Hold <kbd>⇥</kbd> · turn on the zoom loupe in Settings first</Fragment>
         </Sheet>
       </section>
 
