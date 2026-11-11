@@ -111,7 +111,7 @@ one sheet of paper per feature, ending with the download.
   lift, softer shadow – values from `ArmView.swift`).
 - A toolbar lets visitors pick one of four hands. Each hand has a measured fingertip (`tip` in the
   page) where the ink comes out; its stick is extended with a repeated slice of the image.
-- Each sheet unlocks one feature to try (draw, rainbow ink, number stamps, arrows), see
+- Each sheet unlocks one feature to try (draw, rainbow ink, number stamps, zoom loupe), see
   `components/quitehandy/sheet-ink.ts`. Below each sheet is the matching shortcut in the app.
 
 

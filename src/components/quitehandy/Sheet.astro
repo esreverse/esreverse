@@ -3,11 +3,11 @@
  * A landscape sheet of paper in a classic black-and-white document window,
  * with the feature's headline above it (slot "title"). Each sheet unlocks its
  * feature: inside the sheet the visitor can try it with the hand (draw,
- * rainbow ink, number stamps, arrows, zoom loupe). The sheet clips the ink.
+ * rainbow ink, number stamps, zoom loupe). The sheet clips the ink.
  * Below the window: the shortcut that does the same in the app.
  */
 interface Props {
-  feature: 'draw' | 'rainbow' | 'stamp' | 'arrow' | 'zoom';
+  feature: 'draw' | 'rainbow' | 'stamp' | 'zoom';
   /** Call to action in the middle of the sheet (not shown on the zoom sheet) */
   hint: string;
 }
@@ -19,7 +19,6 @@ import SheetContent from './SheetContent.astro';
 const windowTitles = {
   draw: 'brilliant presentation.pptx',
   rainbow: 'very informative diagram.pptx',
-  arrow: 'super cool flowchart.pptx',
   stamp: 'very nice figma design.fig',
   zoom: 'bugs.png',
 };

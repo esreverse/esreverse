@@ -5,25 +5,22 @@
  *   draw     – drag to draw a line
  *   rainbow  – drag to draw a line that runs through every colour
  *   stamp    – click to put down numbered circles 1, 2, 3 …
- *   arrow    – drag to draw a line that ends in an open arrowhead
  *   zoom     – the hand turns into a 3× loupe over the sheet
  *
  * Strokes are stored in sheet-relative units (fractions of the sheet width),
  * so they survive resizes. The sheet itself clips the canvas.
  */
 
-type Feature = 'draw' | 'rainbow' | 'stamp' | 'arrow' | 'zoom';
+type Feature = 'draw' | 'rainbow' | 'stamp' | 'zoom';
 type Point = { x: number; y: number; hue: number };
 type Stroke =
-  | { kind: 'line'; rainbow: boolean; arrow: boolean; points: Point[] }
+  | { kind: 'line'; rainbow: boolean; points: Point[] }
   | { kind: 'stamp'; x: number; y: number; n: number };
 
 const INK = '#ff3b30';
 const LINE_WIDTH = 6; // px at the sheet's current size … scaled by REF_WIDTH
 const REF_WIDTH = 880; // sheet width the sizes above are designed for
 const STAMP_RADIUS = 22;
-const HEAD_LENGTH = 24;
-const HEAD_ANGLE = (28 * Math.PI) / 180;
 const RAINBOW_DEG_PER_PX = 0.35;
 /** Input smoothing: each new point moves this far towards the raw pointer (0..1, lower = smoother). */
 const SMOOTHING = 0.4;
@@ -77,7 +74,7 @@ function setUpSheet(sheet: HTMLElement, feature: Feature) {
     }
 
     canvas.setPointerCapture(event.pointerId);
-    current = { kind: 'line', rainbow: feature === 'rainbow', arrow: feature === 'arrow', points: [p] };
+    current = { kind: 'line', rainbow: feature === 'rainbow', points: [p] };
     strokes.push(current);
   });
 
@@ -173,26 +170,6 @@ function setUpSheet(sheet: HTMLElement, feature: Feature) {
       ctx.stroke();
     }
 
-    if (stroke.arrow && pts.length > 1) drawArrowhead(pts, w);
-  }
-
-  /** Open chevron at the end, pointing the way the line was last going. */
-  function drawArrowhead(pts: Point[], w: number) {
-    const tip = pts[pts.length - 1];
-    // look back far enough for a stable direction
-    let from = pts[pts.length - 2];
-    for (let i = pts.length - 2; i >= 0; i--) {
-      from = pts[i];
-      if (Math.hypot(tip.x - from.x, tip.y - from.y) * w > HEAD_LENGTH * unit()) break;
-    }
-    const angle = Math.atan2((tip.y - from.y) * w, (tip.x - from.x) * w);
-    const len = HEAD_LENGTH * unit();
-    ctx.strokeStyle = INK;
-    ctx.beginPath();
-    ctx.moveTo(tip.x * w - len * Math.cos(angle - HEAD_ANGLE), tip.y * w - len * Math.sin(angle - HEAD_ANGLE));
-    ctx.lineTo(tip.x * w, tip.y * w);
-    ctx.lineTo(tip.x * w - len * Math.cos(angle + HEAD_ANGLE), tip.y * w - len * Math.sin(angle + HEAD_ANGLE));
-    ctx.stroke();
   }
 
   function drawStamp(stamp: Extract<Stroke, { kind: 'stamp' }>, w: number) {

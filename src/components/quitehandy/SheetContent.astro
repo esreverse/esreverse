@@ -1,12 +1,12 @@
 ---
 /**
  * The "document" on a sheet: black-and-white wireframes of real use cases
- * (a presentation, a chart, a flowchart, phone variants), so the visitor
+ * (a presentation, a chart, a welcome flow), so the visitor
  * draws, points and stamps on something. Purely decorative: the ink canvas
  * lies on top and takes all input. Sizes in cqi scale with the sheet.
  */
 interface Props {
-  feature: 'draw' | 'rainbow' | 'stamp' | 'arrow';
+  feature: 'draw' | 'rainbow' | 'stamp';
   hint: string;
 }
 const { feature, hint } = Astro.props;
@@ -67,24 +67,6 @@ const bars = [
               <span class="stats__label">more charts</span>
             </p>
           </div>
-        </div>
-      )
-    }
-
-    {
-      feature === 'arrow' && (
-        <div class="flow">
-          <p class="kicker flow__kicker">How we ship things</p>
-          <span class="node node--pill" style="grid-area: idea">Idea</span>
-          <span class="node" style="grid-area: meeting">Meeting</span>
-          <span class="node node--diamond" style="grid-area: decide">
-            <svg viewBox="0 0 100 60" preserveAspectRatio="none">
-              <polygon points="50,1 99,30 50,59 1,30" vector-effect="non-scaling-stroke" />
-            </svg>
-            <span>Approved?</span>
-          </span>
-          <span class="node" style="grid-area: again">Another meeting</span>
-          <span class="node node--pill" style="grid-area: ship">Ship it</span>
         </div>
       )
     }
@@ -238,7 +220,7 @@ const bars = [
     height: 100%;
   }
 
-  /* chart slide and flowchart: content pulled in towards the middle, with
+  /* chart slide: content pulled in towards the middle, with
      about the same white space all around */
   /* every sheet: the white space left and right of the content matches the
      space above it (page padding 6.5cqi + these) */
@@ -337,73 +319,6 @@ const bars = [
 
   .stats__label {
     opacity: 0.55;
-  }
-
-  /* --- flowchart: boxes only, the arrows are the visitor's job --- */
-  /* the five shapes as one group, centred on the page and spread out; the
-     kicker sits apart in the top left corner */
-  .flow {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto;
-    grid-template-areas:
-      'idea meeting decide'
-      '. again ship';
-    align-content: center;
-    padding: 3cqi 3cqi 0;
-    column-gap: 5cqi;
-    row-gap: 10cqi;
-    height: 100%;
-    align-items: center;
-    justify-items: center;
-  }
-
-  .flow__kicker {
-    position: absolute;
-    top: 0;
-    left: 3cqi;
-  }
-
-  .node {
-    display: grid;
-    place-items: center;
-    width: 100%;
-    min-height: 8cqi;
-    padding: 1cqi 2cqi;
-    border: var(--line);
-    border-radius: var(--round);
-    background: var(--color-white);
-    text-align: center;
-    font-weight: 600;
-  }
-
-  .node--pill {
-    border-radius: 99px;
-    background: var(--fill);
-  }
-
-  .node--diamond {
-    position: relative;
-    min-height: 12cqi;
-    border: 0;
-    background: none;
-  }
-
-  .node--diamond svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    fill: var(--color-white);
-    stroke: var(--wire);
-    stroke-width: 2px;
-    stroke-linejoin: round;
-  }
-
-  .node--diamond span {
-    position: relative;
   }
 
   /* --- phone variants --- */
