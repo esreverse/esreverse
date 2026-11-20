@@ -5,6 +5,16 @@ so write it for people using the app.
 
 
 
+## 2.1.2
+
+- Show toolbar now has three options: Always, Near cursor and With hotkey
+- Near cursor is the new default. The toolbar appears when you move the cursor near it and hides again when you move away
+- With hotkey keeps the toolbar hidden. Hold its hotkey to open the toolbar right under the cursor, with the tool, color or emoji you picked last
+- The Show/hide toolbar shortcut and the Toolbar item in the menu bar are gone. Choose how the toolbar shows in Settings
+- All shortcuts and hold keys are back to the new defaults once after this update. Your tools keep their own shortcuts
+
+
+
 ## 2.1.1
 
 - Text: pick Glass or Colored right in the tool's settings. Colored now puts your color behind the text, with the text in a light or dark tone of it

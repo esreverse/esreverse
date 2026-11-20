@@ -3,22 +3,20 @@
   <channel>
     <title>Quite Handy</title>
     <item>
-      <title>Quite Handy 2.1.1</title>
-      <pubDate>Fri, 20 Nov 2026 13:41:53 +0000</pubDate>
-      <sparkle:version>202611201439</sparkle:version>
-      <sparkle:shortVersionString>2.1.1</sparkle:shortVersionString>
+      <title>Quite Handy 2.1.2</title>
+      <pubDate>Fri, 20 Nov 2026 13:59:52 +0000</pubDate>
+      <sparkle:version>202611201457</sparkle:version>
+      <sparkle:shortVersionString>2.1.2</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
       <description><![CDATA[<ul>
-<li>Text: pick Glass or Colored right in the tool's settings. Colored now puts your color behind the text, with the text in a light or dark tone of it</li>
-<li>Sleep, lock screen, screensaver and shutdown now end everything – drawing, flashlight, screenshots, OCR, screencasts and presentation. A running screencast is saved to your desktop</li>
-<li>Whiteboards close whenever a session ends. Restore last session brings them back</li>
-<li>Screenshots and OCR no longer make videos in your browser blink, for example in a Google Meet call</li>
-<li>9 new tap sounds: blip, chirp, clack, coin, pew, quack, snap, tock and typewriter</li>
-<li>Shortcut fields spell out their keys when you hover them, and a red field names the shortcut it conflicts with</li>
-<li>New default shortcuts: ⌃⇥ for Scribble, ⌃⌥⇥ for Flashlight, H for the toolbar, S and A for colors, W and Q for tools</li>
+<li>Show toolbar now has three options: Always, Near cursor and With hotkey</li>
+<li>Near cursor is the new default. The toolbar appears when you move the cursor near it and hides again when you move away</li>
+<li>With hotkey keeps the toolbar hidden. Hold its hotkey to open the toolbar right under the cursor, with the tool, color or emoji you picked last</li>
+<li>The Show/hide toolbar shortcut and the Toolbar item in the menu bar are gone. Choose how the toolbar shows in Settings</li>
+<li>All shortcuts and hold keys are back to the new defaults once after this update. Your tools keep their own shortcuts</li>
 </ul>]]></description>
-      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1.1/QuiteHandy-2.1.1.dmg"
-                 type="application/octet-stream" sparkle:edSignature="tYVUGJMOLdbqsYt+lMUdAmkSe50aP+CLeM29SyXxbvN4MXwWutLR0y62qbbb7JF3BdwQpLFRQYE2c6+XE8OHCA==" length="61584502" />
+      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1.2/QuiteHandy-2.1.2.dmg"
+                 type="application/octet-stream" sparkle:edSignature="fvOPTdSDojODIb1VNRvYVgLgs5hW1Y8I40eK6c/IjxH6yeswEUP8CMKV15l3HWe5J4N/X1nloeYo3GjlH9ciBw==" length="61589242" />
     </item>
   </channel>
 </rss>
