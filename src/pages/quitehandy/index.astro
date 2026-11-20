@@ -238,8 +238,7 @@ const hands: HandChoice[] = await Promise.all(
             >Release notes</button
           >)
         </p>
-        <div class="notes__shade" data-notes-shade hidden></div>
-        <dialog class="notes" data-notes aria-labelledby="notes-title">
+        <dialog class="notes" data-notes data-lenis-prevent aria-labelledby="notes-title">
           <div class="notes__head">
             <h2 class="notes__title" id="notes-title">What's New in {latest.version}</h2>
             <button type="button" class="notes__close" data-notes-close aria-label="Close">×</button>
@@ -456,7 +455,9 @@ const hands: HandChoice[] = await Promise.all(
       // the hand toolbar is only needed while the sheets are on screen
       const outroReached = !!outro && outro.getBoundingClientRect().top < window.innerHeight * 0.6;
       root.toggleAttribute('data-toolbar', arrived && !outroReached);
-      const following = arrived && pointer !== null && (canFollow || touchActive);
+      // At the download the hand goes and the normal pointer is back, for the link and the notes.
+      root.toggleAttribute('data-hand-away', outroReached);
+      const following = arrived && !outroReached && pointer !== null && (canFollow || touchActive);
       root.toggleAttribute('data-hand-following', following);
 
       let target = { x: 0, y: 0 };
@@ -488,39 +489,24 @@ const hands: HandChoice[] = await Promise.all(
     };
     requestAnimationFrame(frame);
   }
-  // Release notes in an overlay: opens from the version line, closes with ×, Esc or a click
-  // outside it. Not modal: a modal dialog would lie above everything, the hand too, which is
-  // the pointer here; this one stays under the hand, so its links and × can be clicked.
+  // Release notes in an ordinary modal dialog: the page darkened behind it, the notes scroll
+  // inside, Esc, × or a click beside it closes it. (The hand is gone down here.)
   const notes = document.querySelector<HTMLDialogElement>('[data-notes]');
   const opener = document.querySelector('[data-notes-open]');
-  const shade = document.querySelector<HTMLElement>('[data-notes-shade]');
   if (notes) {
-    // Straight under the page, so "fixed" means the window: the section it is written in
-    // would otherwise be its frame, and it would not sit in the window's middle.
-    document.body.append(...[shade, notes].filter((el): el is HTMLElement => el !== null));
     opener?.addEventListener('click', () => {
-      notes.show();
-      if (shade) {
-        shade.hidden = false;
-      }
-      // Only the notes scroll while they are open.
+      notes.showModal();
       document.documentElement.style.overflow = 'hidden';
     });
     notes.addEventListener('close', () => {
-      if (shade) {
-        shade.hidden = true;
-      }
       document.documentElement.style.overflow = '';
     });
     notes.querySelector('[data-notes-close]')?.addEventListener('click', () => notes.close());
-    document.addEventListener('pointerdown', (event) => {
-      const target = event.target as Node;
-      if (notes.open && !notes.contains(target) && !opener?.contains(target)) {
-        notes.close();
-      }
-    });
-    document.addEventListener('keydown', (event) => {
-      if (notes.open && event.key === 'Escape') {
+    // A click on the darkened page lands on the dialog itself, outside its box.
+    notes.addEventListener('click', (event) => {
+      const box = notes.getBoundingClientRect();
+      const inside = event.clientX >= box.left && event.clientX <= box.right && event.clientY >= box.top && event.clientY <= box.bottom;
+      if (!inside) {
         notes.close();
       }
     });
@@ -591,6 +577,11 @@ const hands: HandChoice[] = await Promise.all(
 
   .hand-layer {
     transition: opacity 0.15s;
+  }
+
+  /* At the download the hand is gone: the normal pointer takes over. */
+  :global(html[data-hand-away]) .hand-layer {
+    opacity: 0;
   }
 
   /* The hand is the pointer while it follows the mouse. */
@@ -889,16 +880,9 @@ const hands: HandChoice[] = await Promise.all(
     overflow: hidden;
   }
 
-  /* The page darkened behind it (the hand, above both, stays as it is). */
-  .notes__shade {
-    position: fixed;
-    inset: 0;
-    z-index: 4;
+  /* The page darkened behind it. */
+  .notes::backdrop {
     background: rgb(0 0 0 / 0.45);
-  }
-
-  .notes__shade[hidden] {
-    display: none;
   }
 
   .notes[open] {
