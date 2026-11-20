@@ -5,6 +5,18 @@ so write it for people using the app.
 
 
 
+## 2.1.1
+
+- Text: pick Glass or Colored right in the tool's settings. Colored now puts your color behind the text, with the text in a light or dark tone of it
+- Sleep, lock screen, screensaver and shutdown now end everything – drawing, flashlight, screenshots, OCR, screencasts and presentation. A running screencast is saved to your desktop
+- Whiteboards close whenever a session ends. Restore last session brings them back
+- Screenshots and OCR no longer make videos in your browser blink, for example in a Google Meet call
+- 9 new tap sounds: blip, chirp, clack, coin, pew, quack, snap, tock and typewriter
+- Shortcut fields spell out their keys when you hover them, and a red field names the shortcut it conflicts with
+- New default shortcuts: ⌃⇥ for Scribble, ⌃⌥⇥ for Flashlight, H for the toolbar, S and A for colors, W and Q for tools
+
+
+
 ## 2.1
 
 Quite Handy is now a complete toolkit for showing things on your screen. Turn on the tools you need in Settings and leave the rest off.
