@@ -3,23 +3,25 @@
   <channel>
     <title>Quite Handy</title>
     <item>
-      <title>Quite Handy 2.1.3</title>
-      <pubDate>Fri, 20 Nov 2026 14:44:32 +0000</pubDate>
-      <sparkle:version>202611201541</sparkle:version>
-      <sparkle:shortVersionString>2.1.3</sparkle:shortVersionString>
+      <title>Quite Handy 2.1.4</title>
+      <pubDate>Fri, 20 Nov 2026 16:17:42 +0000</pubDate>
+      <sparkle:version>202611201715</sparkle:version>
+      <sparkle:shortVersionString>2.1.4</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
       <description><![CDATA[<ul>
-<li>New installs now start with the intended defaults: Scribble and Flashlight on, the other tools off, and the shortcuts and tools as Quite Handy comes</li>
-<li>Text starts on a colored background at 90 % with pastel colors, and Clack is the new default tap sound</li>
-<li>Screenshots and Screencasts explain what they do, even while they are off</li>
-<li>Each screen tool asks for screen recording with its own explanation</li>
-<li>Presentation and Whiteboards have a single on/off switch, at the title</li>
-<li>No more hint box over the toolbar on the first start, and no hint while you pick a window for a screencast</li>
-<li>The onboarding starts every step with the first tool in the toolbar</li>
-<li>Larger headlines when Quite Handy asks for a permission</li>
+<li>New app icon in glass, with a dark version that follows Dark Mode and the icon style in System Settings</li>
+<li>Quite Handy shows in the Dock and in ⌘⇥. A click on its icon starts a scribble session. Turn it off in Settings › General with Show in Dock</li>
+<li>Try a tool with its play button: it now stays on that tool</li>
+<li>A new tool shows in the toolbar right away, with the simple cursor until you pick one</li>
+<li>A new marker starts vibrant yellow at 30 %, and its simple cursor is its slanted tip</li>
+<li>Choose cursor shows five larger cursors per row, with more room between them</li>
+<li>Make your own cursor: the crosshair spans the whole picture, and the loupe fades in as you come near</li>
+<li>The toolbar sits a little higher above the Dock by default</li>
+<li>A new About page</li>
+<li>After this update, Quite Handy starts fresh one last time: the onboarding shows again, and all settings and shortcuts are back to their defaults. Your own cursors stay</li>
 </ul>]]></description>
-      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1.3/QuiteHandy-2.1.3.dmg"
-                 type="application/octet-stream" sparkle:edSignature="dOTGFfucp8qusV4nFuJ+4sjb5LnJbBVyg0PxSUylYIE6AVrPoEbUppjj4W+l9Pe3OqQfdsik92pGbdOl5gu1Cg==" length="61528019" />
+      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1.4/QuiteHandy-2.1.4.dmg"
+                 type="application/octet-stream" sparkle:edSignature="wFYM/7wQkJLzgEJQGT3ntreC2xrguFkslR9il7RDsHqc8ibIIDj6ckJXV3I7H3iVLqEllpIgZWcwkC3EuWH4Cw==" length="63602788" />
     </item>
   </channel>
 </rss>

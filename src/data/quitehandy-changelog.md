@@ -5,6 +5,21 @@ so write it for people using the app.
 
 
 
+## 2.1.4
+
+- New app icon in glass, with a dark version that follows Dark Mode and the icon style in System Settings
+- Quite Handy shows in the Dock and in ⌘⇥. A click on its icon starts a scribble session. Turn it off in Settings › General with Show in Dock
+- Try a tool with its play button: it now stays on that tool
+- A new tool shows in the toolbar right away, with the simple cursor until you pick one
+- A new marker starts vibrant yellow at 30 %, and its simple cursor is its slanted tip
+- Choose cursor shows five larger cursors per row, with more room between them
+- Make your own cursor: the crosshair spans the whole picture, and the loupe fades in as you come near
+- The toolbar sits a little higher above the Dock by default
+- A new About page
+- After this update, Quite Handy starts fresh one last time: the onboarding shows again, and all settings and shortcuts are back to their defaults. Your own cursors stay
+
+
+
 ## 2.1.3
 
 - New installs now start with the intended defaults: Scribble and Flashlight on, the other tools off, and the shortcuts and tools as Quite Handy comes
