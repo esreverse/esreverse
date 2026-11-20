@@ -240,7 +240,7 @@ const hands: HandChoice[] = await Promise.all(
         </p>
         <dialog class="notes" data-notes data-lenis-prevent aria-labelledby="notes-title">
           <div class="notes__head">
-            <h2 class="notes__title" id="notes-title">Quite Handy {seriesNotes ? series : latest.version}</h2>
+            <h2 class="notes__title" id="notes-title">Quite Handy 2.0</h2>
             <button type="button" class="notes__close" data-notes-close aria-label="Close">×</button>
           </div>
           <div class="notes__body">
@@ -248,7 +248,7 @@ const hands: HandChoice[] = await Promise.all(
               shownNotes.map((note) => (
                 <>
                   {note.version === updateNotes[0]?.version && (
-                    <h2 class="notes__title notes__minor">Updates {series}.x</h2>
+                    <h2 class="notes__title notes__minor">Updates 2.X</h2>
                   )}
                   {note.version && <h3 class="notes__version">{note.version}</h3>}
                   {note.blocks.map((block) =>
