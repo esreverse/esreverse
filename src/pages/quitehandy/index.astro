@@ -12,8 +12,9 @@
  * On the sheets the visitor can try each feature (see Sheet.astro).
  */
 import '@fontsource-variable/playpen-sans/wght.css';
-import '@fontsource/dm-mono/400.css';
-import '@fontsource/dm-mono/500.css';
+import '@fontsource/roboto-mono/400.css';
+import '@fontsource/roboto-mono/500.css';
+import '@fontsource/roboto-mono/700.css';
 import '@fontsource/fredoka/latin-700.css'; // the app's name, as in its logo
 import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
@@ -83,15 +84,38 @@ const releaseNotes = changelog
   .slice(1)
   .map((section) => {
     const [heading, ...lines] = section.split('\n');
-    return {
-      version: heading.trim(),
-      items: lines.filter((line) => line.startsWith('- ')).map((line) => line.slice(2).trim()),
-    };
+    // A release is told in headings ("### "), paragraphs and lists ("- "), in order.
+    const blocks: { kind: 'heading' | 'text' | 'list'; text: string; items: string[] }[] = [];
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line) {
+        continue;
+      }
+      if (line.startsWith('### ')) {
+        blocks.push({ kind: 'heading', text: line.slice(4), items: [] });
+      } else if (line.startsWith('- ')) {
+        const last = blocks.at(-1);
+        if (last?.kind === 'list') {
+          last.items.push(line.slice(2));
+        } else {
+          blocks.push({ kind: 'list', text: '', items: [line.slice(2)] });
+        }
+      } else {
+        blocks.push({ kind: 'text', text: line, items: [] });
+      }
+    }
+    return { version: heading.trim(), blocks };
   })
-  .filter((note) => note.items.length > 0);
+  .filter((note) => note.blocks.length > 0);
+// "**word**" in the notes is set in bold.
+const bold = (text: string) =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+// The overlay shows what is new in the version offered for download.
+const currentNotes = releaseNotes.find((note) => note.version === latest.version) ?? releaseNotes[0];
 const tinyHandUrl = 'https://github.com/nilbuild/tinyhand';
 const tinyHandAuthorUrl = 'https://github.com/nilbuild';
 const screenBrushUrl = 'https://imagestudiopro.com/screenbrush/';
+const cleanShotUrl = 'https://cleanshot.com/';
 
 const handSizes = 'clamp(180px, 22vw, 320px)';
 // tip: where the ink comes out, as fractions of the image (measured: topmost
@@ -179,10 +203,17 @@ const hands: HandChoice[] = await Promise.all(
         </Sheet>
       </section>
 
+      <section class="step">
+        <h2 class="step__title"><span>Or OCR scan text from your screen, take screenshots or create screencasts.</span></h2>
+      </section>
+
       <section class="step step--outro" aria-labelledby="outro-title">
         <p class="step__title outro__lead">
           <span
-            >Imagine <a class="hover-link" href={tinyHandUrl}>TinyHand</a> and <a
+            >Imagine <a class="hover-link" href={tinyHandUrl}>TinyHand</a>, <a
+              class="hover-link"
+              href={cleanShotUrl}>CleanShot</a
+            > and <a
               class="hover-link"
               href={screenBrushUrl}>ScreenBrush</a
             > had a baby.</span
@@ -201,23 +232,27 @@ const hands: HandChoice[] = await Promise.all(
             >Release notes</button
           >)
         </p>
+        <div class="notes__shade" data-notes-shade hidden></div>
         <dialog class="notes" data-notes aria-labelledby="notes-title">
           <div class="notes__head">
-            <h2 class="notes__title" id="notes-title">What's new</h2>
+            <h2 class="notes__title" id="notes-title">What's New in {currentNotes?.version ?? latest.version}</h2>
             <button type="button" class="notes__close" data-notes-close aria-label="Close">×</button>
           </div>
           <div class="notes__body">
             {
-              releaseNotes.map((note) => (
-                <section class="notes__release">
-                  <h3 class="notes__version">{note.version}</h3>
-                  <ul>
-                    {note.items.map((item) => (
-                      <li>{item}</li>
+              currentNotes?.blocks.map((block) =>
+                block.kind === 'heading' ? (
+                  <h3 class="notes__heading">{block.text}</h3>
+                ) : block.kind === 'text' ? (
+                  <p class="notes__text" set:html={bold(block.text)} />
+                ) : (
+                  <ul class="notes__list">
+                    {block.items.map((item) => (
+                      <li set:html={bold(item)} />
                     ))}
                   </ul>
-                </section>
-              ))
+                ),
+              )
             }
           </div>
         </dialog>
@@ -443,13 +478,32 @@ const hands: HandChoice[] = await Promise.all(
     requestAnimationFrame(frame);
   }
   // Release notes in an overlay: opens from the version line, closes with ×, Esc or a click
-  // outside it.
+  // outside it. Not modal: a modal dialog would lie above everything, the hand too, which is
+  // the pointer here; this one stays under the hand, so its links and × can be clicked.
   const notes = document.querySelector<HTMLDialogElement>('[data-notes]');
+  const opener = document.querySelector('[data-notes-open]');
+  const shade = document.querySelector<HTMLElement>('[data-notes-shade]');
   if (notes) {
-    document.querySelector('[data-notes-open]')?.addEventListener('click', () => notes.showModal());
+    opener?.addEventListener('click', () => {
+      notes.show();
+      if (shade) {
+        shade.hidden = false;
+      }
+    });
+    notes.addEventListener('close', () => {
+      if (shade) {
+        shade.hidden = true;
+      }
+    });
     notes.querySelector('[data-notes-close]')?.addEventListener('click', () => notes.close());
-    notes.addEventListener('click', (event) => {
-      if (event.target === notes) {
+    document.addEventListener('pointerdown', (event) => {
+      const target = event.target as Node;
+      if (notes.open && !notes.contains(target) && !opener?.contains(target)) {
+        notes.close();
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (notes.open && event.key === 'Escape') {
         notes.close();
       }
     });
@@ -777,13 +831,13 @@ const hands: HandChoice[] = await Promise.all(
   }
 
   /* classic default button: rounded, with a thick outer ring */
+  /* Set like the thanks at the bottom: the same size, color and opacity. */
   .download__version {
     margin-top: 20px;
     font-family: var(--font-mono);
     font-variation-settings: normal;
     font-size: 0.75rem;
     line-height: 1.6;
-    opacity: 0.6;
   }
 
   /* the version line's "Release notes" looks like the other links */
@@ -802,17 +856,32 @@ const hands: HandChoice[] = await Promise.all(
     position: fixed;
     inset: 0;
     margin: auto;
-    width: min(560px, calc(100vw - 32px));
-    max-height: min(640px, calc(100svh - 64px));
+    /* As tall as its notes, at most the window less a margin (then the list scrolls). */
+    width: min(760px, calc(100vw - 32px));
+    height: fit-content;
+    max-height: calc(100svh - 64px);
     padding: 0;
     border: 0;
-    border-radius: 16px;
-    outline: 3px solid var(--color-black);
-    outline-offset: 3px;
+    /* Square, all of it in the mono face. */
+    border-radius: 0;
+    font-family: var(--font-mono);
+    z-index: 5;
     background: var(--color-white);
     color: var(--color-black);
     text-align: left;
     overflow: hidden;
+  }
+
+  /* The page darkened behind it (the hand, above both, stays as it is). */
+  .notes__shade {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    background: rgb(0 0 0 / 0.45);
+  }
+
+  .notes__shade[hidden] {
+    display: none;
   }
 
   .notes[open] {
@@ -820,16 +889,11 @@ const hands: HandChoice[] = await Promise.all(
     flex-direction: column;
   }
 
-  .notes::backdrop,
-  :global(dialog.notes)::backdrop {
-    background: rgb(0 0 0 / 0.45);
-  }
-
   .notes__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 24px 12px;
+    padding: 48px 48px 20px;
   }
 
   .notes__title {
@@ -854,30 +918,54 @@ const hands: HandChoice[] = await Promise.all(
     background: rgb(0 0 0 / 0.08);
   }
 
+  .notes__close {
+    border-radius: 0;
+  }
+
   .notes__body {
-    padding: 0 24px 24px;
+    padding: 0 48px 56px;
+    /* Shrinks to fit and scrolls, so nothing is cut off. */
+    min-height: 0;
     overflow-y: auto;
   }
 
-  .notes__release + .notes__release {
-    margin-top: 20px;
-  }
-
-  .notes__version {
-    margin: 0 0 6px;
-    font-family: var(--font-mono);
+  .notes__text {
+    margin: 0 0 16px;
     font-size: 0.875rem;
-    font-weight: 500;
+    line-height: 1.6;
   }
 
-  .notes__release ul {
-    margin: 0;
-    padding-left: 1.2em;
+  .notes__heading {
+    margin: 28px 0 8px;
     font-size: 0.9375rem;
-    line-height: 1.5;
+    font-weight: 700;
   }
 
-  .notes__release li + li {
+  /* Dashes, not dots. */
+  .notes__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .notes__list li {
+    position: relative;
+    padding-left: 1.5em;
+  }
+
+  .notes__list li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+  }
+
+  .notes__list li {
+    margin-bottom: 0;
+  }
+
+  .notes__list li + li {
     margin-top: 4px;
   }
 

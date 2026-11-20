@@ -7,18 +7,12 @@ so write it for people using the app.
 
 ## 2.1
 
-- New cursors: Magic Wand, The Boxer, Wes Anderson, Raphael, Blueberry Lollipop, Caramel Star, Fairytale Star, Bone, Pointerrr and Matcha
-- Every tool can be turned on or off with the switch next to its title in Settings, and the last onboarding step lets you choose the tools to start with
-- Screencasts start with the full screen – picking Window or Area selects it right away, and the webcam glides into its corner
-- After a screencast, watch it in a preview and choose Cancel, Retry, Copy or Save
-- Window recordings include the webcam and follow the window when it moves
-- Hold a picture you are dragging from the Finder and press the Scribble or new-whiteboard shortcut: it opens on a whiteboard
-- Make your own cursor: a live preview at twice its size, bigger or smaller in 5 % steps, and cursors without a stick swing from their tip
-- Reset changes to settings with a button or a shortcut of its own – Clear all shortcuts starts from scratch
-- Up to 16 tools in the toolbar
-- Hover a shortcut to read its keys in words, and a conflict names the setting it clashes with
-- New installs start with ⌃W for a new whiteboard and ⌃Q for presentations, and with the pen, emojis, numbers and text in the toolbar
-- Fixes for screen sharing in Teams and other video calls
+Quite Handy is now a complete toolkit for showing things on your screen. Turn on the tools you need in Settings and leave the rest off.
+
+- **Point & draw** – a hand on a stick with pen, arrow, marker, emojis, numbers, text, pixelate and glitter, plus a flashlight that zooms in and whiteboards on top of your screen
+- **Capture** – screenshots of the screen, an area, a window or a long scrolling page, screencasts with your voice and webcam, and text copied from anywhere with OCR
+- **Present** – presentation mode keeps your Mac awake, hides the desktop and runs your own shortcuts when you start and stop
+- **Make it yours** – more than 40 cursors or your own from any picture, a shortcut for every tool and 15 tap sounds
 
 
 
