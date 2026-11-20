@@ -5,6 +5,13 @@ so write it for people using the app.
 
 
 
+## 2.1.6
+
+- Glitter: a quick click is a tap, as with the pen. Hold or move to spray
+- Numbers: the next number shows only once you let go of the one you placed
+
+
+
 ## 2.1.5
 
 - Shortcuts show only what the tools you use need, and the shortcuts of tools you turned off no longer take their keys

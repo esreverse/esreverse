@@ -3,24 +3,17 @@
   <channel>
     <title>Quite Handy</title>
     <item>
-      <title>Quite Handy 2.1.5</title>
-      <pubDate>Fri, 20 Nov 2026 18:44:39 +0000</pubDate>
-      <sparkle:version>202611201941</sparkle:version>
-      <sparkle:shortVersionString>2.1.5</sparkle:shortVersionString>
+      <title>Quite Handy 2.1.6</title>
+      <pubDate>Fri, 20 Nov 2026 18:59:50 +0000</pubDate>
+      <sparkle:version>202611201957</sparkle:version>
+      <sparkle:shortVersionString>2.1.6</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
       <description><![CDATA[<ul>
-<li>Shortcuts show only what the tools you use need, and the shortcuts of tools you turned off no longer take their keys</li>
-<li>The Shortcuts page is sorted into clearer groups: Scribble on/off and Open new whiteboard each on their own, undo and the other editing keys together, each tool's shortcut in a group of its own</li>
-<li>Screencasts can start with a window or an area: set it in Settings with Start with. You pick first, then the recording controls open. With no window to pick, they open for the full screen</li>
-<li>A window you record gets the red frame too, and it moves with the window</li>
-<li>Record starts recording right away, while a red circle shows where Stop is in the menu bar</li>
-<li>Choose the corner the webcam starts in: bottom right, bottom left, top left or top right. It docks to the same corner of a window or an area</li>
-<li>The recording controls always stay above the webcam and the red frame</li>
-<li>Esc and a right-click no longer reach the app underneath, when they cancel a screencast or end a session</li>
-<li>Make your own cursor: Test is now Try out</li>
+<li>Glitter: a quick click is a tap, as with the pen. Hold or move to spray</li>
+<li>Numbers: the next number shows only once you let go of the one you placed</li>
 </ul>]]></description>
-      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1.5/QuiteHandy-2.1.5.dmg"
-                 type="application/octet-stream" sparkle:edSignature="eqS+xXlUfIWo2LiIe9NPG+Sa54iYedABosWvVLdDD79UnYH4kz/NF2jPcRiTEmkiZOXgr5KB3aElFkSfN2NBAg==" length="63705288" />
+      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1.6/QuiteHandy-2.1.6.dmg"
+                 type="application/octet-stream" sparkle:edSignature="qT7yrIWIR5YiQhSUlJDJ1/OrLiPStcI5HrkK6+7aHSbwfdeiymFZJojC95Ebs+o/QGWAXA5Z1mYn1ILHhoBxDA==" length="63704832" />
     </item>
   </channel>
 </rss>
