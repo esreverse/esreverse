@@ -248,7 +248,7 @@ const hands: HandChoice[] = await Promise.all(
               shownNotes.map((note) => (
                 <>
                   {note.version === updateNotes[0]?.version && (
-                    <h2 class="notes__title notes__minor">Updates 2.X</h2>
+                    <h2 class="notes__title notes__minor">Updates</h2>
                   )}
                   {note.version && <h3 class="notes__version">{note.version}</h3>}
                   {note.blocks.map((block) =>
