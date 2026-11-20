@@ -5,6 +5,14 @@ so write it for people using the app.
 
 
 
+## 2.1.5
+
+- Shortcuts show only what the tools you use need, and the shortcuts of tools you turned off no longer take their keys
+- The Shortcuts page is sorted into clearer groups: Scribble on/off and Open new whiteboard each on their own, undo and the other editing keys together, each tool's shortcut in a group of its own
+- Make your own cursor: Test is now Try out
+
+
+
 ## 2.1.4
 
 - New app icon in glass, with a dark version that follows Dark Mode and the icon style in System Settings

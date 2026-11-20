@@ -3,27 +3,18 @@
   <channel>
     <title>Quite Handy</title>
     <item>
-      <title>Quite Handy 2.1.4</title>
-      <pubDate>Fri, 20 Nov 2026 17:59:47 +0000</pubDate>
-      <sparkle:version>202611201857</sparkle:version>
-      <sparkle:shortVersionString>2.1.4</sparkle:shortVersionString>
+      <title>Quite Handy 2.1.5</title>
+      <pubDate>Fri, 20 Nov 2026 18:16:48 +0000</pubDate>
+      <sparkle:version>202611201914</sparkle:version>
+      <sparkle:shortVersionString>2.1.5</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
       <description><![CDATA[<ul>
-<li>New app icon in glass, with a dark version that follows Dark Mode and the icon style in System Settings</li>
-<li>Quite Handy shows in the Dock and in ⌘⇥. A click on its icon starts a scribble session, or the flashlight when Scribble is off. Turn the icon off in Settings › General with Show in Dock</li>
-<li>Try a tool with its play button: it now stays on that tool</li>
-<li>A new tool shows in the toolbar right away, with the simple cursor until you pick one</li>
-<li>A new marker starts vibrant yellow at 30 %, and its simple cursor is its slanted tip</li>
-<li>Choose cursor shows five larger cursors per row, with more room between them</li>
-<li>Make your own cursor: the crosshair spans the whole picture, and the loupe fades in as you come near</li>
-<li>The toolbar sits a little higher above the Dock by default</li>
-<li>After a screencast, the recording plays right away</li>
-<li>Whiteboards are on from the start</li>
-<li>A new About page</li>
-<li>After this update, Quite Handy starts fresh one last time: the onboarding shows again, and all settings and shortcuts are back to their defaults. Your own cursors stay</li>
+<li>Shortcuts show only what the tools you use need, and the shortcuts of tools you turned off no longer take their keys</li>
+<li>The Shortcuts page is sorted into clearer groups: Scribble on/off and Open new whiteboard each on their own, undo and the other editing keys together, each tool's shortcut in a group of its own</li>
+<li>Make your own cursor: Test is now Try out</li>
 </ul>]]></description>
-      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1.4/QuiteHandy-2.1.4.dmg"
-                 type="application/octet-stream" sparkle:edSignature="HtSJWiUUzTkGpUgosdhvkgL/27hNR8f7s3OuWXNeHqe19Ki8HqEJWcG3kf1KBCuyXS77ac9bgl8VGKHgNK/fAA==" length="63603357" />
+      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1.5/QuiteHandy-2.1.5.dmg"
+                 type="application/octet-stream" sparkle:edSignature="GbKsOZTu2MeCoHypOTspWOVxeLNWDsf3Z7Pf1erOXKbAk705suqOH0oLY5lbW7KeXg6ERJuqhC7USwu11yfUCQ==" length="63698805" />
     </item>
   </channel>
 </rss>
