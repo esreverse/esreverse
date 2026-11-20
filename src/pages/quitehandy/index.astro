@@ -240,13 +240,16 @@ const hands: HandChoice[] = await Promise.all(
         </p>
         <dialog class="notes" data-notes data-lenis-prevent aria-labelledby="notes-title">
           <div class="notes__head">
-            <h2 class="notes__title" id="notes-title">What's New in {latest.version}</h2>
+            <h2 class="notes__title" id="notes-title">What's New in {seriesNotes ? series : latest.version}</h2>
             <button type="button" class="notes__close" data-notes-close aria-label="Close">×</button>
           </div>
           <div class="notes__body">
             {
               shownNotes.map((note) => (
                 <>
+                  {note.version === updateNotes[0]?.version && (
+                    <h2 class="notes__title notes__minor">What's New in Minor Releases</h2>
+                  )}
                   {note.version && <h3 class="notes__version">{note.version}</h3>}
                   {note.blocks.map((block) =>
                     block.kind === 'heading' ? (
@@ -877,7 +880,9 @@ const hands: HandChoice[] = await Promise.all(
     background: var(--color-white);
     color: var(--color-black);
     text-align: left;
-    overflow: hidden;
+    /* All of it scrolls, the headline too; the page stays put. */
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   /* The page darkened behind it. */
@@ -885,10 +890,6 @@ const hands: HandChoice[] = await Promise.all(
     background: rgb(0 0 0 / 0.45);
   }
 
-  .notes[open] {
-    display: flex;
-    flex-direction: column;
-  }
 
   .notes__head {
     display: flex;
@@ -925,11 +926,6 @@ const hands: HandChoice[] = await Promise.all(
 
   .notes__body {
     padding: 0 48px 56px;
-    /* Fills the rest of the overlay and scrolls, so nothing is cut off; the page stays put. */
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
   }
 
   .notes__text {
@@ -944,11 +940,16 @@ const hands: HandChoice[] = await Promise.all(
     font-weight: 700;
   }
 
-  /* Each update after the big release: set apart by a line above its number. */
+  /* The updates after the big release: under a black line, with a headline like the top's. */
+  .notes__minor {
+    margin: 48px 0 0;
+    padding-top: 48px;
+    border-top: 1px solid var(--color-black);
+  }
+
+  /* Each update's number. */
   .notes__version {
-    margin: 40px 0 16px;
-    padding-top: 32px;
-    border-top: 1px solid rgb(0 0 0 / 0.12);
+    margin: 28px 0 12px;
     font-size: 0.9375rem;
     font-weight: 700;
   }
