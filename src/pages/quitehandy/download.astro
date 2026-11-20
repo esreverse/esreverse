@@ -1,0 +1,21 @@
+---
+/**
+ * www.esreverse.com/quitehandy/download: always the newest DMG. scripts/publish.sh in the
+ * Quite Handy repo writes the version and its download link to quitehandy-release.json.
+ */
+import release from '../../data/quitehandy-release.json';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Download Quite Handy {release.version}</title>
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${release.dmg}`} />
+    <link rel="canonical" href={release.dmg} />
+  </head>
+  <body>
+    <p>Downloading Quite Handy {release.version}… <a href={release.dmg}>Download it here</a> if it does not start.</p>
+  </body>
+</html>
