@@ -5,6 +5,47 @@ so write it for people using the app.
 
 
 
+## 2.1
+
+- New cursors: Magic Wand, The Boxer, Wes Anderson, Raphael, Blueberry Lollipop, Caramel Star, Fairytale Star, Bone, Pointerrr and Matcha
+- Every tool can be turned on or off with the switch next to its title in Settings, and the last onboarding step lets you choose the tools to start with
+- Screencasts start with the full screen – picking Window or Area selects it right away, and the webcam glides into its corner
+- After a screencast, watch it in a preview and choose Cancel, Retry, Copy or Save
+- Window recordings include the webcam and follow the window when it moves
+- Hold a picture you are dragging from the Finder and press the Scribble or new-whiteboard shortcut: it opens on a whiteboard
+- Make your own cursor: a live preview at twice its size, bigger or smaller in 5 % steps, and cursors without a stick swing from their tip
+- Reset changes to settings with a button or a shortcut of its own – Clear all shortcuts starts from scratch
+- Up to 16 tools in the toolbar
+- Hover a shortcut to read its keys in words, and a conflict names the setting it clashes with
+- New installs start with ⌃W for a new whiteboard and ⌃Q for presentations, and with the pen, emojis, numbers and text in the toolbar
+- Fixes for screen sharing in Teams and other video calls
+
+
+
+## 2.0.1
+
+- Glitter: a new tool that sprays sparkling flakes from the tip, with Spread and Amount
+- New cursors: Candy Star, Caramel Star, Blueberry Lollyop and Bone
+- Hover any drawing, stamp or text until it shows stripes, then drag it or press Backspace to delete it
+- Your own cursors: cleaner cut-outs, sizes that match the other hands, and the picture can be replaced
+- Screenshots keep the hand and the flashlight in the picture
+- Fixes for Logi Options scrolling with ⌘, the toolbar flashing at the start, and the desktop after a presentation
+
+
+
+## 1.7.0
+
+- Screenshots: ⌥⌘4 for an area, press Space to pick a window instead (with its shadow); ⌥⌘5 opens it on a whiteboard to draw on; ⌥⌘3 takes the whole screen
+- Precise screenshots in Settings: the area stays to be moved and resized, Return or a double-click takes it
+- Scrolling screenshots with ⌥⌘6: draw an area, then scroll down slowly and the page is put together into one long picture
+- Text recognition (OCR) with ⌥⌘2: drag around text and it is copied
+- Screencasts with ⌥⌘7: record the full screen, a window or an area, with your voice and a webcam bubble; Stop in the menu bar
+- Hands: each hand has a tool – draw, mark, stamp or pixelate – and the emoji picker searches as you type
+- Every settings page shows its shortcuts, and macOS's own screenshot shortcuts are one click away
+- New default shortcuts: ⌥Space turns the hand on and off, ⌥⇧Space the flashlight (shortcuts you changed yourself stay as they are)
+- Updates now come from esreverse.com
+
+
 ## 1.6.5
 
 - Settings: The Toolbar page is now called Interface, with a group for the toolbar and one for the whiteboard

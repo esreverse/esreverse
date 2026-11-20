@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Quite Handy</title>
+    <item>
+      <title>Quite Handy 2.1</title>
+      <pubDate>Fri, 20 Nov 2026 11:01:13 +0000</pubDate>
+      <sparkle:version>202611201158</sparkle:version>
+      <sparkle:shortVersionString>2.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<ul>
+<li>New cursors: Magic Wand, The Boxer, Wes Anderson, Raphael, Blueberry Lollipop, Caramel Star, Fairytale Star, Bone, Pointerrr and Matcha</li>
+<li>Every tool can be turned on or off with the switch next to its title in Settings, and the last onboarding step lets you choose the tools to start with</li>
+<li>Screencasts start with the full screen – picking Window or Area selects it right away, and the webcam glides into its corner</li>
+<li>After a screencast, watch it in a preview and choose Cancel, Retry, Copy or Save</li>
+<li>Window recordings include the webcam and follow the window when it moves</li>
+<li>Hold a picture you are dragging from the Finder and press the Scribble or new-whiteboard shortcut: it opens on a whiteboard</li>
+<li>Make your own cursor: a live preview at twice its size, bigger or smaller in 5 % steps, and cursors without a stick swing from their tip</li>
+<li>Reset changes to settings with a button or a shortcut of its own – Clear all shortcuts starts from scratch</li>
+<li>Up to 16 tools in the toolbar</li>
+<li>Hover a shortcut to read its keys in words, and a conflict names the setting it clashes with</li>
+<li>New installs start with ⌃W for a new whiteboard and ⌃Q for presentations, and with the pen, emojis, numbers and text in the toolbar</li>
+<li>Fixes for screen sharing in Teams and other video calls</li>
+</ul>]]></description>
+      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.1/QuiteHandy-2.1.dmg"
+                 type="application/octet-stream" sparkle:edSignature="pQRC3TKVXFeT/I0tXaMo4iIEKorVMPz8Bcji62SYDhIrHgP8hRvQ1KUh/7L8EnJCyylhgE85AuVKi+U72XyeAw==" length="61513787" />
+    </item>
+  </channel>
+</rss>
