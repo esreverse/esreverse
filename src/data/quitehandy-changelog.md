@@ -5,6 +5,19 @@ so write it for people using the app.
 
 
 
+## 2.1.3
+
+- New installs now start with the intended defaults: Scribble and Flashlight on, the other tools off, and the shortcuts and tools as Quite Handy comes
+- Text starts on a colored background at 90 % with pastel colors, and Clack is the new default tap sound
+- Screenshots and Screencasts explain what they do, even while they are off
+- Each screen tool asks for screen recording with its own explanation
+- Presentation and Whiteboards have a single on/off switch, at the title
+- No more hint box over the toolbar on the first start, and no hint while you pick a window for a screencast
+- The onboarding starts every step with the first tool in the toolbar
+- Larger headlines when Quite Handy asks for a permission
+
+
+
 ## 2.1.2
 
 - Show toolbar now has three options: Always, Near cursor and With hotkey
