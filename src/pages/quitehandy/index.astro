@@ -495,16 +495,22 @@ const hands: HandChoice[] = await Promise.all(
   const opener = document.querySelector('[data-notes-open]');
   const shade = document.querySelector<HTMLElement>('[data-notes-shade]');
   if (notes) {
+    // Straight under the page, so "fixed" means the window: the section it is written in
+    // would otherwise be its frame, and it would not sit in the window's middle.
+    document.body.append(...[shade, notes].filter((el): el is HTMLElement => el !== null));
     opener?.addEventListener('click', () => {
       notes.show();
       if (shade) {
         shade.hidden = false;
       }
+      // Only the notes scroll while they are open.
+      document.documentElement.style.overflow = 'hidden';
     });
     notes.addEventListener('close', () => {
       if (shade) {
         shade.hidden = true;
       }
+      document.documentElement.style.overflow = '';
     });
     notes.querySelector('[data-notes-close]')?.addEventListener('click', () => notes.close());
     document.addEventListener('pointerdown', (event) => {
@@ -935,9 +941,11 @@ const hands: HandChoice[] = await Promise.all(
 
   .notes__body {
     padding: 0 48px 56px;
-    /* Shrinks to fit and scrolls, so nothing is cut off. */
+    /* Fills the rest of the overlay and scrolls, so nothing is cut off; the page stays put. */
+    flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .notes__text {
