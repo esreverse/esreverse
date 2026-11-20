@@ -9,6 +9,12 @@ so write it for people using the app.
 
 - Shortcuts show only what the tools you use need, and the shortcuts of tools you turned off no longer take their keys
 - The Shortcuts page is sorted into clearer groups: Scribble on/off and Open new whiteboard each on their own, undo and the other editing keys together, each tool's shortcut in a group of its own
+- Screencasts can start with a window or an area: set it in Settings with Start with. You pick first, then the recording controls open. With no window to pick, they open for the full screen
+- A window you record gets the red frame too, and it moves with the window
+- Record starts recording right away, while a red circle shows where Stop is in the menu bar
+- Choose the corner the webcam starts in: bottom right, bottom left, top left or top right. It docks to the same corner of a window or an area
+- The recording controls always stay above the webcam and the red frame
+- Esc and a right-click no longer reach the app underneath, when they cancel a screencast or end a session
 - Make your own cursor: Test is now Try out
 
 
