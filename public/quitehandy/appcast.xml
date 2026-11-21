@@ -3,33 +3,16 @@
   <channel>
     <title>Quite Handy</title>
     <item>
-      <title>Quite Handy 2.2</title>
-      <pubDate>Sat, 21 Nov 2026 16:31:24 +0000</pubDate>
-      <sparkle:version>202611211729</sparkle:version>
-      <sparkle:shortVersionString>2.2</sparkle:shortVersionString>
+      <title>Quite Handy 2.2.1</title>
+      <pubDate>Sat, 21 Nov 2026 16:51:38 +0000</pubDate>
+      <sparkle:version>202611211749</sparkle:version>
+      <sparkle:shortVersionString>2.2.1</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
       <description><![CDATA[<ul>
-<li>Favorites: Mark cursors with the heart in Choose cursor. They show in their own group at the top</li>
-<li>Random cursor and Random favorite cursor: Every session starts with another cursor for that tool</li>
-<li>The chosen cursor has a blue outline, and Choose cursor scrolls smoothly</li>
-<li>A new color grid with 10 hues in 8 shades. Vivid, Pastel and the rainbow all come from it</li>
-<li>Colors in Settings: Click the chosen color to replace it from the grid or with sliders. Backspace removes a color and a + adds one again</li>
-<li>⌘C and ⌘V over a color copy and paste it: As hex, from an SVG or from a picture</li>
-<li>Use colors from clipboard image: The six main colors of a picture become a tool's colors</li>
-<li>Reset to Vivid or Pastel in the colors' menu brings back all of a tool's colors</li>
-<li>Text: The chosen color as the text or as its background, set per tool in Settings</li>
-<li>Emojis: New defaults ❤️ 🧠 💪 ❌, an optional circle behind them, and scroll or swipe over an emoji to resize it</li>
-<li>Restore your tools with Tab: Sizes, colors, emojis and opacity changed in a session go back to your settings. Press it twice to switch to your first tool too</li>
-<li>Shortcuts: A single key like Tab works for everything that only works in a session. ⇧, ⌃, ⌥ and ⌘ on their own are no longer shortcuts. Backspace clears any shortcut</li>
-<li>Name your screenshots and screencasts as you like, in Settings under Naming</li>
-<li>Copied screenshots paste into the Finder too</li>
-<li>Pressing a screenshot shortcut again starts the selection over, and the size in the loupe is in points</li>
-<li>Screencasts: The webcam shows right away while you pick a window or an area and takes a third of it. Record is white on red. The shortcut starts over and never stops a recording</li>
-<li>Tooltips slide in</li>
-<li>The toolbar no longer flashes when Quite Handy starts</li>
+<li>Problem report in Settings › About: Start logging writes down how Quite Handy runs on your Mac, with stalls, slow frames, CPU, GPU, memory, heat, power, screens and permissions. It goes on after a crash or a restart. Nothing is sent automatically: Stop &amp; copy log puts it on the clipboard as plain text, to read and send yourself</li>
 </ul>]]></description>
-      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.2/QuiteHandy-2.2.dmg"
-                 type="application/octet-stream" sparkle:edSignature="cwg7yHUCpclGwfpd/thoIMgNTM/vffx9Z+wha+dgxROHSe0NjzNhSajbEWyVti1tNZMwF4cYa4fXI+xyLOPIDg==" length="63957137" />
+      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.2.1/QuiteHandy-2.2.1.dmg"
+                 type="application/octet-stream" sparkle:edSignature="CfeEQEA+RqutfelGNw60OCTi/NO27oB1+hspUzKyCQBFXhEFdC8A4/Ag0asbgM3S6cEmzA+XvGx54s1ICjL7Dw==" length="63982169" />
     </item>
   </channel>
 </rss>

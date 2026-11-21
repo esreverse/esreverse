@@ -5,6 +5,12 @@ so write it for people using the app.
 
 
 
+## 2.2.1
+
+- Problem report in Settings › About: Start logging writes down how Quite Handy runs on your Mac, with stalls, slow frames, CPU, GPU, memory, heat, power, screens and permissions. It goes on after a crash or a restart. Nothing is sent automatically: Stop & copy log puts it on the clipboard as plain text, to read and send yourself
+
+
+
 ## 2.2
 
 - Favorites: Mark cursors with the heart in Choose cursor. They show in their own group at the top
