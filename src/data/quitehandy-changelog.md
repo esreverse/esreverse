@@ -5,6 +5,29 @@ so write it for people using the app.
 
 
 
+## 2.2
+
+- Favorites: Mark cursors with the heart in Choose cursor. They show in their own group at the top
+- Random cursor and Random favorite cursor: Every session starts with another cursor for that tool
+- The chosen cursor has a blue outline, and Choose cursor scrolls smoothly
+- A new color grid with 10 hues in 8 shades. Vivid, Pastel and the rainbow all come from it
+- Colors in Settings: Click the chosen color to replace it from the grid or with sliders. Backspace removes a color and a + adds one again
+- ⌘C and ⌘V over a color copy and paste it: As hex, from an SVG or from a picture
+- Use colors from clipboard image: The six main colors of a picture become a tool's colors
+- Reset to Vivid or Pastel in the colors' menu brings back all of a tool's colors
+- Text: The chosen color as the text or as its background, set per tool in Settings
+- Emojis: New defaults ❤️ 🧠 💪 ❌, an optional circle behind them, and scroll or swipe over an emoji to resize it
+- Restore your tools with Tab: Sizes, colors, emojis and opacity changed in a session go back to your settings. Press it twice to switch to your first tool too
+- Shortcuts: A single key like Tab works for everything that only works in a session. ⇧, ⌃, ⌥ and ⌘ on their own are no longer shortcuts. Backspace clears any shortcut
+- Name your screenshots and screencasts as you like, in Settings under Naming
+- Copied screenshots paste into the Finder too
+- Pressing a screenshot shortcut again starts the selection over, and the size in the loupe is in points
+- Screencasts: The webcam shows right away while you pick a window or an area and takes a third of it. Record is white on red. The shortcut starts over and never stops a recording
+- Tooltips slide in
+- The toolbar no longer flashes when Quite Handy starts
+
+
+
 ## 2.1.6
 
 - Glitter: a quick click is a tap, as with the pen. Hold or move to spray
