@@ -3,16 +3,19 @@
   <channel>
     <title>Quite Handy</title>
     <item>
-      <title>Quite Handy 2.2.1</title>
-      <pubDate>Sat, 21 Nov 2026 16:51:38 +0000</pubDate>
-      <sparkle:version>202611211749</sparkle:version>
-      <sparkle:shortVersionString>2.2.1</sparkle:shortVersionString>
+      <title>Quite Handy 2.2.3</title>
+      <pubDate>Sat, 21 Nov 2026 18:32:48 +0000</pubDate>
+      <sparkle:version>202611211930</sparkle:version>
+      <sparkle:shortVersionString>2.2.3</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
       <description><![CDATA[<ul>
-<li>Problem report in Settings › About: Start logging writes down how Quite Handy runs on your Mac, with stalls, slow frames, CPU, GPU, memory, heat, power, screens and permissions. It goes on after a crash or a restart. Nothing is sent automatically: Stop &amp; copy log puts it on the clipboard as plain text, to read and send yourself</li>
+<li>Fixes high CPU use while Quite Handy was idle, and the stutter while drawing that came with it (since 2.1.5)</li>
+<li>Problem report: Long stalls are recorded with what the app was doing at that moment</li>
+<li>Text handles end at a whiteboard's edge, like the text</li>
+<li>Everything stacks in the order it was made. Whatever you grab comes to the top</li>
 </ul>]]></description>
-      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.2.1/QuiteHandy-2.2.1.dmg"
-                 type="application/octet-stream" sparkle:edSignature="CfeEQEA+RqutfelGNw60OCTi/NO27oB1+hspUzKyCQBFXhEFdC8A4/Ag0asbgM3S6cEmzA+XvGx54s1ICjL7Dw==" length="63982169" />
+      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.2.3/QuiteHandy-2.2.3.dmg"
+                 type="application/octet-stream" sparkle:edSignature="HDZXuBHSH5Tbuc+IwwjYw9jETFMSp3Hdp75C4Ktxnm5rKPe1XRWynOqNPU5g5M9p4P7l7mWkTM1vndjFTSQWBg==" length="63985955" />
     </item>
   </channel>
 </rss>

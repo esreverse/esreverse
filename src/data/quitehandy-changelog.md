@@ -5,6 +5,15 @@ so write it for people using the app.
 
 
 
+## 2.2.3
+
+- Fixes high CPU use while Quite Handy was idle, and the stutter while drawing that came with it (since 2.1.5)
+- Problem report: Long stalls are recorded with what the app was doing at that moment
+- Text handles end at a whiteboard's edge, like the text
+- Everything stacks in the order it was made. Whatever you grab comes to the top
+
+
+
 ## 2.2.1
 
 - Problem report in Settings › About: Start logging writes down how Quite Handy runs on your Mac, with stalls, slow frames, CPU, GPU, memory, heat, power, screens and permissions. It goes on after a crash or a restart. Nothing is sent automatically: Stop & copy log puts it on the clipboard as plain text, to read and send yourself
