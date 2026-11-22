@@ -28,27 +28,6 @@ import XdLogo from '../../components/XdLogo.astro';
 import ArrowIcon from '../../components/ArrowIcon.astro';
 import { url } from '../../lib/url';
 
-import handGlove from '../../assets/quitehandy/hand-glove.png';
-import handCookie from '../../assets/quitehandy/hand-cookie.png';
-import handChoco from '../../assets/quitehandy/hand-choco.png';
-import handTree from '../../assets/quitehandy/hand-tree.png';
-import handChrome from '../../assets/quitehandy/hand-chrome.png';
-import handJelly from '../../assets/quitehandy/hand-jelly.png';
-import handSkeleton from '../../assets/quitehandy/hand-skeleton.png';
-import thumbGlove from '../../assets/quitehandy/thumbs/glove.png';
-import thumbCookie from '../../assets/quitehandy/thumbs/cookie.png';
-import thumbChoco from '../../assets/quitehandy/thumbs/choco.png';
-import thumbTree from '../../assets/quitehandy/thumbs/tree.png';
-import thumbChrome from '../../assets/quitehandy/thumbs/chrome.png';
-import thumbJelly from '../../assets/quitehandy/thumbs/jelly.png';
-import thumbSkeleton from '../../assets/quitehandy/thumbs/skeleton.png';
-import stickGlove from '../../assets/quitehandy/sticks/glove.png';
-import stickCookie from '../../assets/quitehandy/sticks/cookie.png';
-import stickChoco from '../../assets/quitehandy/sticks/choco.png';
-import stickTree from '../../assets/quitehandy/sticks/tree.png';
-import stickChrome from '../../assets/quitehandy/sticks/chrome.png';
-import stickJelly from '../../assets/quitehandy/sticks/jelly.png';
-import stickSkeleton from '../../assets/quitehandy/sticks/skeleton.png';
 
 // Screenshots (light and dark) for the full-screen screenshot viewer: the onboarding's steps
 // first, then the first view of every Settings page, in the order of the app's sidebar.
@@ -76,7 +55,7 @@ const screenshots = await Promise.all(
     { id: 'settings-shortcuts', title: 'Shortcuts', text: 'Every action on a key' },
     { id: 'settings-sound', title: 'Sound', text: 'Tap sounds and when they play' },
   ].map(async (shot) => {
-    const widths = [880, 1760];
+    const widths = [1156, 2312];
     const light = await getImage({ src: shotOf(`${shot.id}-light`), widths, format: 'webp' });
     const dark = await getImage({ src: shotOf(`${shot.id}-dark`), widths, format: 'webp' });
     return { ...shot, light, dark };
@@ -136,15 +115,23 @@ const cleanShotUrl = 'https://cleanshot.com/';
 const handSizes = 'clamp(180px, 22vw, 320px)';
 // tip: where the ink comes out, as fractions of the image (measured: topmost
 // opaque pixel of the finger, plus 1% so the ink starts on the finger pad)
-const handDefs = [
-  { id: 'glove', label: 'White glove', image: handGlove, thumb: thumbGlove, stick: stickGlove, tip: [0.461, 0.105] },
-  { id: 'cookie', label: 'Gingerbread', image: handCookie, thumb: thumbCookie, stick: stickCookie, tip: [0.414, 0.108] },
-  { id: 'choco', label: 'Chocolate', image: handChoco, thumb: thumbChoco, stick: stickChoco, tip: [0.47, 0.125] },
-  { id: 'tree', label: 'Christmas tree', image: handTree, thumb: thumbTree, stick: stickTree, tip: [0.423, 0.108] },
-  { id: 'chrome', label: 'Chrome', image: handChrome, thumb: thumbChrome, stick: stickChrome, tip: [0.458, 0.104] },
-  { id: 'jelly', label: 'Jelly', image: handJelly, thumb: thumbJelly, stick: stickJelly, tip: [0.468, 0.13] },
-  { id: 'skeleton', label: 'Skeleton', image: handSkeleton, thumb: thumbSkeleton, stick: stickSkeleton, tip: [0.459, 0.12] },
-];
+// Every hand with a stick that ships with the app (exported from it: the hand, its grid tile
+// turned with the stick running out at the edge, a slice of its stick, the fingertip). Six of
+// them show in the toolbar, picked anew on every visit.
+import handList from '../../assets/quitehandy/hands.json';
+const handImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/quitehandy/hands/*.png', { eager: true });
+const tileImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/quitehandy/tiles/*.png', { eager: true });
+const stickImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/quitehandy/sticks/*.png', { eager: true });
+const handDefs = handList.map(({ id, label, tip }) => ({
+  id,
+  label,
+  image: handImages[`../../assets/quitehandy/hands/${id}.png`].default,
+  thumb: tileImages[`../../assets/quitehandy/tiles/${id}.png`].default,
+  stick: stickImages[`../../assets/quitehandy/sticks/${id}.png`].default,
+  tip,
+}));
+// The glove first: the hand before the page's script picks the six.
+handDefs.sort((a, b) => Number(b.id === 'glove') - Number(a.id === 'glove'));
 const hands: HandChoice[] = await Promise.all(
   handDefs.map(async ({ id, label, image, thumb, stick, tip }) => {
     const optimized = await getImage({ src: image, widths: [320, 640, 960], format: 'webp' });
@@ -320,7 +307,7 @@ const hands: HandChoice[] = await Promise.all(
 
   <HandToolbar hands={hands} />
 
-  <ScreenshotViewer id="screenshots" shots={screenshots} width={880} height={672} />
+  <ScreenshotViewer id="screenshots" shots={screenshots} width={1156} height={672} />
 </Base>
 
 <script>
@@ -375,6 +362,11 @@ const hands: HandChoice[] = await Promise.all(
       rig.style.setProperty('--tip-x', `${Number(tipX) * 100}%`);
       rig.style.setProperty('--tip-y', `${Number(tipY) * 100}%`);
     });
+    // The hand the toolbar picked at random for this visit (picked before this listened).
+    const chosen = document.querySelector<HTMLElement>('.toolbar__hand[aria-pressed="true"]');
+    if (chosen) {
+      window.dispatchEvent(new CustomEvent('quitehandy:hand', { detail: { ...chosen.dataset } }));
+    }
 
     // Tap ripple, as in the app (ArmView.ripple): a filled circle in the ink
     // colour, radius 40px, grows from 0.35x to 3x and fades out in 0.8s.

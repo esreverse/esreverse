@@ -1,0 +1,322 @@
+[
+ {
+  "id": "lavender",
+  "label": "Lavender Toy",
+  "tip": [
+   0.4639,
+   0.0944
+  ]
+ },
+ {
+  "id": "glove",
+  "label": "Glove",
+  "tip": [
+   0.4614,
+   0.1107
+  ]
+ },
+ {
+  "id": "coral",
+  "label": "Coral Vinyl",
+  "tip": [
+   0.4121,
+   0.1309
+  ]
+ },
+ {
+  "id": "plush",
+  "label": "Plush",
+  "tip": [
+   0.4414,
+   0.1107
+  ]
+ },
+ {
+  "id": "robot",
+  "label": "Robot",
+  "tip": [
+   0.397,
+   0.1484
+  ]
+ },
+ {
+  "id": "pink",
+  "label": "Bubblegum",
+  "tip": [
+   0.4619,
+   0.1276
+  ]
+ },
+ {
+  "id": "blue",
+  "label": "Sky",
+  "tip": [
+   0.46,
+   0.1309
+  ]
+ },
+ {
+  "id": "mint",
+  "label": "Mint",
+  "tip": [
+   0.4609,
+   0.11
+  ]
+ },
+ {
+  "id": "lemon",
+  "label": "Lemon",
+  "tip": [
+   0.4614,
+   0.1061
+  ]
+ },
+ {
+  "id": "black",
+  "label": "Midnight",
+  "tip": [
+   0.4546,
+   0.127
+  ]
+ },
+ {
+  "id": "chrome",
+  "label": "Chrome",
+  "tip": [
+   0.458,
+   0.1094
+  ]
+ },
+ {
+  "id": "holo",
+  "label": "Holo",
+  "tip": [
+   0.4683,
+   0.1126
+  ]
+ },
+ {
+  "id": "fuzzy",
+  "label": "Fuzzy",
+  "tip": [
+   0.4604,
+   0.1094
+  ]
+ },
+ {
+  "id": "wood",
+  "label": "Wood",
+  "tip": [
+   0.46,
+   0.1061
+  ]
+ },
+ {
+  "id": "marble",
+  "label": "Marble",
+  "tip": [
+   0.4585,
+   0.1087
+  ]
+ },
+ {
+  "id": "terrazzo",
+  "label": "Terrazzo",
+  "tip": [
+   0.4619,
+   0.1413
+  ]
+ },
+ {
+  "id": "glass",
+  "label": "Glass",
+  "tip": [
+   0.46,
+   0.1426
+  ]
+ },
+ {
+  "id": "jelly",
+  "label": "Jelly",
+  "tip": [
+   0.4668,
+   0.1335
+  ]
+ },
+ {
+  "id": "pastel",
+  "label": "Pastel",
+  "tip": [
+   0.4585,
+   0.1087
+  ]
+ },
+ {
+  "id": "lowpoly",
+  "label": "Low Poly",
+  "tip": [
+   0.458,
+   0.1087
+  ]
+ },
+ {
+  "id": "knit",
+  "label": "Knit",
+  "tip": [
+   0.4717,
+   0.1276
+  ]
+ },
+ {
+  "id": "skeleton",
+  "label": "Skeleton",
+  "tip": [
+   0.459,
+   0.1217
+  ]
+ },
+ {
+  "id": "astro",
+  "label": "Astronaut",
+  "tip": [
+   0.46,
+   0.1035
+  ]
+ },
+ {
+  "id": "water",
+  "label": "Water",
+  "tip": [
+   0.457,
+   0.123
+  ]
+ },
+ {
+  "id": "lava",
+  "label": "Lava",
+  "tip": [
+   0.4595,
+   0.1198
+  ]
+ },
+ {
+  "id": "grass",
+  "label": "Grass",
+  "tip": [
+   0.4614,
+   0.1198
+  ]
+ },
+ {
+  "id": "cactus",
+  "label": "Cactus",
+  "tip": [
+   0.4673,
+   0.1296
+  ]
+ },
+ {
+  "id": "choco",
+  "label": "Chocolate",
+  "tip": [
+   0.4702,
+   0.1309
+  ]
+ },
+ {
+  "id": "mech",
+  "label": "Mech",
+  "tip": [
+   0.3965,
+   0.1113
+  ]
+ },
+ {
+  "id": "leaf",
+  "label": "Leaf",
+  "tip": [
+   0.4048,
+   0.1094
+  ]
+ },
+ {
+  "id": "cookie",
+  "label": "Gingerbread",
+  "tip": [
+   0.4131,
+   0.1146
+  ]
+ },
+ {
+  "id": "magicwand",
+  "label": "Magic Wand",
+  "tip": [
+   0.5005,
+   0.1087
+  ]
+ },
+ {
+  "id": "boxer",
+  "label": "The Boxer",
+  "tip": [
+   0.4209,
+   0.1562
+  ]
+ },
+ {
+  "id": "wesanderson",
+  "label": "Wes Anderson",
+  "tip": [
+   0.4243,
+   0.1367
+  ]
+ },
+ {
+  "id": "raphael",
+  "label": "Raphael",
+  "tip": [
+   0.4226,
+   0.1322
+  ]
+ },
+ {
+  "id": "blueberry",
+  "label": "Blueberry Lollipop",
+  "tip": [
+   0.503,
+   0.2387
+  ]
+ },
+ {
+  "id": "caramelstar",
+  "label": "Caramel Star",
+  "tip": [
+   0.5022,
+   0.2018
+  ]
+ },
+ {
+  "id": "fairytalestar",
+  "label": "Fairytale Star",
+  "tip": [
+   0.5016,
+   0.2057
+  ]
+ },
+ {
+  "id": "bone",
+  "label": "Bone",
+  "tip": [
+   0.5017,
+   0.1198
+  ]
+ },
+ {
+  "id": "matcha",
+  "label": "Matcha",
+  "tip": [
+   0.4311,
+   0.1349
+  ]
+ }
+]

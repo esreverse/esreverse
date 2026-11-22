@@ -1,7 +1,7 @@
 ---
 /**
  * The pointer part of the QuiteHandy toolbar (as in the app, without colours
- * and sound): pick one of a few hands. Appears once the hand is on screen.
+ * and sound): pick one of six hands, drawn from all of the app's hands with a stick on every visit. Appears once the hand is on screen.
  * Selecting a hand dispatches `quitehandy:hand` with the image sources.
  */
 import { Image } from 'astro:assets';
@@ -33,6 +33,7 @@ const { hands } = Astro.props;
         class="toolbar__hand"
         type="button"
         aria-pressed={i === 0 ? 'true' : 'false'}
+        hidden={i >= 6}
         data-src={hand.src}
         data-srcset={hand.srcset}
         data-stick={hand.stick}
@@ -40,7 +41,7 @@ const { hands } = Astro.props;
         data-tip-y={hand.tipY}
         data-cursor-grow
       >
-        <Image src={hand.thumb} width={56} height={70} alt="" />
+        <Image src={hand.thumb} width={52} height={52} densities={[1, 2, 3]} alt="" loading="lazy" />
         <span class="visually-hidden">{hand.label}</span>
       </button>
     ))
@@ -71,15 +72,29 @@ const { hands } = Astro.props;
 
 <script>
   const toolbar = document.querySelector<HTMLElement>('[data-hand-toolbar]');
+  const pick = (button: HTMLButtonElement) => {
+    toolbar?.querySelectorAll('.toolbar__hand').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+    window.dispatchEvent(new CustomEvent('quitehandy:hand', { detail: { ...button.dataset } }));
+  };
+  // Six of all the hands, picked anew on every visit, the first one in hand.
+  if (toolbar) {
+    const all = [...toolbar.querySelectorAll<HTMLButtonElement>('.toolbar__hand')];
+    for (let i = all.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [all[i], all[j]] = [all[j], all[i]];
+    }
+    const divider = toolbar.querySelector('.toolbar__divider');
+    all.forEach((b, i) => {
+      b.hidden = i >= 6;
+      if (i < 6) toolbar.insertBefore(b, divider);
+    });
+    // The first one pressed: the page's script takes it into the hand once it runs.
+    pick(all[0]);
+  }
   toolbar?.addEventListener('click', (event) => {
     const button = (event.target as Element).closest<HTMLButtonElement>('.toolbar__hand');
     if (!button) return;
-    toolbar.querySelectorAll('.toolbar__hand').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
-    window.dispatchEvent(
-      new CustomEvent('quitehandy:hand', {
-        detail: { ...button.dataset },
-      }),
-    );
+    pick(button);
   });
 </script>
 
@@ -119,8 +134,9 @@ const { hands } = Astro.props;
     height: 52px;
     padding: 0;
     border: 0;
-    border: 0;
     border-radius: 10px;
+    /* the turned hand's stick runs out at the button's edge */
+    overflow: hidden;
     background: transparent;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -164,8 +180,13 @@ const { hands } = Astro.props;
     width: 22px;
   }
 
+  .toolbar__hand[hidden] {
+    display: none;
+  }
+
+  /* the app's grid tile: the hand turned, its stick to the edge, filling the button */
   .toolbar__hand :global(img) {
-    width: 32px;
-    height: auto;
+    width: 52px;
+    height: 52px;
   }
 </style>
