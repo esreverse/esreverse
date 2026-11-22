@@ -3,19 +3,30 @@
   <channel>
     <title>Quite Handy</title>
     <item>
-      <title>Quite Handy 2.2.3</title>
-      <pubDate>Sat, 21 Nov 2026 18:32:48 +0000</pubDate>
-      <sparkle:version>202611211930</sparkle:version>
-      <sparkle:shortVersionString>2.2.3</sparkle:shortVersionString>
+      <title>Quite Handy 2.3</title>
+      <pubDate>Sun, 22 Nov 2026 20:58:54 +0000</pubDate>
+      <sparkle:version>202611222156</sparkle:version>
+      <sparkle:shortVersionString>2.3</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<ul>
-<li>Fixes high CPU use while Quite Handy was idle, and the stutter while drawing that came with it (since 2.1.5)</li>
-<li>Problem report: Long stalls are recorded with what the app was doing at that moment</li>
-<li>Text handles end at a whiteboard's edge, like the text</li>
-<li>Everything stacks in the order it was made. Whatever you grab comes to the top</li>
+      <description><![CDATA[<p>Everything new since 2.0, at a glance:</p>
+<ul>
+<li>Rebuilt under the hood: Quite Handy runs faster and steadier, with far less work while it waits</li>
+<li>Import &amp; export: Share a tool, your whole toolset or a pointer as a .quitehandy file. Drag it onto Settings or double-click it to add it</li>
+<li>Custom colors: A color grid with 10 hues in 8 shades, your own colors per tool, colors from a picture, and Vivid or Pastel without losing them</li>
+<li>Copy colors from one tool and paste them on another</li>
+<li>Text: Glass or colored, with custom colors for the text or its background</li>
+<li>Emojis: New defaults, and the size with a slider or by scrolling, in finer steps</li>
+<li>Glitter: A new tool that sprays sparkling flakes</li>
+<li>Pointers: Favorites, a random pointer per session, and your own pointers from any picture, with a stick added or stretched</li>
+<li>Toolbar: Always shown, near the pointer or with a hotkey</li>
+<li>Restore your tools with Tab: Everything changed in a session goes back to your settings</li>
+<li>Screencasts: Start with a window or an area, a smoother start, and a webcam you can drag, resize or throw into a corner</li>
+<li>Drag &amp; drop: Drop tool files and pictures right where they go</li>
+<li>A new app icon, Quite Handy in the Dock, and a problem report in Settings › About</li>
+<li>One look all over Settings: Buttons, dropdowns, dialogs, tooltips and notes match in light and dark mode</li>
 </ul>]]></description>
-      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.2.3/QuiteHandy-2.2.3.dmg"
-                 type="application/octet-stream" sparkle:edSignature="HDZXuBHSH5Tbuc+IwwjYw9jETFMSp3Hdp75C4Ktxnm5rKPe1XRWynOqNPU5g5M9p4P7l7mWkTM1vndjFTSQWBg==" length="63985955" />
+      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.3/QuiteHandy-2.3.dmg"
+                 type="application/octet-stream" sparkle:edSignature="RfcrlJPT5uJoFDmT/twD88gbHujXdHaXqy0xSAhmt5WfQxFgeuZbu7JHJlXAELnaljk1+Epn1E0lg35GvMhpDg==" length="64975077" />
     </item>
   </channel>
 </rss>

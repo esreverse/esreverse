@@ -5,6 +5,27 @@ so write it for people using the app.
 
 
 
+## 2.3
+
+Everything new since 2.0, at a glance:
+
+- Rebuilt under the hood: Quite Handy runs faster and steadier, with far less work while it waits
+- Import & export: Share a tool, your whole toolset or a pointer as a .quitehandy file. Drag it onto Settings or double-click it to add it
+- Custom colors: A color grid with 10 hues in 8 shades, your own colors per tool, colors from a picture, and Vivid or Pastel without losing them
+- Copy colors from one tool and paste them on another
+- Text: Glass or colored, with custom colors for the text or its background
+- Emojis: New defaults, and the size with a slider or by scrolling, in finer steps
+- Glitter: A new tool that sprays sparkling flakes
+- Pointers: Favorites, a random pointer per session, and your own pointers from any picture, with a stick added or stretched
+- Toolbar: Always shown, near the pointer or with a hotkey
+- Restore your tools with Tab: Everything changed in a session goes back to your settings
+- Screencasts: Start with a window or an area, a smoother start, and a webcam you can drag, resize or throw into a corner
+- Drag & drop: Drop tool files and pictures right where they go
+- A new app icon, Quite Handy in the Dock, and a problem report in Settings › About
+- One look all over Settings: Buttons, dropdowns, dialogs, tooltips and notes match in light and dark mode
+
+
+
 ## 2.2.3
 
 - Fixes high CPU use while Quite Handy was idle, and the stutter while drawing that came with it (since 2.1.5)
