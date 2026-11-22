@@ -1,6 +1,6 @@
 ---
 /**
- * Full-screen viewer for the settings screenshots: one screenshot at a time
+ * Full-screen viewer for the screenshots (onboarding and settings): one screenshot at a time
  * at its original size (fitted to the window if that is smaller), with
  * previous/next buttons, arrow keys and swipe.
  *
@@ -49,7 +49,7 @@ const { id, shots, width, height } = Astro.props;
               sizes={`${width}px`}
               width={width}
               height={height}
-              alt={`Quite Handy settings: ${title}`}
+              alt={`Quite Handy: ${title}`}
               loading="lazy"
               decoding="async"
             />

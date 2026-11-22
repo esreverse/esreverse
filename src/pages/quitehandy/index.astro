@@ -50,25 +50,35 @@ import stickChrome from '../../assets/quitehandy/sticks/chrome.png';
 import stickJelly from '../../assets/quitehandy/sticks/jelly.png';
 import stickSkeleton from '../../assets/quitehandy/sticks/skeleton.png';
 
-// Settings screenshots (light and dark) for the full-screen screenshot viewer
+// Screenshots (light and dark) for the full-screen screenshot viewer: the onboarding's steps
+// first, then the first view of every Settings page, in the order of the app's sidebar.
 const shotFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/quitehandy/screenshots/*.png', {
   eager: true,
 });
 const shotOf = (name: string) => shotFiles[`../../assets/quitehandy/screenshots/${name}.png`].default;
 const screenshots = await Promise.all(
   [
-    // in the order of the app's sidebar (About is left out)
-    { id: 'general', title: 'General', text: 'Startup, menu bar, permissions' },
-    { id: 'shortcuts', title: 'Shortcuts', text: 'Every action on a key' },
-    { id: 'toolbar', title: 'Interface', text: 'Toolbar, palette and whiteboard' },
-    { id: 'drawing', title: 'Draw', text: 'Size, opacity, colours, rainbow' },
-    { id: 'zoom', title: 'Flashlight', text: 'Keys, size, darkness, zoom' },
-    { id: 'pointers', title: 'Pointers', text: 'Your toolbar and your own hands' },
-    { id: 'sound', title: 'Sound', text: 'Tap sounds and when they play' },
+    { id: 'onboarding-welcome', title: 'Welcome', text: 'A hand to talk about things on your screen' },
+    { id: 'onboarding-hands', title: 'Scribble', text: 'Draw, stamp emojis and numbers on your screen' },
+    { id: 'onboarding-whiteboards', title: 'Whiteboards', text: 'Pull a sheet out of the corner and draw on it' },
+    { id: 'onboarding-flashlight', title: 'Flashlight', text: 'Darken the screen around your pointer and zoom in' },
+    { id: 'onboarding-ocr', title: 'OCR', text: 'Copy text from anything on your screen' },
+    { id: 'onboarding-screenshots', title: 'Screenshots', text: 'The screen, an area, a window or a long page' },
+    { id: 'onboarding-screencast', title: 'Screencasts', text: 'Record with your voice and your webcam' },
+    { id: 'settings-general', title: 'General', text: 'Startup, menu bar, permissions' },
+    { id: 'settings-hands', title: 'Scribble', text: 'Your tools, their pointers and colors' },
+    { id: 'settings-flashlight', title: 'Flashlight', text: 'Size, darkness and zoom' },
+    { id: 'settings-whiteboards', title: 'Whiteboards', text: 'Open, close, copy and save' },
+    { id: 'settings-screenshots', title: 'Screenshots', text: 'Where they go, resolution, naming' },
+    { id: 'settings-ocr', title: 'OCR', text: 'Line breaks and links' },
+    { id: 'settings-screencasts', title: 'Screencasts', text: 'Start with, resolution, webcam & voice' },
+    { id: 'settings-presentation', title: 'Presentation', text: 'Awake, clean desktop, your shortcuts' },
+    { id: 'settings-shortcuts', title: 'Shortcuts', text: 'Every action on a key' },
+    { id: 'settings-sound', title: 'Sound', text: 'Tap sounds and when they play' },
   ].map(async (shot) => {
-    const widths = [780, 1560];
-    const light = await getImage({ src: shotOf(`settings-${shot.id}-light`), widths, format: 'webp' });
-    const dark = await getImage({ src: shotOf(`settings-${shot.id}-dark`), widths, format: 'webp' });
+    const widths = [880, 1760];
+    const light = await getImage({ src: shotOf(`${shot.id}-light`), widths, format: 'webp' });
+    const dark = await getImage({ src: shotOf(`${shot.id}-dark`), widths, format: 'webp' });
     return { ...shot, light, dark };
   }),
 );
@@ -310,7 +320,7 @@ const hands: HandChoice[] = await Promise.all(
 
   <HandToolbar hands={hands} />
 
-  <ScreenshotViewer id="screenshots" shots={screenshots} width={780} height={568} />
+  <ScreenshotViewer id="screenshots" shots={screenshots} width={880} height={672} />
 </Base>
 
 <script>
