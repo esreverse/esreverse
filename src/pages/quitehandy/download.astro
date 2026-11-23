@@ -1,21 +1,24 @@
 ---
 /**
- * www.esreverse.com/quitehandy/download: always the newest DMG. scripts/publish.sh in the
- * Quite Handy repo writes the version and its download link to quitehandy-release.json.
+ * Moved to quitehandy.app/download (always the newest DMG).
+ * Static hosting such as GitHub Pages has no server-side redirects, so this page moves on.
  */
-import release from '../../data/quitehandy-release.json';
+const target = 'https://quitehandy.app/download';
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Download Quite Handy {release.version}</title>
+    <title>Quite Handy</title>
     <meta name="robots" content="noindex" />
-    <meta http-equiv="refresh" content={`0; url=${release.dmg}`} />
-    <link rel="canonical" href={release.dmg} />
+    <link rel="canonical" href={target} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <script is:inline define:vars={{ target }}>
+      location.replace(target + location.search + location.hash);
+    </script>
   </head>
   <body>
-    <p>Downloading Quite Handy {release.version}… <a href={release.dmg}>Download it here</a> if it does not start.</p>
+    <p>Quite Handy has moved to <a href={target}>quitehandy.app</a>.</p>
   </body>
 </html>

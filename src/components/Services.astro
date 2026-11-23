@@ -74,7 +74,7 @@ const services: { label: string; text: string; wide?: boolean }[] = [
             {struck ? (
               <s>{label}</s>
             ) : internal ? (
-              <a class="link" href={url(href!)}>
+              <a class="link" href={href!.startsWith('/') ? url(href!) : href}>
                 {label}
               </a>
             ) : (
