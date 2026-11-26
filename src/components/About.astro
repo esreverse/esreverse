@@ -30,22 +30,22 @@ const statements = [
       alt="Portrait of Eric Singhartinger, laughing, wearing glasses and a black T-shirt"
       loading="lazy"
     />
-  </div>
-  <!-- My app, across the content width under the text and the portrait -->
-  <div class="container about__app">
-    <p class="t-lead reveal">Ah, yes, and I built a free macOS app:</p>
-    <a class="about__product reveal" href="https://quitehandy.app/">
-      <Picture
-        class="about__product-img"
-        src={quiteHandy}
-        formats={['avif', 'webp']}
-        fallbackFormat="png"
-        widths={[600, 1200]}
-        sizes="(min-width: 1280px) 1080px, calc(100vw - 64px)"
-        alt="Quite Handy – for when you need a hand to talk about things on your screen"
-        loading="lazy"
-      />
-    </a>
+    <!-- My app, across the content width under the text and the portrait -->
+    <div class="about__app">
+      <p class="t-lead reveal">Ah, yes, and I built a free macOS app:</p>
+      <a class="about__product reveal" href="https://quitehandy.app/">
+        <Picture
+          class="about__product-img"
+          src={quiteHandy}
+          formats={['avif', 'webp']}
+          fallbackFormat="png"
+          widths={[600, 1200]}
+          sizes="(min-width: 1280px) 1080px, calc(100vw - 64px)"
+          alt="Quite Handy – for when you need a hand to talk about things on your screen"
+          loading="lazy"
+        />
+      </a>
+    </div>
   </div>
 </section>
 
@@ -57,15 +57,18 @@ const statements = [
 
   .about__inner {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
-    gap: var(--column-gap);
+    gap: var(--stack-l) var(--column-gap);
   }
 
+  /* My app across the content width: under text and portrait side by side,
+     between them where they stack */
   .about__app {
+    flex: 0 0 100%;
     display: flex;
     flex-direction: column;
     gap: var(--stack-s);
-    margin-top: var(--stack-l);
   }
 
   .about__product {
@@ -107,10 +110,22 @@ const statements = [
     background: var(--color-white);
   }
 
-  /* Tablet & phone: text above, portrait below */
+  /* Tablet & phone: text above, then the app, the portrait below */
   @media (max-width: 1279px) {
     .about__inner {
       flex-direction: column;
+      flex-wrap: nowrap;
+      gap: var(--column-gap);
+    }
+
+    .about__app {
+      flex: none;
+      width: 100%;
+      order: 1;
+    }
+
+    .about :global(.about__portrait) {
+      order: 2;
     }
 
     .about__text {
