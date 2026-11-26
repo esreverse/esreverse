@@ -1,6 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import portrait from '../assets/eric.png';
+import quiteHandy from '../assets/quitehandy.png';
 
 const statements = [
   'I’m an experience designer, a digital consultant, a coach, a facilitator, an enabler.',
@@ -30,6 +31,22 @@ const statements = [
       loading="lazy"
     />
   </div>
+  <!-- My app, across the content width under the text and the portrait -->
+  <div class="container about__app">
+    <p class="t-lead reveal">Ah, yes, and I built a free macOS app:</p>
+    <a class="about__product reveal" href="https://quitehandy.app/">
+      <Picture
+        class="about__product-img"
+        src={quiteHandy}
+        formats={['avif', 'webp']}
+        fallbackFormat="png"
+        widths={[600, 1200]}
+        sizes="(min-width: 1280px) 1080px, calc(100vw - 64px)"
+        alt="Quite Handy – for when you need a hand to talk about things on your screen"
+        loading="lazy"
+      />
+    </a>
+  </div>
 </section>
 
 <style>
@@ -42,6 +59,25 @@ const statements = [
     display: flex;
     align-items: flex-start;
     gap: var(--column-gap);
+  }
+
+  .about__app {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-s);
+    margin-top: var(--stack-l);
+  }
+
+  .about__product {
+    display: block;
+  }
+
+  .about :global(.about__product-img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    border-radius: var(--radius-card);
   }
 
   .about__text {
