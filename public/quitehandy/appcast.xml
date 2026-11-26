@@ -3,30 +3,41 @@
   <channel>
     <title>Quite Handy</title>
     <item>
-      <title>Quite Handy 2.3</title>
-      <pubDate>Sun, 22 Nov 2026 20:58:54 +0000</pubDate>
-      <sparkle:version>202611222156</sparkle:version>
-      <sparkle:shortVersionString>2.3</sparkle:shortVersionString>
+      <title>Quite Handy 2.4</title>
+      <pubDate>Thu, 26 Nov 2026 13:22:24 +0000</pubDate>
+      <sparkle:version>202611261419</sparkle:version>
+      <sparkle:shortVersionString>2.4</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<p>Everything new since 2.0, at a glance:</p>
+      <description><![CDATA[<h3>New</h3>
 <ul>
-<li>Rebuilt under the hood: Quite Handy runs faster and steadier, with far less work while it waits</li>
-<li>Import &amp; export: Share a tool, your whole toolset or a pointer as a .quitehandy file. Drag it onto Settings or double-click it to add it</li>
-<li>Custom colors: A color grid with 10 hues in 8 shades, your own colors per tool, colors from a picture, and Vivid or Pastel without losing them</li>
-<li>Copy colors from one tool and paste them on another</li>
-<li>Text: Glass or colored, with custom colors for the text or its background</li>
-<li>Emojis: New defaults, and the size with a slider or by scrolling, in finer steps</li>
-<li>Glitter: A new tool that sprays sparkling flakes</li>
-<li>Pointers: Favorites, a random pointer per session, and your own pointers from any picture, with a stick added or stretched</li>
-<li>Toolbar: Always shown, near the pointer or with a hotkey</li>
-<li>Restore your tools with Tab: Everything changed in a session goes back to your settings</li>
-<li>Screencasts: Start with a window or an area, a smoother start, and a webcam you can drag, resize or throw into a corner</li>
-<li>Drag &amp; drop: Drop tool files and pictures right where they go</li>
-<li>A new app icon, Quite Handy in the Dock, and a problem report in Settings › About</li>
-<li>One look all over Settings: Buttons, dropdowns, dialogs, tooltips and notes match in light and dark mode</li>
+<li>Color Picker: The exact color under the pointer, copied with a click as Hex, RGB or HSL. Swipe up to measure a larger area: Its average, minimum &amp; maximum color and the contrast between them, checked against WCAG AA or AAA. Click to pin it and copy any value. Turn it on in Settings › Color Picker</li>
+<li>Keystrokes in screencasts: The keys &amp; shortcuts you press appear as keycaps in the recording. Move and resize them like the webcam</li>
+<li>5 sec countdown for screencasts: Big numbers in the middle of the screen before recording starts, so you can set the scene</li>
+<li>Textbox grows as you write and the first Return sets its width</li>
+<li>Drag a whiteboard's Save button anywhere to drop the whiteboard there as a PNG file</li>
+</ul>
+<h3>Improved</h3>
+<ul>
+<li>Screencast bar: Start &amp; stop with ⌥⌘1, Keystrokes &amp; Countdown in its options menu</li>
+<li>Restore last sessions: Show screenshots Off, Dimmed or Opaque. Dimmed evens out light &amp; dark screens, and the chosen session shows fully</li>
+<li>Pointers without a stick trail softly behind the pointer instead of wobbling</li>
+<li>Screenshots: Press ⌃W while a screenshot's preview still shows to draw on it on a whiteboard</li>
+<li>Drop a pointer file on a tool in Settings to give that tool the pointer</li>
+<li>Marker: Swipe up/down to change its size, left/right to change its opacity</li>
+<li>Placed emojis &amp; numbers are easier to grab</li>
+<li>The stripes over an emoji follow its shape</li>
+<li>The flashlight's ring grows with its size, and the color grid's pipette has the toolbar's glass</li>
+<li>Tool settings open &amp; close without fading</li>
+</ul>
+<h3>Fixes</h3>
+<ul>
+<li>Restored sessions show every line as it was drawn, without a fill it never had</li>
+<li>Esc and a right-click end the color grid's pipette at once, every time</li>
+<li>Scrolling screenshot: Retry starts over with the same area, without a flicker</li>
+<li>And several smaller fixes</li>
 </ul>]]></description>
-      <enclosure url="https://github.com/esreverse/esreverse/releases/download/quitehandy-v2.3/QuiteHandy-2.3.dmg"
-                 type="application/octet-stream" sparkle:edSignature="RfcrlJPT5uJoFDmT/twD88gbHujXdHaXqy0xSAhmt5WfQxFgeuZbu7JHJlXAELnaljk1+Epn1E0lg35GvMhpDg==" length="64975077" />
+      <enclosure url="https://github.com/esreverse/quitehandy-website/releases/download/quitehandy-v2.4/QuiteHandy-2.4.dmg"
+                 type="application/octet-stream" sparkle:edSignature="M2W3YJDlIz3fQyfMbq8j8DdCmwiAfV8fKh1+O4OFMA0JWvUxaN0k+iVeL18JybPvz2DA6tirmZv5RHmzFaXDBg==" length="66392159" />
     </item>
   </channel>
 </rss>
